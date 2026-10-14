@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1B2155">
+  <meta name="description" content="La alegría de coincidir. Una invitación para celebrar con mis personas favoritas.">
+  <title>La alegría de coincidir · Invitación de cumpleaños</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- Fondo de la portada: dos órbitas que se cruzan, como dos personas que coinciden -->
+  <div class="backdrop" aria-hidden="true">
+    <!-- Cielo pintado: el remolino gira, un brillo recorre las pinceladas doradas y las estrellas titilan -->
+    <div class="sky-art" id="sky-art">
+      <span class="sky-glint"></span>
+      <span class="sky-swirl"></span>
+      <span class="sky-dots"><i style="--x:90.44%;--y:4.72%;--d:-0s"></i><i style="--x:93.94%;--y:15.73%;--d:-1.3s"></i><i style="--x:7.55%;--y:19.50%;--d:-0.6s"></i><i style="--x:22.10%;--y:11.36%;--d:-2.1s"></i><i style="--x:85.87%;--y:25.90%;--d:-1.7s"></i><i style="--x:2.66%;--y:29.19%;--d:-2.8s"></i><i style="--x:83.21%;--y:70.69%;--d:-0.4s"></i><i style="--x:6.38%;--y:77.45%;--d:-1.1s"></i><i style="--x:13.82%;--y:83.55%;--d:-2.4s"></i><i style="--x:71.09%;--y:77.51%;--d:-3.1s"></i><i style="--x:45.16%;--y:87.32%;--d:-1.9s"></i><i style="--x:23.17%;--y:96.71%;--d:-0.9s"></i><i style="--x:96.28%;--y:53.47%;--d:-2.6s"></i><i style="--x:31.46%;--y:57.89%;--d:-3.4s"></i></span>
+    </div>
+    <span class="glow glow-a"></span>
+    <span class="glow glow-b"></span>
+    <span class="stars stars-a"></span><span class="stars stars-b"></span>
+    <svg class="orbits" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <g class="orbit orbit-a"><ellipse cx="500" cy="500" rx="430" ry="210"/><circle cx="930" cy="500" r="5"/></g>
+      <g class="orbit orbit-b"><ellipse cx="500" cy="500" rx="430" ry="210"/><circle cx="70" cy="500" r="5"/></g>
+    </svg>
+    <div class="motes">
+      <i style="--x:6%;--t:17s;--d:-2s"></i><i style="--x:18%;--t:22s;--d:-9s"></i><i style="--x:31%;--t:19s;--d:-5s"></i>
+      <i style="--x:47%;--t:24s;--d:-14s"></i><i style="--x:58%;--t:18s;--d:-7s"></i><i style="--x:72%;--t:21s;--d:-1s"></i>
+      <i style="--x:84%;--t:16s;--d:-11s"></i><i style="--x:93%;--t:23s;--d:-4s"></i>
+    </div>
+  </div>
+
+  <div class="entry" id="entry" aria-labelledby="entry-phrase">
+    <video class="entry-video" id="entry-video" muted loop playsinline preload="auto" poster="assets/fondo-inicio.jpg" aria-hidden="true">
+      <source src="assets/fondo-inicio.mp4" type="video/mp4">
+      <source src="assets/fondo-inicio.webm" type="video/webm">
+    </video>
+    <div class="sky" aria-hidden="true"><span class="stars stars-a"></span><span class="stars stars-b"></span></div>
+    <div class="entry-content">
+      <!-- Dos caminos que se encuentran y forman un corazón -->
+      <svg class="meeting" viewBox="0 0 420 190" aria-hidden="true">
+        <path class="route route-a" pathLength="1" d="M8 178C110 176 150 96 210 92"/>
+        <path class="route route-b" pathLength="1" d="M412 12C320 16 270 88 210 92"/>
+        <circle class="traveler" r="3.5"><animateMotion dur="1.7s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines=".5 0 .2 1" path="M8 178C110 176 150 96 210 92"/></circle>
+        <circle class="traveler" r="3.5"><animateMotion dur="1.7s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines=".5 0 .2 1" path="M412 12C320 16 270 88 210 92"/></circle>
+        <circle class="burst" cx="210" cy="92" r="30"/>
+        <path class="heart meet-heart" pathLength="1" transform="translate(177 63) scale(1.1)" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/>
+      </svg>
+      <p class="phrase entry-phrase" id="entry-phrase"><span class="w" style="--i:0">No</span> <span class="w" style="--i:1">tengo</span> <span class="w" style="--i:2">lugares</span> <span class="w" style="--i:3">favoritos,</span> <span class="w" style="--i:4">tengo</span> <span class="w" style="--i:5">personas</span> <span class="w" style="--i:6">favoritas.</span> <span class="w emoji" style="--i:7">🌍🫶🏻</span></p>
+      <p class="eyebrow">La alegría de coincidir</p>
+      <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true">↗</span></button>
+    </div>
+  </div>
+
+  <main class="invitation" id="invitation" hidden inert>
+    <section class="cover" aria-labelledby="birthday-name">
+      <p class="phrase cover-phrase reveal" style="--d:0" tabindex="-1" id="cover-phrase">No tengo lugares favoritos, tengo personas favoritas. <span class="emoji">🌍🫶🏻</span></p>
+      <div class="ornament reveal" style="--d:1" aria-hidden="true">
+        <span></span>
+        <svg viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
+        <span></span>
+      </div>
+      <div class="editorial">
+        <div class="portrait-wrap" id="portrait-wrap">
+          <!-- Fotografía como instantánea: se "revela" al abrir la invitación -->
+          <figure class="portrait" id="portrait">
+            <div class="photo">
+              <img id="birthday-photo" alt="" hidden>
+              <div class="photo-placeholder" id="photo-placeholder" role="img" aria-label="Espacio reservado para la fotografía de la festejada">
+                <span class="placeholder-frame" aria-hidden="true"></span>
+                <span class="placeholder-word">un instante<br><i>para celebrar</i></span>
+                <span class="placeholder-note">Tu fotografía aquí</span>
+              </div>
+            </div>
+            <span class="photo-caption" aria-hidden="true">La alegría de coincidir</span>
+          </figure>
+          <span class="tape tape-a" aria-hidden="true"></span>
+          <span class="tape tape-b" aria-hidden="true"></span>
+          <!-- Timbre postal con matasellos: dos lugares, una misma alegría -->
+          <div class="postal" aria-hidden="true">
+            <svg class="stamp" viewBox="-4 -4 108 128">
+              <defs><mask id="perforation"><rect x="-4" y="-4" width="108" height="128" fill="#fff"/><g fill="#000"><circle cx="0" cy="0" r="3.3"/><circle cx="10" cy="0" r="3.3"/><circle cx="20" cy="0" r="3.3"/><circle cx="30" cy="0" r="3.3"/><circle cx="40" cy="0" r="3.3"/><circle cx="50" cy="0" r="3.3"/><circle cx="60" cy="0" r="3.3"/><circle cx="70" cy="0" r="3.3"/><circle cx="80" cy="0" r="3.3"/><circle cx="90" cy="0" r="3.3"/><circle cx="100" cy="0" r="3.3"/><circle cx="0" cy="120" r="3.3"/><circle cx="10" cy="120" r="3.3"/><circle cx="20" cy="120" r="3.3"/><circle cx="30" cy="120" r="3.3"/><circle cx="40" cy="120" r="3.3"/><circle cx="50" cy="120" r="3.3"/><circle cx="60" cy="120" r="3.3"/><circle cx="70" cy="120" r="3.3"/><circle cx="80" cy="120" r="3.3"/><circle cx="90" cy="120" r="3.3"/><circle cx="100" cy="120" r="3.3"/><circle cx="0" cy="10" r="3.3"/><circle cx="0" cy="20" r="3.3"/><circle cx="0" cy="30" r="3.3"/><circle cx="0" cy="40" r="3.3"/><circle cx="0" cy="50" r="3.3"/><circle cx="0" cy="60" r="3.3"/><circle cx="0" cy="70" r="3.3"/><circle cx="0" cy="80" r="3.3"/><circle cx="0" cy="90" r="3.3"/><circle cx="0" cy="100" r="3.3"/><circle cx="0" cy="110" r="3.3"/><circle cx="100" cy="10" r="3.3"/><circle cx="100" cy="20" r="3.3"/><circle cx="100" cy="30" r="3.3"/><circle cx="100" cy="40" r="3.3"/><circle cx="100" cy="50" r="3.3"/><circle cx="100" cy="60" r="3.3"/><circle cx="100" cy="70" r="3.3"/><circle cx="100" cy="80" r="3.3"/><circle cx="100" cy="90" r="3.3"/><circle cx="100" cy="100" r="3.3"/><circle cx="100" cy="110" r="3.3"/></g></mask></defs>
+              <g mask="url(#perforation)">
+                <rect width="100" height="120" class="stamp-paper"/>
+                <rect x="9" y="9" width="82" height="102" rx="2" class="stamp-inner"/>
+                <g class="stamp-globe">
+                  <circle cx="50" cy="54" r="25"/>
+                  <ellipse cx="50" cy="54" rx="11" ry="25"/>
+                  <path d="M25 54h50M29 41h42M29 67h42"/>
+                </g>
+                <path class="stamp-heart" d="M50 72C46.5 68.5 38.5 64 39 57.5C39.5 51 47 51 50 57C52.5 51 60.5 51.5 61 57.5C61.5 63.5 54 69 50 72Z"/>
+                <path class="stamp-spark" d="M27 95c.4 3.4 2 5 5.4 5.4-3.4.4-5 2-5.4 5.4-.4-3.4-2-5-5.4-5.4 3.4-.4 5-2 5.4-5.4ZM73 20c.3 2.4 1.4 3.5 3.8 3.8-2.4.3-3.5 1.4-3.8 3.8-.3-2.4-1.4-3.5-3.8-3.8 2.4-.3 3.5-1.4 3.8-3.8Z"/>
+                <path class="stamp-lines" d="M40 99h36M46 104h24"/>
+              </g>
+            </svg>
+            <svg class="postmark" viewBox="0 0 170 100">
+              <defs><path id="postmark-arc" d="M13.5 50a36.5 36.5 0 1 1 73 0a36.5 36.5 0 1 1-73 0"/></defs>
+              <circle cx="50" cy="50" r="44"/>
+              <circle cx="50" cy="50" r="29"/>
+              <text><textPath href="#postmark-arc" startOffset="25%" text-anchor="middle" dominant-baseline="middle">La alegría de coincidir</textPath></text>
+              <path class="postmark-star" transform="translate(0 -9.6)" d="M50 51c.6 5.4 3.2 8 8.6 8.6-5.4.6-8 3.2-8.6 8.6-.6-5.4-3.2-8-8.6-8.6 5.4-.6 8-3.2 8.6-8.6Z"/>
+              <path class="postmark-waves" d="M96 30c8-6 16 6 24 0s16 6 24 0 16 6 24 0M96 45c8-6 16 6 24 0s16 6 24 0 16 6 24 0M96 60c8-6 16 6 24 0s16 6 24 0 16 6 24 0M96 75c8-6 16 6 24 0s16 6 24 0 16 6 24 0"/>
+            </svg>
+          </div>
+        </div>
+        <div class="details">
+          <svg class="heart cover-heart reveal" style="--d:3" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+          <h1 id="birthday-name">[Nombre de la festejada]</h1>
+          <p class="celebrate reveal" style="--d:5">Celebremos mi cumpleaños</p>
+          <div class="ticket reveal" style="--d:6">
+            <div class="date-time" aria-label="Fecha y hora de la celebración">
+              <div class="ticket-main">
+                <div class="ticket-band" aria-hidden="true">
+                <svg class="band-star" viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
+                <svg class="ticket-route" viewBox="0 0 220 26" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  <path class="route-line" pathLength="1" d="M10 18C60 2 160 2 210 18"/>
+                  <circle cx="10" cy="18" r="3.2"/><circle cx="210" cy="18" r="3.2"/>
+                  <path class="route-heart" d="M110 13C107.4 10.6 102 7.6 102.4 3.6C102.8-.4 108 -.4 110 3.4C111.8-.4 117.2-.2 117.6 3.6C118 7.6 112.8 10.8 110 13Z"/>
+                </svg>
+                <svg class="band-star" viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
+                </div>
+                <svg class="guilloche" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q18 30 36 20 Q54 10 72 20 Q90 30 108 20 Q126 10 144 20 Q162 30 180 20 Q198 10 216 20 Q234 30 252 20 Q270 10 288 20 Q306 30 324 20"/><path d="M0 29 Q18 39 36 29 Q54 19 72 29 Q90 39 108 29 Q126 19 144 29 Q162 39 180 29 Q198 19 216 29 Q234 39 252 29 Q270 19 288 29 Q306 39 324 29"/><path d="M0 38 Q18 48 36 38 Q54 28 72 38 Q90 48 108 38 Q126 28 144 38 Q162 48 180 38 Q198 28 216 38 Q234 48 252 38 Q270 28 288 38 Q306 48 324 38"/><path d="M0 47 Q18 57 36 47 Q54 37 72 47 Q90 57 108 47 Q126 37 144 47 Q162 57 180 47 Q198 37 216 47 Q234 57 252 47 Q270 37 288 47 Q306 57 324 47"/><path d="M0 56 Q18 66 36 56 Q54 46 72 56 Q90 66 108 56 Q126 46 144 56 Q162 66 180 56 Q198 46 216 56 Q234 66 252 56 Q270 46 288 56 Q306 66 324 56"/><path d="M0 65 Q18 75 36 65 Q54 55 72 65 Q90 75 108 65 Q126 55 144 65 Q162 75 180 65 Q198 55 216 65 Q234 75 252 65 Q270 55 288 65 Q306 75 324 65"/><path d="M0 74 Q18 84 36 74 Q54 64 72 74 Q90 84 108 74 Q126 64 144 74 Q162 84 180 74 Q198 64 216 74 Q234 84 252 74 Q270 64 288 74 Q306 84 324 74"/><path d="M0 83 Q18 93 36 83 Q54 73 72 83 Q90 93 108 83 Q126 73 144 83 Q162 93 180 83 Q198 73 216 83 Q234 93 252 83 Q270 73 288 83 Q306 93 324 83"/><path d="M0 92 Q18 102 36 92 Q54 82 72 92 Q90 102 108 92 Q126 82 144 92 Q162 102 180 92 Q198 82 216 92 Q234 102 252 92 Q270 82 288 92 Q306 102 324 92"/><path d="M0 101 Q18 111 36 101 Q54 91 72 101 Q90 111 108 101 Q126 91 144 101 Q162 111 180 101 Q198 91 216 101 Q234 111 252 101 Q270 91 288 101 Q306 111 324 101"/></svg>
+                <div class="ticket-cell ticket-date">
+                  <span class="ticket-label"><svg class="dt-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Fecha</span>
+                  <p id="birthday-date">07 de noviembre</p>
+                </div>
+                <span class="foil" aria-hidden="true"><svg viewBox="0 0 60 56"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg></span>
+                <span class="microtext" aria-hidden="true">La alegría de coincidir · La alegría de coincidir · La alegría de coincidir · La alegría de coincidir · La alegría de coincidir ·</span>
+              </div>
+              <span class="date-dot" aria-hidden="true"></span>
+              <div class="ticket-stub">
+                <span class="admit" aria-hidden="true">Admite 1</span>
+                <div class="ticket-cell ticket-time">
+                  <span class="ticket-label"><svg class="dt-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Hora</span>
+                  <p id="birthday-time">16:00 h</p>
+                </div>
+                <svg class="stub-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
+                <svg class="barcode" viewBox="0 0 110 22" preserveAspectRatio="none" aria-hidden="true"><rect x="0" width="1" height="22"/><rect x="2" width="2" height="22"/><rect x="5" width="1" height="22"/><rect x="9" width="1" height="22"/><rect x="12" width="2" height="22"/><rect x="15" width="2" height="22"/><rect x="18" width="1" height="22"/><rect x="20" width="2" height="22"/><rect x="24" width="1" height="22"/><rect x="26" width="1" height="22"/><rect x="30" width="2" height="22"/><rect x="33" width="2" height="22"/><rect x="36" width="1" height="22"/><rect x="40" width="1" height="22"/><rect x="44" width="2" height="22"/><rect x="48" width="1" height="22"/><rect x="50" width="1" height="22"/><rect x="54" width="1" height="22"/><rect x="57" width="2" height="22"/><rect x="60" width="2" height="22"/><rect x="63" width="2" height="22"/><rect x="67" width="2" height="22"/><rect x="70" width="1" height="22"/><rect x="74" width="2" height="22"/><rect x="77" width="1" height="22"/><rect x="79" width="2" height="22"/><rect x="82" width="2" height="22"/><rect x="85" width="2" height="22"/><rect x="88" width="2" height="22"/><rect x="93" width="2" height="22"/><rect x="97" width="2" height="22"/><rect x="102" width="2" height="22"/><rect x="106" width="1" height="22"/><rect x="108" width="1" height="22"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="reveal" style="--d:7">
+            <button class="button share-button" id="next-section" type="button">Compartamos este día <span aria-hidden="true">↓</span></button>
+            <p class="next-message" id="next-message" role="status"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Segunda sección: carta personal. Los textos se editan en config.js (letter). -->
+    <section class="letter" id="carta" aria-labelledby="letter-title" tabindex="-1" data-reveal>
+      <div class="letter-inner">
+        <svg class="heart letter-heart fade-up" style="--i:0" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+        <h2 class="letter-title fade-up" style="--i:1" id="letter-title">Mi lugar favorito es con ustedes</h2>
+        <span class="letter-rule fade-up" style="--i:2" aria-hidden="true"></span>
+        <div class="letter-body fade-up" style="--i:3" id="letter-body">
+          <p>Este cumpleaños quiero celebrarlo cerca de las personas que hacen mis días más bonitos.</p>
+          <p>Compartir la mesa, reírnos, cantar y sumar un recuerdo juntos será mi manera favorita de celebrar.</p>
+          <p>Por eso, me encantaría que estuvieras ahí.</p>
+        </div>
+        <p class="letter-signature fade-up" style="--i:4">
+          <span class="letter-closing" id="letter-closing">Con cariño,</span>
+          <span class="letter-name" id="letter-name">Victoria</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Tercera sección: el lugar. Datos, enlace y fotografías se editan en config.js (venue). -->
+    <section class="venue" id="lugar" aria-labelledby="venue-title">
+      <div class="venue-grid">
+        <!-- Fotografía principal del espacio -->
+        <div class="venue-main" data-reveal>
+          <span class="venue-frame" aria-hidden="true"></span>
+          <svg class="heart venue-frame-heart" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+          <div class="venue-shot venue-shot-main" data-venue-photo="space">
+            <img alt="" loading="lazy" decoding="async">
+            <div class="venue-ph" role="img" aria-label="Espacio reservado para la fotografía del restaurante" aria-hidden="true">
+              <span class="venue-ph-frame" aria-hidden="true"></span>
+              <span class="venue-ph-name" id="venue-ph-name">Doña Vero</span>
+              <span class="venue-ph-note">Fotografía del lugar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="venue-info" data-reveal>
+          <p class="venue-eyebrow" style="--i:0">
+            <svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+            <span id="venue-eyebrow">Compartamos la mesa</span>
+          </p>
+          <h2 class="venue-title" style="--i:1" id="venue-title">Nos vemos en <em class="venue-nowrap">Doña Vero</em></h2>
+          <p class="venue-description" style="--i:2" id="venue-description">Una tarde para reunirnos, disfrutar sabores mexicanos y celebrar con nuestras personas favoritas.</p>
+          <dl class="venue-facts" style="--i:3">
+            <div class="venue-fact">
+              <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Fecha</dt>
+              <dd id="venue-date">07 de noviembre</dd>
+            </div>
+            <div class="venue-fact">
+              <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Hora</dt>
+              <dd id="venue-time">16:00 h</dd>
+            </div>
+            <div class="venue-fact venue-fact-wide">
+              <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v18M4.5 3v4.5a2.5 2.5 0 0 0 5 0V3M17.5 21V3c-2.4 1.2-3.5 4-3.5 7.5V13h3.5"/></svg>Lugar</dt>
+              <dd id="venue-name">Doña Vero</dd>
+            </div>
+            <div class="venue-fact venue-fact-wide">
+              <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15.3 12 21 12 21Z"/><circle cx="12" cy="9.8" r="2.3"/></svg>Dirección</dt>
+              <dd id="venue-address">Av. Monterrey 313, Roma Sur, CDMX</dd>
+            </div>
+          </dl>
+          <p class="venue-note" style="--i:4">
+            <svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+            <span id="venue-note">Tendremos un espacio reservado para nuestro festejo y karaoke para cantar juntos.</span>
+          </p>
+          <div class="venue-action" style="--i:5">
+            <a class="button venue-button" id="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Do%C3%B1a+Vero+Av.+Monterrey+313+Roma+Sur+CDMX" target="_blank" rel="noopener noreferrer" aria-describedby="venue-map-hint">Cómo llegar <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
+            <span class="sr-only" id="venue-map-hint">Abre Google Maps en una pestaña nueva</span>
+          </div>
+        </div>
+
+        <!-- Dos fotografías pequeñas de la cocina: los tacos con tortillas de corazón al frente -->
+        <figure class="venue-food" data-reveal>
+          <figcaption class="venue-food-caption" style="--i:0">
+            <svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+            <span id="venue-food-caption">Una mirada a los sabores de <span class="venue-nowrap">Doña Vero</span></span>
+          </figcaption>
+          <div class="venue-food-shots" style="--i:1">
+            <div class="venue-shot venue-shot-tacos" data-venue-photo="tacos">
+              <img alt="" loading="lazy" decoding="async">
+              <div class="venue-ph" role="img" aria-label="Espacio reservado para la fotografía de los tacos" aria-hidden="true">
+                <span class="venue-ph-frame" aria-hidden="true"></span>
+                <svg class="heart venue-ph-heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+                <span class="venue-ph-note">Tacos de corazón</span>
+              </div>
+            </div>
+            <div class="venue-shot venue-shot-kitchen" data-venue-photo="kitchen">
+              <img alt="" loading="lazy" decoding="async">
+              <div class="venue-ph" role="img" aria-label="Espacio reservado para una fotografía de la cocina" aria-hidden="true">
+                <span class="venue-ph-frame" aria-hidden="true"></span>
+                <svg class="heart venue-ph-heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+                <span class="venue-ph-note">Cocina</span>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </section>
+    <button class="music-control" id="music-control" type="button" aria-label="Reproducir música" aria-pressed="false" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="music-icon"><path d="M9 18V6l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span id="music-label">Reproducir</span>
+    </button>
+    <span id="music-status" class="sr-only" role="status"></span>
+  </main>
+  <audio id="birthday-audio" preload="none"></audio>
+  <noscript><p class="noscript">Activa JavaScript para abrir tu invitación.</p></noscript>
+</body>
+</html>

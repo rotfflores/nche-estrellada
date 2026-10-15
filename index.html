@@ -6,12 +6,20 @@
   <meta name="theme-color" content="#1B2155">
   <meta name="description" content="La alegría de coincidir. Una invitación para celebrar con mis personas favoritas.">
   <title>La alegría de coincidir · Invitación de cumpleaños</title>
+  <!-- Vista previa al compartir el enlace (WhatsApp, redes): mismo título y descripción de la invitación -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_MX">
+  <meta property="og:title" content="La alegría de coincidir · Invitación de cumpleaños">
+  <meta property="og:description" content="La alegría de coincidir. Una invitación para celebrar con mis personas favoritas.">
+  <!-- PENDIENTE al publicar: imagen para la vista previa con la dirección completa del sitio, por ejemplo
+       <meta property="og:image" content="https://TU-DOMINIO/assets/compartir.jpg"> (1200 × 630 px) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1336'/%3E%3Cpath d='M32 50C25 43 9 34 10 21C11 8 26 8 32 20C37 8 53 9 54 21C55 33 40 44 32 50Z' fill='none' stroke='%23E8C86A' stroke-width='4.5' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
   <script src="config.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Fondo de la portada: dos órbitas que se cruzan, como dos personas que coinciden -->
+  <!-- Fondo de toda la invitación: cielo pintado y luces doradas que suben -->
   <div class="backdrop" aria-hidden="true">
     <!-- Cielo pintado: el remolino gira, un brillo recorre las pinceladas doradas y las estrellas titilan -->
     <div class="sky-art" id="sky-art">
@@ -19,13 +27,6 @@
       <span class="sky-swirl"></span>
       <span class="sky-dots"><i style="--x:90.44%;--y:4.72%;--d:-0s"></i><i style="--x:93.94%;--y:15.73%;--d:-1.3s"></i><i style="--x:7.55%;--y:19.50%;--d:-0.6s"></i><i style="--x:22.10%;--y:11.36%;--d:-2.1s"></i><i style="--x:85.87%;--y:25.90%;--d:-1.7s"></i><i style="--x:2.66%;--y:29.19%;--d:-2.8s"></i><i style="--x:83.21%;--y:70.69%;--d:-0.4s"></i><i style="--x:6.38%;--y:77.45%;--d:-1.1s"></i><i style="--x:13.82%;--y:83.55%;--d:-2.4s"></i><i style="--x:71.09%;--y:77.51%;--d:-3.1s"></i><i style="--x:45.16%;--y:87.32%;--d:-1.9s"></i><i style="--x:23.17%;--y:96.71%;--d:-0.9s"></i><i style="--x:96.28%;--y:53.47%;--d:-2.6s"></i><i style="--x:31.46%;--y:57.89%;--d:-3.4s"></i></span>
     </div>
-    <span class="glow glow-a"></span>
-    <span class="glow glow-b"></span>
-    <span class="stars stars-a"></span><span class="stars stars-b"></span>
-    <svg class="orbits" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
-      <g class="orbit orbit-a"><ellipse cx="500" cy="500" rx="430" ry="210"/><circle cx="930" cy="500" r="5"/></g>
-      <g class="orbit orbit-b"><ellipse cx="500" cy="500" rx="430" ry="210"/><circle cx="70" cy="500" r="5"/></g>
-    </svg>
     <div class="motes">
       <i style="--x:6%;--t:17s;--d:-2s"></i><i style="--x:18%;--t:22s;--d:-9s"></i><i style="--x:31%;--t:19s;--d:-5s"></i>
       <i style="--x:47%;--t:24s;--d:-14s"></i><i style="--x:58%;--t:18s;--d:-7s"></i><i style="--x:72%;--t:21s;--d:-1s"></i>
@@ -33,12 +34,12 @@
     </div>
   </div>
 
-  <div class="entry" id="entry" aria-labelledby="entry-phrase">
+  <section class="entry" id="entry" aria-labelledby="entry-phrase">
     <video class="entry-video" id="entry-video" muted loop playsinline preload="auto" poster="assets/fondo-inicio.jpg" aria-hidden="true">
       <source src="assets/fondo-inicio.mp4" type="video/mp4">
       <source src="assets/fondo-inicio.webm" type="video/webm">
     </video>
-    <div class="sky" aria-hidden="true"><span class="stars stars-a"></span><span class="stars stars-b"></span></div>
+    <div class="sky" aria-hidden="true"></div>
     <div class="entry-content">
       <!-- Dos caminos que se encuentran y forman un corazón -->
       <svg class="meeting" viewBox="0 0 420 190" aria-hidden="true">
@@ -53,7 +54,15 @@
       <p class="eyebrow">La alegría de coincidir</p>
       <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></button>
     </div>
-  </div>
+  </section>
+
+  <!-- Control de música: fuera de la invitación para poder pausar desde la entrada; aparece cuando la música suena -->
+  <button class="music-control" id="music-control" type="button" aria-label="Reproducir música" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="music-icon"><path d="M9 18V6l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>
+    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span id="music-label">Reproducir</span>
+  </button>
+  <span id="music-status" class="sr-only" role="status"></span>
 
   <main class="invitation" id="invitation" hidden inert>
     <section class="cover" aria-labelledby="birthday-name">
@@ -108,10 +117,10 @@
         </div>
         <div class="details">
           <svg class="heart cover-heart reveal" style="--d:3" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-          <h1 id="birthday-name">[Nombre de la festejada]</h1>
+          <h1 id="birthday-name">Victoria</h1>
           <p class="celebrate reveal" style="--d:5">Celebremos mi cumpleaños</p>
           <div class="ticket reveal" style="--d:6">
-            <div class="date-time" aria-label="Fecha y hora de la celebración">
+            <div class="date-time" role="group" aria-label="Fecha y hora de la celebración">
               <div class="ticket-main">
                 <div class="ticket-band" aria-hidden="true">
                 <svg class="band-star" viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
@@ -179,6 +188,39 @@
       </div>
     </section>
 
+    <!-- Cada versión de mí: recorrido fotográfico por etapas, de la más antigua a la más reciente. Fotos, etapas, frases y encuadres en config.js (evolution). -->
+    <section class="evolution" id="evolucion" aria-labelledby="evolution-title" data-reveal>
+      <div class="evolution-sheet">
+        <header class="evolution-head">
+          <h2 class="evolution-title fade-up" style="--i:0" id="evolution-title">Cada <em class="cw evolution-highlight">versión</em> de mí</h2>
+          <p class="evolution-intro fade-up" style="--i:1" id="evolution-intro">He cambiado, he aprendido y he descubierto nuevas formas de ser yo. Hoy celebro todo lo vivido y la persona en la que me estoy convirtiendo.</p>
+        </header>
+        <!-- Las fotografías se crean desde config.js y se deslizan a los lados; al soltar, cada una queda alineada -->
+        <ol class="evolution-track" id="evolution-track" aria-label="Recorrido fotográfico, de la etapa más antigua a la más reciente"></ol>
+        <div class="evolution-controls fade-up" style="--i:3" id="evolution-controls" hidden>
+          <button class="evolution-btn evolution-prev" id="evolution-prev" type="button" aria-label="Etapa anterior" aria-controls="evolution-track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+          <button class="evolution-btn evolution-next" id="evolution-next" type="button" aria-label="Etapa siguiente" aria-controls="evolution-track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Álbum de fotos: una pila de instantáneas que se desliza a los lados. Fotos, pies y encuadres en config.js (album). -->
+    <section class="album" id="album" aria-labelledby="album-title" data-reveal>
+      <div class="album-inner">
+        <h2 class="album-title fade-up" style="--i:0" id="album-title">Mis recuerdos favoritos tienen <em class="cw album-highlight">compañía</em></h2>
+        <!-- Las fotografías se crean desde config.js; la de arriba se arrastra con el dedo o el mouse -->
+        <div class="album-stage fade-up" style="--i:1" id="album-stage" role="group" aria-roledescription="álbum" aria-label="Álbum de fotos. Usa las flechas izquierda y derecha para cambiar de foto." tabindex="0">
+          <div class="album-stack" id="album-stack"></div>
+        </div>
+        <!-- Instrucción para deslizar: el texto se edita en config.js (album.hint) -->
+        <p class="album-hint fade-up" style="--i:2" id="album-hint-row">
+          <svg viewBox="0 0 28 32" aria-hidden="true"><path class="album-hint-arrows" d="M4.5 5.5h12.5M7.5 2.5l-3 3 3 3M14 2.5l3 3-3 3"/><g class="album-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g></svg>
+          <span id="album-hint">Desliza las fotos para descubrir más recuerdos</span>
+        </p>
+        <p class="sr-only" id="album-status" role="status"></p>
+      </div>
+    </section>
+
     <!-- Tercera sección: el lugar. Datos, enlace y fotografías se editan en config.js (venue). -->
     <section class="venue" id="lugar" aria-labelledby="venue-title">
       <div class="venue-grid">
@@ -223,7 +265,7 @@
           </dl>
           <p class="venue-note" style="--i:4">
             <svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-            <span id="venue-note">Tendremos un espacio reservado para nuestro festejo y karaoke para cantar juntos.</span>
+            <span id="venue-note">Tendremos un espacio reservado para nuestro festejo.</span>
           </p>
           <div class="venue-action" style="--i:5">
             <a class="button venue-button" id="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Do%C3%B1a+Vero+Av.+Monterrey+313+Roma+Sur+CDMX" target="_blank" rel="noopener noreferrer" aria-describedby="venue-map-hint">Cómo llegar <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
@@ -256,6 +298,39 @@
             </div>
           </div>
         </figure>
+      </div>
+    </section>
+
+    <!-- Karaoke: anuncia el karaoke presencial del festejo. Textos en config.js (karaoke).
+         El micrófono es solo una ilustración: no graba, no pide permisos ni reproduce audio. -->
+    <section class="karaoke" id="karaoke" aria-labelledby="karaoke-title">
+      <div class="karaoke-panel" data-reveal>
+        <div class="karaoke-art">
+          <svg class="mic-art" viewBox="0 0 320 420" aria-hidden="true" focusable="false">
+            <defs><clipPath id="mic-head-clip"><circle cx="160" cy="100" r="51"/></clipPath></defs>
+            <!-- Ondas de sonido, destellos y notas en amarillo mantequilla -->
+            <g class="mic-waves"><path class="mic-wave" d="M96.4 133.8A72 72 0 0 1 96.4 66.2"/><path class="mic-wave mic-wave-out" d="M77.8 136.6A90 90 0 0 1 77.8 63.4"/><path class="mic-wave" d="M223.6 66.2A72 72 0 0 1 223.6 133.8"/><path class="mic-wave mic-wave-out" d="M242.2 63.4A90 90 0 0 1 242.2 136.6"/></g>
+            <g class="mic-sparks"><path style="--k:0" transform="translate(52 30) scale(.72)" d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/><path style="--k:1" transform="translate(254 44) scale(.5)" d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/><path style="--k:2" transform="translate(70 214) scale(.4)" d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></g>
+            <g class="mic-notes"><path d="M262 150v-30l14-4v26M262 128l14-4"/><ellipse cx="257.5" cy="150.5" rx="5" ry="3.8" transform="rotate(-20 257.5 150.5)"/><ellipse cx="271.5" cy="142.5" rx="5" ry="3.8" transform="rotate(-20 271.5 142.5)"/></g>
+            <!-- Micrófono de líneas finas: la rejilla recuerda al mundo de la frase inicial -->
+            <path class="mic-head" d="M160 48a52 52 0 1 1 0 104a52 52 0 1 1 0-104Z"/>
+            <g class="mic-grille" clip-path="url(#mic-head-clip)"><ellipse cx="160" cy="100" rx="19" ry="52"/><ellipse cx="160" cy="100" rx="38" ry="52"/><path d="M100 74h120M100 100h120M100 126h120"/></g>
+            <path class="mic-line" pathLength="1" d="M160 48a52 52 0 1 1 0 104a52 52 0 1 1 0-104Z"/>
+            <path class="mic-collar" pathLength="1" d="M133 152h54a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6h-54a6 6 0 0 1-6-6v-6a6 6 0 0 1 6-6Z"/>
+            <path class="mic-grip" d="M146 156v10M160 156v10M174 156v10"/>
+            <path class="mic-line" pathLength="1" d="M134 170L146 298Q160 310 174 298L186 170"/>
+            <path class="mic-shine" d="M144 186L152 284"/>
+            <path class="mic-switch" pathLength="1" d="M160 196a6 6 0 0 1 6 6v12a6 6 0 0 1-12 0v-12a6 6 0 0 1 6-6Z"/>
+            <circle class="mic-dot" cx="160" cy="203.5" r="2.2"/>
+            <path class="mic-cable" pathLength="1" d="M160 305C160 334 150 350 130 362C108 375 112 402 136 399C160 396 162 368 144 366C124 364 128 398 172 403C206 407 234 393 262 397"/>
+          </svg>
+        </div>
+        <div class="karaoke-text">
+          <p class="karaoke-eyebrow" style="--i:0" id="karaoke-eyebrow">También se vale cantar a todo pulmón</p>
+          <h2 class="karaoke-title" style="--i:1" id="karaoke-title">El <em class="cw karaoke-highlight">micrófono</em> nos espera</h2>
+          <p class="karaoke-description" style="--i:2" id="karaoke-description">Habrá karaoke para cantar nuestras favoritas, reírnos y hacer de esta tarde un recuerdo todavía más bonito.</p>
+          <p class="karaoke-cue" style="--i:3" id="karaoke-cue">¡Ve pensando cuál vas a cantar!</p>
+        </div>
       </div>
     </section>
 
@@ -298,7 +373,7 @@
                 <label class="rsvp-label" for="rsvp-message"><span id="rsvp-message-label">Déjame un mensaje</span> <span class="rsvp-optional" id="rsvp-optional">Opcional</span></label>
                 <textarea class="rsvp-input rsvp-textarea" id="rsvp-message" name="mensaje" rows="3" maxlength="300"></textarea>
               </div>
-              <button class="button rsvp-submit" id="rsvp-submit" type="submit"><span class="rsvp-submit-text" id="rsvp-submit-text">Enviar respuesta</span> <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 19.5l1.2-4A8 8 0 1 1 9 18.6l-4.5.9Z"/><path d="M9 10.5c.4 1.6 2 3.2 4 4"/></svg></span></button>
+              <button class="button rsvp-submit" id="rsvp-submit" type="submit"><span class="rsvp-submit-text" id="rsvp-submit-text">Enviar respuesta</span> <span class="rsvp-wa" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg></span></button>
             </div>
           </div>
         </form>
@@ -317,12 +392,36 @@
         </div>
       </div>
     </section>
-    <button class="music-control" id="music-control" type="button" aria-label="Reproducir música" aria-pressed="false" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true" class="music-icon"><path d="M9 18V6l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>
-      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span id="music-label">Reproducir</span>
-    </button>
-    <span id="music-status" class="sr-only" role="status"></span>
+
+    <!-- Quinta sección: cierre. Título, mensaje y firma se editan en config.js (closing). -->
+    <section class="closing" id="despedida" aria-labelledby="closing-title">
+      <div class="closing-inner">
+        <h2 class="closing-title" id="closing-title" data-reveal>Qué bonito <em class="closing-highlight">coincidir<svg class="closing-swash" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M2 11C38 6 96 3.4 160 4.2S190 6 198 7.6"/></svg></em> contigo</h2>
+        <div class="closing-message" id="closing-message" data-reveal>
+          <p>Lo que hará especial este cumpleaños será compartirlo con ustedes. Gracias por ser parte de mi vida y de los recuerdos que más quiero.</p>
+        </div>
+        <div class="closing-end" data-reveal>
+          <!-- Dos trazos que coinciden en un corazón, como en la entrada -->
+          <div class="closing-meet" aria-hidden="true">
+            <span class="closing-line"></span>
+            <svg class="heart closing-heart" viewBox="0 0 60 56"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+            <span class="closing-line"></span>
+          </div>
+          <p class="closing-signature" style="--i:0">
+            <span class="closing-farewell" id="closing-farewell">Con cariño,</span>
+            <span class="closing-name" id="closing-name">Victoria</span>
+          </p>
+          <a class="closing-back" style="--i:1" id="closing-back" href="#invitation">
+            <span class="closing-back-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18.5v-13M6.5 11 12 5.5l5.5 5.5"/></svg></span>
+            <span class="closing-back-label" id="closing-back-label">Volver al inicio</span>
+          </a>
+        </div>
+      </div>
+    </section>
+    <!-- Agradecimiento final de la festejada; se edita en config.js (closing.footerThanks) -->
+    <footer class="footer-thanks" data-reveal>
+      <p class="footer-thanks-text" id="footer-thanks-text">Gracias por ser una de mis personas favoritas.</p>
+    </footer>
   </main>
   <audio id="birthday-audio" preload="none"></audio>
   <noscript><p class="noscript">Activa JavaScript para abrir tu invitación.</p></noscript>

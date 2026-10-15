@@ -1,6 +1,6 @@
 # La alegría de coincidir
 
-Invitación digital con entrada musical, portada, carta personal y lugar de la celebración. HTML, CSS y JavaScript sin dependencias ni compilación.
+Invitación digital con entrada musical, portada, carta personal, lugar de la celebración y confirmación de asistencia. HTML, CSS y JavaScript sin dependencias ni compilación.
 
 ## Editar información
 
@@ -15,6 +15,10 @@ El fondo de la invitación abierta es la pintura `assets/fondo-cielo.jpg`. El re
 ## Vista local
 
 Ejecuta `node server.js` y abre `http://localhost:4173`. También puedes abrir `index.html` directamente. Las fuentes (Cormorant Garamond y Manrope, licencia SIL Open Font License) están en `assets/fonts`, así que la invitación no necesita internet; hay fuentes de sistema de respaldo.
+
+## Cuenta regresiva
+
+Debajo de «Compartamos este día» hay una cuenta regresiva con días, horas, minutos y segundos; cada cifra que cambia rueda hacia arriba. La fecha y hora exactas están en `eventStart` de `config.js` (hora del centro de México, UTC-6) y el mensaje que aparece al llegar la hora en `countdownDone`.
 
 ## Carta (segunda sección)
 
@@ -43,6 +47,17 @@ Después de la carta está la sección `#lugar`, dedicada a Doña Vero. Sus dato
 Coloca las fotografías reales del restaurante en `assets/dona-vero/`: `espacio.jpg` (fotografía principal del lugar), `tacos-corazon.jpg` (tacos con tortillas en forma de corazón) y `cocina.jpg` (otra fotografía de su cocina). Mientras falte un archivo se muestra un espacio provisional. Al agregarlas, ajusta cada `alt` para que describa lo que se ve en la fotografía.
 
 En celular el orden es fotografía principal, datos del lugar y fotografías de comida; en escritorio, fotografías e información van en dos columnas.
+
+## Confirmación (cuarta sección)
+
+Después del lugar está `#confirmar`. Primero se elige «Sí, ahí estaré» o «Esta vez no podré»; al elegir, se despliegan el nombre (obligatorio) y un mensaje opcional. Al enviar, el formulario se desvanece y aparece el agradecimiento: un corazón dorado se dibuja, suelta destellos y el título entra palabra por palabra. Con movimiento reducido aparece sin animación. «Cambiar mi respuesta» regresa al formulario con los datos escritos.
+
+Todo se edita en `config.js`, dentro de `rsvp`:
+
+- `whatsapp`: número de la festejada con lada de país, por ejemplo `5215512345678`. Con número, al enviar también se abre WhatsApp con el mensaje preparado (más el mensaje opcional al final) y el agradecimiento recuerda enviarlo desde ahí. **Mientras esté vacío, se muestra el agradecimiento pero la respuesta no llega a nadie.** No usar el número del restaurante.
+- `yesMessage` y `noMessage`: mensajes de WhatsApp. `{nombre}`, `{fecha}`, `{hora}` y `{lugar}` se reemplazan solos.
+- `thanksYesTitle`, `thanksYesText`, `thanksNoTitle`, `thanksNoText`, `whatsappReminder` y `editLabel`: textos del agradecimiento.
+- Etiquetas, botones (`button` con número, `buttonWithoutWhatsapp` sin número) y mensajes de validación.
 
 ## Próximas secciones
 

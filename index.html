@@ -49,15 +49,15 @@
         <circle class="burst" cx="210" cy="92" r="30"/>
         <path class="heart meet-heart" pathLength="1" transform="translate(177 63) scale(1.1)" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/>
       </svg>
-      <p class="phrase entry-phrase" id="entry-phrase"><span class="w" style="--i:0">No</span> <span class="w" style="--i:1">tengo</span> <span class="w" style="--i:2">lugares</span> <span class="w" style="--i:3">favoritos,</span> <span class="w" style="--i:4">tengo</span> <span class="w" style="--i:5">personas</span> <span class="w" style="--i:6">favoritas.</span> <span class="w emoji" style="--i:7">🌍🫶🏻</span></p>
+      <p class="phrase entry-phrase" id="entry-phrase"><span class="w" style="--i:0">No</span> <span class="w" style="--i:1">tengo</span> <span class="w" style="--i:2">lugares</span> <span class="w" style="--i:3">favoritos,</span> <span class="w" style="--i:4">tengo</span> <span class="w" style="--i:5">personas</span> <span class="w" style="--i:6">favoritas.</span> <span class="w phrase-icons" style="--i:7" role="img" aria-label="Un mundo y un corazón"><svg class="pi-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.6 7.5h14.8M4.6 16.5h14.8"/></svg><svg class="pi-heart" viewBox="0 0 60 56"><path d="M30 50C23 43 5 33 6 18C7 4 24 3 30 15C36 3 53 4 54 18C55 33 37 43 30 50Z"/></svg></span></p>
       <p class="eyebrow">La alegría de coincidir</p>
-      <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true">↗</span></button>
+      <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></button>
     </div>
   </div>
 
   <main class="invitation" id="invitation" hidden inert>
     <section class="cover" aria-labelledby="birthday-name">
-      <p class="phrase cover-phrase reveal" style="--d:0" tabindex="-1" id="cover-phrase">No tengo lugares favoritos, tengo personas favoritas. <span class="emoji">🌍🫶🏻</span></p>
+      <p class="phrase cover-phrase reveal" style="--d:0" tabindex="-1" id="cover-phrase">No tengo lugares favoritos, tengo personas favoritas. <span class="phrase-icons" role="img" aria-label="Un mundo y un corazón"><svg class="pi-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.6 7.5h14.8M4.6 16.5h14.8"/></svg><svg class="pi-heart" viewBox="0 0 60 56"><path d="M30 50C23 43 5 33 6 18C7 4 24 3 30 15C36 3 53 4 54 18C55 33 37 43 30 50Z"/></svg></span></p>
       <div class="ornament reveal" style="--d:1" aria-hidden="true">
         <span></span>
         <svg viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
@@ -143,8 +143,19 @@
             </div>
           </div>
           <div class="reveal" style="--d:7">
-            <button class="button share-button" id="next-section" type="button">Compartamos este día <span aria-hidden="true">↓</span></button>
+            <button class="button share-button" id="next-section" type="button">Compartamos este día <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span></button>
             <p class="next-message" id="next-message" role="status"></p>
+          </div>
+          <!-- Cuenta regresiva a la celebración; la fecha exacta está en config.js (eventStart) -->
+          <div class="countdown reveal" style="--d:8" id="countdown" role="timer" aria-labelledby="countdown-title" hidden>
+            <p class="countdown-title" id="countdown-title">Faltan</p>
+            <div class="countdown-units" aria-hidden="true">
+              <div class="cd-unit"><span class="cd-num" data-unit="days"></span><span class="cd-label" id="cd-label-days">Días</span></div>
+              <div class="cd-unit"><span class="cd-num" data-unit="hours"></span><span class="cd-label" id="cd-label-hours">Horas</span></div>
+              <div class="cd-unit"><span class="cd-num" data-unit="minutes"></span><span class="cd-label" id="cd-label-minutes">Minutos</span></div>
+              <div class="cd-unit"><span class="cd-num" data-unit="seconds"></span><span class="cd-label" id="cd-label-seconds">Segundos</span></div>
+            </div>
+            <p class="sr-only" id="countdown-text"></p>
           </div>
         </div>
       </div>
@@ -245,6 +256,65 @@
             </div>
           </div>
         </figure>
+      </div>
+    </section>
+
+    <!-- Cuarta sección: confirmación por WhatsApp. Número y textos en config.js (rsvp). -->
+    <section class="rsvp" id="confirmar" aria-labelledby="rsvp-title" data-reveal>
+      <div class="rsvp-inner">
+        <svg class="heart rsvp-heart fade-up" style="--i:0" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+        <h2 class="rsvp-title fade-up" style="--i:1" id="rsvp-title">¿Compartimos este día?</h2>
+        <p class="rsvp-text fade-up" style="--i:2" id="rsvp-text">Me encantará celebrar contigo. Confírmame si podrás acompañarme para organizar nuestro encuentro.</p>
+        <form class="rsvp-form fade-up" style="--i:3" id="rsvp-form" novalidate>
+          <fieldset class="rsvp-field rsvp-choices" aria-describedby="rsvp-answer-error">
+            <legend class="rsvp-label" id="rsvp-answer-legend">Tu respuesta</legend>
+            <div class="rsvp-options">
+              <label class="rsvp-option">
+                <input type="radio" name="rsvp-answer" value="si" required>
+                <span class="rsvp-option-box">
+                  <span class="rsvp-check" aria-hidden="true"><svg viewBox="0 0 60 56"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg></span>
+                  <span class="rsvp-option-text" id="rsvp-si-label">Sí, ahí estaré</span>
+                </span>
+              </label>
+              <label class="rsvp-option">
+                <input type="radio" name="rsvp-answer" value="no" required>
+                <span class="rsvp-option-box">
+                  <span class="rsvp-check" aria-hidden="true"><svg viewBox="0 0 60 56"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg></span>
+                  <span class="rsvp-option-text" id="rsvp-no-label">Esta vez no podré</span>
+                </span>
+              </label>
+            </div>
+            <p class="rsvp-error" id="rsvp-answer-error"></p>
+          </fieldset>
+          <!-- Al elegir una respuesta se abren el nombre y el mensaje opcional -->
+          <div class="rsvp-details" id="rsvp-details" inert>
+            <div class="rsvp-details-inner">
+              <div class="rsvp-field">
+                <label class="rsvp-label" for="rsvp-name" id="rsvp-name-label">Tu nombre</label>
+                <input class="rsvp-input" id="rsvp-name" name="nombre" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required aria-describedby="rsvp-name-error">
+                <p class="rsvp-error" id="rsvp-name-error"></p>
+              </div>
+              <div class="rsvp-field">
+                <label class="rsvp-label" for="rsvp-message"><span id="rsvp-message-label">Déjame un mensaje</span> <span class="rsvp-optional" id="rsvp-optional">Opcional</span></label>
+                <textarea class="rsvp-input rsvp-textarea" id="rsvp-message" name="mensaje" rows="3" maxlength="300"></textarea>
+              </div>
+              <button class="button rsvp-submit" id="rsvp-submit" type="submit"><span class="rsvp-submit-text" id="rsvp-submit-text">Enviar respuesta</span> <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 19.5l1.2-4A8 8 0 1 1 9 18.6l-4.5.9Z"/><path d="M9 10.5c.4 1.6 2 3.2 4 4"/></svg></span></button>
+            </div>
+          </div>
+        </form>
+        <!-- Agradecimiento: el corazón se dibuja, brilla y suelta destellos dorados -->
+        <div class="rsvp-thanks" id="rsvp-thanks" hidden>
+          <div class="thanks-mark" aria-hidden="true">
+            <span class="thanks-ring"></span>
+            <span class="thanks-ring thanks-ring-b"></span>
+            <svg class="thanks-heart" viewBox="0 0 60 56"><path class="thanks-heart-fill" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/><path class="thanks-heart-line" pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+            <span class="thanks-sparks"><i style="--a:0deg;--r:118px;--s:6px;--t:0s"></i><i style="--a:30deg;--r:96px;--s:4px;--t:0.06s"></i><i style="--a:60deg;--r:124px;--s:5px;--t:0.02s"></i><i style="--a:90deg;--r:104px;--s:7px;--t:0.08s"></i><i style="--a:120deg;--r:128px;--s:4px;--t:0.04s"></i><i style="--a:150deg;--r:98px;--s:6px;--t:0s"></i><i style="--a:180deg;--r:120px;--s:5px;--t:0.07s"></i><i style="--a:210deg;--r:100px;--s:4px;--t:0.03s"></i><i style="--a:240deg;--r:126px;--s:6px;--t:0.05s"></i><i style="--a:270deg;--r:92px;--s:5px;--t:0.01s"></i><i style="--a:300deg;--r:122px;--s:4px;--t:0.06s"></i><i style="--a:330deg;--r:102px;--s:6px;--t:0.03s"></i></span>
+          </div>
+          <h3 class="thanks-title" id="rsvp-thanks-title" tabindex="-1"></h3>
+          <p class="thanks-text" id="rsvp-thanks-text"></p>
+          <p class="thanks-reminder" id="rsvp-thanks-reminder"></p>
+          <button class="thanks-edit" id="rsvp-edit" type="button">Cambiar mi respuesta</button>
+        </div>
       </div>
     </section>
     <button class="music-control" id="music-control" type="button" aria-label="Reproducir música" aria-pressed="false" hidden>

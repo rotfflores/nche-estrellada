@@ -216,6 +216,166 @@
     if (audio.paused) playMusic();
     else audio.pause();
   });
+  // Confirmación: textos y número vienen de config.js.
+  const rsvp = config.rsvp || {};
+  setText("rsvp-title", rsvp.title);
+  setText("rsvp-text", rsvp.text);
+  setText("rsvp-answer-legend", rsvp.answerLabel);
+  setText("rsvp-si-label", rsvp.yesLabel);
+  setText("rsvp-no-label", rsvp.noLabel);
+  setText("rsvp-name-label", rsvp.nameLabel);
+  setText("rsvp-message-label", rsvp.messageLabel);
+  setText("rsvp-optional", rsvp.optionalLabel);
+  setText("rsvp-edit", rsvp.editLabel);
+  const rsvpForm = document.getElementById("rsvp-form");
+  if (rsvpForm) {
+    const details = document.getElementById("rsvp-details");
+    const nameInput = document.getElementById("rsvp-name");
+    const messageInput = document.getElementById("rsvp-message");
+    const nameError = document.getElementById("rsvp-name-error");
+    const answerError = document.getElementById("rsvp-answer-error");
+    const choicesField = rsvpForm.querySelector(".rsvp-choices");
+    const answers = [...rsvpForm.querySelectorAll('input[name="rsvp-answer"]')];
+    const thanks = document.getElementById("rsvp-thanks");
+    const thanksTitle = document.getElementById("rsvp-thanks-title");
+    const phone = String(rsvp.whatsapp || "").replace(/\D/g, "");
+    const hasWhatsapp = phone.length >= 10;
+    setText("rsvp-submit-text", hasWhatsapp ? rsvp.button : (rsvp.buttonWithoutWhatsapp || rsvp.button));
+
+    const showError = (field, error, message) => {
+      error.textContent = message;
+      field.setAttribute("aria-invalid", message ? "true" : "false");
+    };
+    const fill = (template, name) => String(template || "")
+      .replaceAll("{nombre}", name)
+      .replaceAll("{fecha}", config.date)
+      .replaceAll("{hora}", config.time)
+      .replaceAll("{lugar}", venue.name || "");
+    // El título del agradecimiento aparece palabra por palabra.
+    const wordsInto = (element, text) => {
+      element.replaceChildren(...text.split(" ").flatMap((word, index) => {
+        const span = document.createElement("span");
+        span.className = "tw";
+        span.style.setProperty("--i", index);
+        span.textContent = word;
+        return index ? [" ", span] : [span];
+      }));
+    };
+
+    // Elegir una respuesta abre el nombre y el mensaje opcional.
+    answers.forEach(input => input.addEventListener("change", () => {
+      showError(choicesField, answerError, "");
+      details.inert = false;
+      details.classList.add("is-open");
+      rsvpForm.dataset.answer = input.value;
+    }));
+    nameInput.addEventListener("input", () => {
+      if (nameInput.value.trim()) showError(nameInput, nameError, "");
+    });
+
+    rsvpForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const name = nameInput.value.trim().replace(/\s+/g, " ");
+      const answer = answers.find(input => input.checked);
+      showError(choicesField, answerError, answer ? "" : (rsvp.answerError || "Elige una respuesta."));
+      showError(nameInput, nameError, name ? "" : (rsvp.nameError || "Escribe tu nombre."));
+      if (!answer) { answers[0].focus(); return; }
+      if (!name) { nameInput.focus(); return; }
+      const yes = answer.value === "si";
+      if (hasWhatsapp) {
+        let message = fill(yes ? rsvp.yesMessage : rsvp.noMessage, name);
+        const note = messageInput.value.trim();
+        if (note) message += `\n\n${note}`;
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        // WhatsApp se abre aparte para que la invitación y la música sigan aquí.
+        const opened = window.open(url, "_blank");
+        if (opened) opened.opener = null;
+        else window.location.href = url;
+      }
+      // Agradecimiento con animación (inmediato si se pidió reducir movimiento).
+      wordsInto(thanksTitle, fill(yes ? rsvp.thanksYesTitle : rsvp.thanksNoTitle, name));
+      document.getElementById("rsvp-thanks-text").textContent = fill(yes ? rsvp.thanksYesText : rsvp.thanksNoText, name);
+      // Solo se pide enviar desde WhatsApp cuando de verdad se abrió.
+      document.getElementById("rsvp-thanks-reminder").textContent = hasWhatsapp ? (rsvp.whatsappReminder || "") : "";
+      thanks.classList.toggle("is-no", !yes);
+      rsvpForm.classList.add("is-leaving");
+      window.setTimeout(() => {
+        rsvpForm.hidden = true;
+        rsvpForm.classList.remove("is-leaving");
+        thanks.hidden = false;
+        thanks.classList.remove("is-in");
+        void thanks.offsetWidth; // Reinicia la animación si se vuelve a enviar.
+        thanks.classList.add("is-in");
+        thanksTitle.focus({ preventScroll:true });
+        const box = thanks.getBoundingClientRect();
+        if (box.top < 0 || box.top > window.innerHeight * .6) thanks.scrollIntoView({ behavior:reducedMotion.matches ? "instant" : "smooth", block:"center" });
+      }, reducedMotion.matches ? 0 : 450);
+    });
+
+    document.getElementById("rsvp-edit").addEventListener("click", () => {
+      thanks.hidden = true;
+      thanks.classList.remove("is-in");
+      rsvpForm.hidden = false;
+      nameInput.focus();
+    });
+  }
+
+  // Cuenta regresiva: cada cifra que cambia rueda hacia arriba.
+  const countdown = document.getElementById("countdown");
+  const eventStart = Date.parse(config.eventStart);
+  if (countdown && Number.isFinite(eventStart)) {
+    countdown.hidden = false;
+    const units = {};
+    countdown.querySelectorAll("[data-unit]").forEach(element => { units[element.dataset.unit] = element; });
+    const labels = { days:["Día","Días"], hours:["Hora","Horas"], minutes:["Minuto","Minutos"], seconds:["Segundo","Segundos"] };
+    const countdownText = document.getElementById("countdown-text");
+    let lastSpoken = "";
+    function rollDigit(slot, char, animate) {
+      const current = slot.lastElementChild;
+      if (current && current.textContent === char && !current.classList.contains("is-out")) return;
+      const next = document.createElement("span");
+      next.textContent = char;
+      if (current && animate) {
+        current.className = "is-out";
+        next.className = "is-in";
+        window.setTimeout(() => current.remove(), 800);
+      } else if (current) {
+        current.remove();
+      }
+      slot.append(next);
+    }
+    function showNumber(unit, value, animate) {
+      const element = units[unit];
+      const text = String(value).padStart(2, "0");
+      while (element.children.length < text.length) {
+        const slot = document.createElement("span");
+        slot.className = "cd-digit";
+        element.prepend(slot);
+      }
+      while (element.children.length > text.length) element.firstElementChild.remove();
+      [...text].forEach((char, index) => rollDigit(element.children[index], char, animate));
+      document.getElementById(`cd-label-${unit}`).textContent = labels[unit][value === 1 ? 0 : 1];
+    }
+    function tick() {
+      const left = eventStart - Date.now();
+      if (left <= 0) {
+        countdown.classList.add("is-done");
+        document.getElementById("countdown-title").textContent = config.countdownDone || "¡Hoy celebramos!";
+        countdownText.textContent = "";
+        return;
+      }
+      const total = Math.floor(left / 1000);
+      const parts = { days:Math.floor(total / 86400), hours:Math.floor(total / 3600) % 24, minutes:Math.floor(total / 60) % 60, seconds:total % 60 };
+      // Sin animación mientras la invitación está oculta o si se pidió reducir movimiento.
+      const animate = !reducedMotion.matches && !invitation.hidden && !document.hidden;
+      Object.entries(parts).forEach(([unit, value]) => showNumber(unit, value, animate));
+      const spoken = `Faltan ${parts.days} ${labels.days[parts.days === 1 ? 0 : 1].toLowerCase()}, ${parts.hours} ${labels.hours[parts.hours === 1 ? 0 : 1].toLowerCase()} y ${parts.minutes} ${labels.minutes[parts.minutes === 1 ? 0 : 1].toLowerCase()} para la celebración.`;
+      if (spoken !== lastSpoken) countdownText.textContent = lastSpoken = spoken;
+      window.setTimeout(tick, 1000 - (Date.now() % 1000) + 15);
+    }
+    tick();
+  }
+
   // El cielo pintado acompaña el desplazamiento: arriba la luna, abajo el río dorado.
   const skyArt = document.getElementById("sky-art");
   if (skyArt) {

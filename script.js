@@ -213,8 +213,9 @@
   function failAudio() {
     audioFailed = true;
     audio.pause();
-    musicButton.hidden = true;
-    musicStatus.textContent = "La música no está disponible. Puedes disfrutar de la invitación.";
+    // El control sigue visible: al tocarlo se vuelve a intentar cargar la canción.
+    updateMusic();
+    musicStatus.textContent = "La música no se pudo cargar. Toca el control de música para intentarlo de nuevo.";
   }
   function loadAudio() {
     if (!config.audio || audio.getAttribute("src")) return;
@@ -260,7 +261,9 @@
   // (la mayoría exige una interacción), empieza con el primer toque, clic o tecla.
   // En celulares el gesto cuenta cuando el dedo se levanta (al tocar, no al deslizar), por eso también se escuchan pointerup, touchend y click.
   const unlockEvents = ["pointerdown", "touchstart", "pointerup", "touchend", "click", "keydown"];
-  function unlockAudio() {
+  function unlockAudio(event) {
+    // Un toque sobre el propio control de música lo resuelve su clic (así no arranca y se silencia en el mismo toque).
+    if (event && event.target instanceof Node && musicButton.contains(event.target)) return;
     // Si el navegador indica que este evento aún no es un gesto válido (el dedo apenas toca, Escape), se espera el siguiente.
     if (navigator.userActivation && !navigator.userActivation.isActive) return;
     unlockEvents.forEach(type => document.removeEventListener(type, unlockAudio, true));
@@ -268,6 +271,9 @@
   }
   if (config.audio) {
     loadAudio();
+    // El control se ve siempre desde el inicio (en celular algunos navegadores tardan o fallan al confirmar que la música suena).
+    musicButton.hidden = false;
+    updateMusic();
     // Si el navegador permite que suene sola, el control para pausarla aparece desde la entrada.
     audio.play().then(() => { if (!audioFailed) musicButton.hidden = false; }).catch(error => {
       if (error.name !== "NotAllowedError") return;
@@ -326,6 +332,12 @@
     invitation.addEventListener("pointerleave", resetTilt);
   }
   musicButton.addEventListener("click", () => {
+    if (audioFailed) {
+      audioFailed = false;
+      seekApplied = false;
+      audio.removeAttribute("src");
+      audio.load();
+    }
     if (audio.paused || audio.ended) { audio.muted = false; playMusic(); }
     else audio.muted = !audio.muted;
   });

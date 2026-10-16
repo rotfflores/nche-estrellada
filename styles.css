@@ -71,17 +71,18 @@ button:focus-visible, a.button:focus-visible { outline:2px solid var(--butter); 
 .button:disabled { cursor:default; }
 
 /* ---------- Entrada: dos caminos que coinciden ---------- */
-.entry { position:relative; min-height:100vh; min-height:100svh; display:grid; place-items:center; padding:48px 24px; overflow:hidden; background:radial-gradient(120% 80% at 50% 115%,var(--night-3) 0%,var(--night-2) 42%,var(--night) 100%); }
+.entry { position:relative; isolation:isolate; min-height:100vh; min-height:100svh; display:grid; place-items:center; padding:48px 24px; overflow:hidden; background:radial-gradient(120% 80% at 50% 115%,var(--night-3) 0%,var(--night-2) 42%,var(--night) 100%); }
 .entry::before { content:""; position:absolute; left:50%; bottom:-38vmax; width:90vmax; height:60vmax; transform:translateX(-50%); border-radius:50%; background:radial-gradient(closest-side,rgba(232,200,106,.26),rgba(232,200,106,0)); pointer-events:none; }
 /* Apertura: un destello cálido se expande desde el botón */
 .entry::after { content:""; position:fixed; inset:0; z-index:50; background:radial-gradient(circle at var(--ox,50%) var(--oy,70%),#fff 0,var(--flash) 30%,var(--butter-soft) 100%); clip-path:circle(0 at var(--ox,50%) var(--oy,70%)); pointer-events:none; }
 .entry.is-leaving::after { clip-path:circle(150vmax at var(--ox,50%) var(--oy,70%)); transition:clip-path .9s var(--ease-io); }
 .entry.is-leaving .entry-content { opacity:0; transform:scale(.96); transition:opacity .45s ease,transform .6s var(--ease); }
 .entry.is-leaving { pointer-events:none; }
-.entry-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 40%; animation:fade-in 1.4s ease both; }
+/* iPhone a veces pinta el video encima de todo si se anima o no tiene capa propia: capas fijas video 0, velo 1, contenido 2, sin animar el video */
+.entry-video { position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; object-position:50% 40%; }
 /* Velo oscuro sobre el video para que la frase se lea con claridad */
-.sky { position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 75% at 50% 45%,rgba(15,19,54,.35) 0%,rgba(15,19,54,.7) 70%,rgba(15,19,54,.9) 100%),linear-gradient(180deg,rgba(15,19,54,.45),rgba(15,19,54,.25) 40%,rgba(15,19,54,.75)); }
-.entry-content { position:relative; z-index:1; width:min(100%,660px); text-align:center; }
+.sky { position:absolute; inset:0; z-index:1; pointer-events:none; -webkit-transform:translateZ(0); transform:translateZ(0); background:radial-gradient(120% 75% at 50% 45%,rgba(15,19,54,.35) 0%,rgba(15,19,54,.7) 70%,rgba(15,19,54,.9) 100%),linear-gradient(180deg,rgba(15,19,54,.45),rgba(15,19,54,.25) 40%,rgba(15,19,54,.75)); }
+.entry-content { position:relative; z-index:2; -webkit-transform:translateZ(0); transform:translateZ(0); width:min(100%,660px); text-align:center; }
 .entry-lead { max-width:600px; margin:0 auto 24px; color:#fff; font-family:var(--sans); font-size:clamp(17px,2.1vw,23px); line-height:1.42; text-wrap:balance; text-shadow:0 2px 18px rgba(10,12,40,.9); animation:rise .8s .1s var(--ease) both; }
 .meeting { filter:drop-shadow(0 0 6px rgba(10,12,40,.8)); display:block; width:min(100%,420px); height:auto; margin:0 auto 18px; overflow:visible; }
 .route { fill:none; stroke:rgba(246,231,184,.55); stroke-width:1; stroke-dasharray:1; stroke-dashoffset:1; animation:draw 1.7s var(--ease-io) forwards; }

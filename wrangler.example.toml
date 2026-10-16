@@ -1,0 +1,15 @@
+# Copiar a wrangler.toml y sustituir database_id por el UUID real de D1.
+# El DNS de noche-estrellada.rotfstudio.com debe estar en modo Proxied (nube naranja).
+name = "victoria-rsvp"
+main = "worker.mjs"
+compatibility_date = "2026-10-16"
+workers_dev = false
+
+[[routes]]
+pattern = "noche-estrellada.rotfstudio.com/api/*"
+zone_name = "rotfstudio.com"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "victoria-rsvp"
+database_id = "REEMPLAZAR_CON_ID_DE_D1"

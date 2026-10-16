@@ -1,7 +1,8 @@
 // Toda la información que cambia durante el desarrollo está aquí.
 //
 // PENDIENTE DE LA CLIENTA (busca «PENDIENTE» en este archivo):
-// 1. Número de WhatsApp de Victoria en rsvp.whatsapp. Sin él, las respuestas NO llegan a nadie.
+// 1. El Worker de Cloudflare y D1 guardan las confirmaciones; el panel privado está en /panel.html.
+//    Mientras no esté activo, rsvp.whatsapp es la única vía para recibirlas.
 // 2. Explicación bajo «Mi lugar favorito es con ustedes» (letter.message) y agradecimiento del pie (closing.footerThanks): son provisionales.
 // 3. Acompañantes o fecha límite para confirmar: no se muestran hasta que la clienta lo indique.
 // 4. Texto introductorio de «Cada versión de mí»; el actual es provisional.
@@ -136,10 +137,12 @@ window.INVITATION_CONFIG = Object.freeze({
     description: "¡Habrá karaoke, dinámicas y sorpresas! Pero, sobre todo, mucho cariño y alegría de compartir con ustedes.",
     cue: "¡Ve pensando cuál vas a cantar!", // Frase final destacada. Vacío para ocultarla.
   },
-  // Confirmación de asistencia por WhatsApp: última sección, después del cierre.
+  // Confirmación de asistencia: se guarda en D1 cuando storageEnabled está activo.
   rsvp: {
+    // Activar solo cuando el Worker /api/* esté desplegado con la base D1 conectada.
+    storageEnabled: true,
     // Número de WhatsApp de la festejada con lada de país, por ejemplo "5215512345678" (México: 52 + 1 + 10 dígitos).
-    // Mientras esté vacío, la respuesta muestra el agradecimiento pero NO llega a nadie. No usar el número del restaurante.
+    // Mientras D1 no esté activo, el número es la única vía para recibir la respuesta. No usar el del restaurante.
     whatsapp: "", // PENDIENTE: número de Victoria.
     title: "¡Confirmen su asistencia!",
     text: "Me encantará celebrar contigo. Confírmame si podrás acompañarme para organizar nuestro encuentro.",

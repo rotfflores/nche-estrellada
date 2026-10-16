@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#F2F4FF">
+  <title>Respuestas · La alegría de coincidir</title>
+  <link rel="stylesheet" href="panel.css">
+  <script src="panel.js" defer></script>
+</head>
+<body>
+  <main class="panel-shell">
+    <header class="panel-header">
+      <span class="eyebrow">La alegría de coincidir <span aria-hidden="true">♡</span></span>
+      <h1>Un lugar para leer cada <em>sí</em></h1>
+      <p>Confirmaciones y mensajes de tus personas favoritas.</p>
+    </header>
+
+    <section class="login-card" id="login-view" aria-labelledby="login-title" hidden>
+      <span class="section-number">ACCESO PRIVADO · 01</span>
+      <h2 id="login-title">Hola, Victoria.</h2>
+      <p>Escribe la contraseña del panel para ver las respuestas.</p>
+      <form id="login-form">
+        <label for="password">Contraseña</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit" id="login-button">Entrar al panel <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="feedback" id="login-error" role="alert"></p>
+    </section>
+
+    <section class="dashboard" id="dashboard-view" aria-labelledby="dashboard-title" hidden>
+      <div class="dashboard-heading">
+        <div>
+          <span class="section-number">RESPUESTAS · 07 NOV</span>
+          <h2 id="dashboard-title">Tus confirmaciones</h2>
+        </div>
+        <button class="text-button" type="button" id="logout-button">Cerrar sesión</button>
+      </div>
+      <div class="stats" aria-label="Resumen de respuestas">
+        <div class="stat"><span>Ahí estarán</span><strong id="yes-count">0</strong></div>
+        <div class="stat"><span>No podrán</span><strong id="no-count">0</strong></div>
+        <div class="stat"><span>Mensajes</span><strong id="message-count">0</strong></div>
+      </div>
+      <div class="toolbar">
+        <label class="search-label" for="search">Buscar por nombre o mensaje</label>
+        <input id="search" type="search" placeholder="Buscar una persona…" autocomplete="off">
+        <div class="toolbar-actions">
+          <div class="filters" role="group" aria-label="Filtrar respuestas">
+            <button class="filter is-active" type="button" data-filter="si" aria-pressed="true">Aceptaron</button>
+            <button class="filter" type="button" data-filter="todos" aria-pressed="false">Todas</button>
+            <button class="filter" type="button" data-filter="no" aria-pressed="false">No podrán</button>
+          </div>
+          <div class="secondary-actions">
+            <button class="text-button" type="button" id="refresh-button">Actualizar</button>
+            <button class="text-button" type="button" id="export-button">Descargar CSV</button>
+          </div>
+        </div>
+      </div>
+      <p class="feedback" id="dashboard-error" role="alert"></p>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <div class="responses" id="responses"></div>
+    </section>
+    <p class="loading" id="loading-view" role="status">Abriendo tu panel…</p>
+  </main>
+</body>
+</html>

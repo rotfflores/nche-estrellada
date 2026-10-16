@@ -577,6 +577,7 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
 .rsvp-error { display:flex; align-items:center; gap:8px; margin:10px 0 0; font-size:14px; font-weight:600; line-height:1.4; color:#F7BBB2; }
 .rsvp-error::before { content:"!"; display:grid; place-items:center; width:18px; height:18px; flex:none; border-radius:50%; background:#F0A69C; color:var(--night); font-size:12px; font-weight:800; }
 .rsvp-error:empty { display:none; }
+#rsvp-submit-error { margin-top:16px; }
 /* Opciones de asistencia: radios nativos (funcionan con flechas del teclado) con aspecto propio */
 .rsvp-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
 .rsvp-option { position:relative; display:block; cursor:pointer; }

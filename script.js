@@ -516,7 +516,7 @@
 
   // El cielo pintado acompaña el desplazamiento: arriba la luna, abajo el río dorado.
   const skyArt = document.getElementById("sky-art");
-  if (skyArt) {
+  if (skyArt && !window.matchMedia("(pointer:coarse), (max-width:849px)").matches) {
     let skyFrame = 0;
     const moveSky = () => {
       skyFrame = 0;
@@ -918,7 +918,12 @@
       wrap();
       render();
     };
+    let frameId = 0;
+    const requestStep = () => {
+      if (!frameId && visible && !document.hidden) frameId = window.requestAnimationFrame(step);
+    };
     const step = now => {
+      frameId = 0;
       const dt = previous ? Math.min(now - previous, 50) / 1000 : 0;
       previous = now;
       if (setWidth && !dragging && visible && !document.hidden) {
@@ -940,7 +945,7 @@
         wrap();
         render();
       }
-      window.requestAnimationFrame(step);
+      requestStep();
     };
     // Arrastre con el dedo o el mouse. touch-action: pan-y deja libre el desplazamiento vertical de la página.
     let samples = [];
@@ -1023,14 +1028,30 @@
       new IntersectionObserver(([entry]) => {
         visible = entry.isIntersecting;
         // Las fotos se piden cuando la cinta se acerca a la pantalla.
-        if (visible) track.querySelectorAll("img").forEach(img => { img.loading = "eager"; });
+        if (visible) {
+          track.querySelectorAll("img").forEach(img => { img.loading = "eager"; });
+          previous = 0;
+          requestStep();
+        } else if (frameId) {
+          window.cancelAnimationFrame(frameId);
+          frameId = 0;
+        }
       }, { rootMargin:"60% 0px" }).observe(roll);
     }
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && frameId) {
+        window.cancelAnimationFrame(frameId);
+        frameId = 0;
+      } else if (!document.hidden) {
+        previous = 0;
+        requestStep();
+      }
+    });
     if ("ResizeObserver" in window) new ResizeObserver(measure).observe(track);
     window.addEventListener("resize", measure);
     velocity = reducedMotion.matches ? 0 : cruise();
     measure();
-    window.requestAnimationFrame(step);
+    requestStep();
   }
   // Con movimiento reducido las cintas no avanzan solas: la instrucción solo invita a deslizar.
   const filmHintText = () => reducedMotion.matches

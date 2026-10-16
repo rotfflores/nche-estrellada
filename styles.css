@@ -23,7 +23,7 @@
 @supports (height:100svh) { :root { --screen-h:100svh; } }
 * { box-sizing:border-box; }
 html { background:var(--night); }
-body { margin:0; min-height:100vh; min-height:100svh; color:var(--paper); font-family:var(--sans); background:transparent; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden; }
+body { margin:0; min-height:100vh; min-height:100svh; color:var(--paper); font-family:var(--sans); background:transparent; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden; overflow-x:clip; }
 body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.06; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.5' filter='url(%23n)'/%3E%3C/svg%3E"); }
 [hidden] { display:none!important; }
 button { font:inherit; cursor:pointer; }
@@ -1234,6 +1234,16 @@ html.has-lightbox { overflow:hidden; }
 .footer-thanks .closing-back { margin:0 auto 26px; opacity:1; transform:none; }
 
 /* ---------- Celular ---------- */
+@media (pointer:coarse), (max-width:849px) {
+  /* En teléfonos, el gesto vertical pertenece a la página y no a cada panel. */
+  .sheet { overflow:clip; touch-action:pan-y; -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .karaoke-panel { overflow:clip; }
+  .theme-white { background:rgba(26,30,70,.84); }
+  .theme-cafe { background:rgba(56,38,28,.84); }
+  .theme-arena { background:rgba(58,36,50,.84); }
+  .sky-art, .sky-swirl, .sky-glint, .sky-glint::before, .sky-dots i, .motes i { animation:none!important; }
+  .sky-art { will-change:auto; translate:-50% 0; }
+}
 @media(max-width:849px), (orientation:landscape) and (max-height:500px) and (pointer:coarse) {
   .entry-lead { max-width:13em; font-size:clamp(30px,8.4vw,40px); margin-bottom:30px; }
   .cover-name { font-size:clamp(42px,11.5vw,58px); max-width:calc(100% - 24px); }

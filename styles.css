@@ -1004,15 +1004,15 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
    detrás, desenfocado lo justo para leer. Entre un panel y otro asoma la pintura. */
 .sheet { --sheet-r:clamp(26px,3.2vw,48px); --glass-blur:11px; position:relative; z-index:1; margin:clamp(14px,2vw,26px) clamp(8px,1.6vw,26px); border-radius:var(--sheet-r); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.25); backdrop-filter:blur(var(--glass-blur)) saturate(1.25); overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.14),0 30px 70px -40px rgba(4,6,24,.75); }
 .sheet::after { content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none; background:linear-gradient(160deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 32%); }
-.theme-white { background:linear-gradient(180deg,rgba(255,253,248,.44) 0%,rgba(250,244,233,.4) 100%); color:var(--ink-navy); }
+.theme-white { background:linear-gradient(180deg,rgba(26,30,70,.44) 0%,rgba(20,24,60,.5) 100%); color:var(--ink-navy); }
 .theme-cafe { background:radial-gradient(90% 55% at 50% 0%,rgba(232,200,106,.1),rgba(232,200,106,0) 70%),linear-gradient(180deg,rgba(79,55,42,.4) 0%,rgba(56,38,28,.46) 100%); color:#FBF3E6; }
-.theme-arena { background:linear-gradient(180deg,rgba(245,236,221,.44) 0%,rgba(236,223,201,.42) 100%); color:var(--ink-navy); }
+.theme-arena { background:linear-gradient(180deg,rgba(72,46,60,.44) 0%,rgba(58,36,50,.5) 100%); color:var(--ink-navy); }
 .theme-cafe.sheet { box-shadow:inset 0 1px 0 rgba(255,236,200,.18),inset 0 0 0 1px rgba(255,236,200,.1),0 30px 70px -40px rgba(4,6,24,.8); }
 /* Sin desenfoque disponible, el cristal se vuelve casi opaco para mantener la lectura */
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
-  .theme-white { background:rgba(255,253,248,.95); }
+  .theme-white { background:rgba(28,32,70,.95); }
   .theme-cafe { background:rgba(66,45,34,.95); }
-  .theme-arena { background:rgba(242,232,216,.95); }
+  .theme-arena { background:rgba(64,40,54,.95); }
 }
 .theme-white *, .theme-arena *, .theme-cafe * { text-shadow:none; }
 /* Cristal claro y transparente: sobre la pintura que se ve a través, letras claras (blanco y dorado), como el cielo. */
@@ -1097,7 +1097,6 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
 .film-heart { display:inline-block; width:.74em; height:.68em; margin-left:.12em; vertical-align:-.04em; overflow:visible; filter:drop-shadow(0 1px 2px rgba(0,0,0,.45)); }
 .film-heart path:first-child { fill:var(--heart); }
 .film-heart-shine { fill:none; stroke:rgba(255,255,255,.65); stroke-width:1.6; stroke-linecap:round; }
-.theme-arena .film-hint, .theme-white .film-hint { border:1px solid rgba(74,51,38,.14); background:rgba(255,255,255,.5); -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:0 10px 26px -20px rgba(74,51,38,.6); color:#3B2A20; }
 .theme-arena .film-hint svg { stroke:var(--accent-warm); }
 .theme-arena .film-hint .evolution-hint-arrows { stroke:var(--cafe-ink); }
 @media(prefers-reduced-motion:no-preference) {
@@ -1184,9 +1183,9 @@ html.has-lightbox { overflow:hidden; }
 .venue-title em { color:var(--accent-warm); }
 .venue-description { margin-bottom:14px; color:var(--ink-navy); }
 .venue-description strong { font-weight:700; }
-.venue-flavors { max-width:31rem; margin:0 0 26px; font-family:var(--serif); font-weight:500; font-size:clamp(19px,1.55vw,21px); line-height:1.55; color:var(--ink-body); text-wrap:pretty; }
+.venue-flavors { max-width:32rem; margin:0 0 26px; font-family:var(--serif); font-weight:500; font-size:clamp(22px,1.9vw,25px); line-height:1.55; color:var(--ink-body); text-wrap:pretty; }
 .venue-highlights { display:grid; gap:12px; max-width:31rem; margin:0 0 30px; padding:0; list-style:none; }
-.venue-highlight { display:flex; align-items:center; gap:14px; font-family:var(--serif); font-weight:500; font-size:clamp(19px,1.55vw,21px); line-height:1.35; color:var(--ink-navy); }
+.venue-highlight { display:flex; align-items:center; gap:14px; font-family:var(--serif); font-weight:500; font-size:clamp(21px,1.8vw,24px); line-height:1.35; color:var(--ink-navy); }
 .venue-highlight strong { font-weight:700; }
 .venue-hl-icon { width:40px; height:40px; flex:none; padding:9px; border-radius:50%; background:rgba(168,106,50,.1); box-shadow:inset 0 0 0 1px rgba(168,106,50,.18); fill:none; stroke:var(--accent-warm); stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
 .venue-highlight[data-icon="corazon"] .venue-hl-icon, .venue-highlight:nth-child(2) .venue-hl-icon { }
@@ -1257,7 +1256,7 @@ html.has-lightbox { overflow:hidden; }
   .lightbox-close { top:max(12px,env(safe-area-inset-top)); right:12px; }
   .lightbox-count { top:max(28px,calc(env(safe-area-inset-top) + 16px)); left:18px; }
   .venue { padding:60px 0 64px; }
-  .venue-highlight { font-size:19px; gap:12px; }
+  .venue-highlight { font-size:21px; gap:12px; }
   .venue-hl-icon { width:36px; height:36px; padding:8px; }
   .karaoke { padding:12px 8px; }
   .closing { padding:64px 22px; }

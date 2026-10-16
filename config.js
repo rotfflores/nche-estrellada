@@ -54,13 +54,13 @@ window.INVITATION_CONFIG = Object.freeze({
     // heart: color del corazón junto a los nombres; cada uno distinto y el de Yes en rojo, como pidió la clienta.
     photos: [
       { src: "assets/album/recuerdo-1.jpg", alt: "Tres mujeres posan en un jardín junto a una cascada", caption: "Nancy y Sure", heart: "#F27DB5", position: "50% 55%" }, // rosa
-      { src: "assets/album/recuerdo-2.png", alt: "Dos hombres y una mujer sonríen ante una decoración de globos", caption: "Leo y Ramiro", heart: "#A274F2", position: "50% 45%" }, // morado
-      { src: "assets/album/recuerdo-3.png", alt: "Tres mujeres sonríen durante una reunión", caption: "Ilse e Ixnán", heart: "#F6C83E", position: "50% 45%" }, // amarillo
-      { src: "assets/album/recuerdo-4.png", alt: "Tres mujeres posan en una tienda de figuras coleccionables", caption: "Yanai y Ana", heart: "#44C176", position: "50% 42%" }, // verde
-      { src: "assets/album/recuerdo-5.png", alt: "Tres personas posan frente a una exhibición de figuras", caption: "Elo y Pao", heart: "#F78F3C", position: "50% 38%" }, // naranja
-      { src: "assets/album/recuerdo-6.png", alt: "Tres personas sonríen al aire libre entre árboles", caption: "Vishal y Ana Karen", heart: "#4D95F0", position: "50% 45%" }, // azul
-      { src: "assets/album/recuerdo-7.png", alt: "Dos mujeres sonríen juntas en una mesa", caption: "Alexandra", heart: "#2CC7C2", position: "50% 43%" }, // turquesa
-      { src: "assets/album/recuerdo-8.png", alt: "Dos mujeres sonríen durante un paseo al aire libre", caption: "Nay", heart: "#FFFFFF", position: "50% 45%" }, // blanco
+      { src: "assets/album/recuerdo-2.jpg", alt: "Dos hombres y una mujer sonríen ante una decoración de globos", caption: "Leo y Ramiro", heart: "#A274F2", position: "50% 45%" }, // morado
+      { src: "assets/album/recuerdo-3.jpg", alt: "Tres mujeres sonríen durante una reunión", caption: "Ilse e Ixnán", heart: "#F6C83E", position: "50% 45%" }, // amarillo
+      { src: "assets/album/recuerdo-4.jpg", alt: "Tres mujeres posan en una tienda de figuras coleccionables", caption: "Yanai y Ana", heart: "#44C176", position: "50% 42%" }, // verde
+      { src: "assets/album/recuerdo-5.jpg", alt: "Tres personas posan frente a una exhibición de figuras", caption: "Elo y Pao", heart: "#F78F3C", position: "50% 38%" }, // naranja
+      { src: "assets/album/recuerdo-6.jpg", alt: "Tres personas sonríen al aire libre entre árboles", caption: "Vishal y Ana Karen", heart: "#4D95F0", position: "50% 45%" }, // azul
+      { src: "assets/album/recuerdo-7.jpg", alt: "Dos mujeres sonríen juntas en una mesa", caption: "Alexandra", heart: "#2CC7C2", position: "50% 43%" }, // turquesa
+      { src: "assets/album/recuerdo-8.jpg", alt: "Dos mujeres sonríen durante un paseo al aire libre", caption: "Nay", heart: "#FFFFFF", position: "50% 45%" }, // blanco
       { src: "assets/album/recuerdo-9.jpg", alt: "Dos mujeres sonríen juntas en una fotografía nocturna", caption: "Yes", heart: "#E5262F", position: "50% 50%" }, // rojo
     ],
   },

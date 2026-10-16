@@ -12,7 +12,6 @@
   const musicStatus = document.getElementById("music-status");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let opened = false;
-  let userPaused = false; // El invitado pausó la música con el control: nada la vuelve a iniciar sola.
   let seekApplied = false;
   let audioFailed = false;
   const startAt = Math.max(0, Number(config.audioStart) || 0);
@@ -36,7 +35,7 @@
   });
   if (config.photo) photo.src = config.photo;
 
-  // Carta: título, mensaje y firma vienen de config.js.
+  // Frase principal y carta: textos de config.js.
   const letter = config.letter || {};
   if (letter.title) document.getElementById("letter-title").textContent = letter.title;
   if (Array.isArray(letter.message) && letter.message.length) {
@@ -47,8 +46,27 @@
       return paragraph;
     }));
   }
-  if (letter.closing !== undefined) document.getElementById("letter-closing").textContent = letter.closing;
-  document.getElementById("letter-name").textContent = letter.signature || hostName;
+
+  // Frase principal en letras muy grandes: cada palabra entra por separado y las resaltadas van en cursiva.
+  const quote = document.getElementById("letter-quote");
+  const quoteText = String(letter.quote || quote.textContent).trim();
+  const quoteWords = quoteText.split(/\s+/);
+  const cleanWord = word => word.replace(/[^\p{L}\p{N}]/gu, "").toLocaleLowerCase("es");
+  const highlightWords = String(letter.quoteHighlight || "").trim().split(/\s+/).filter(Boolean).map(cleanWord);
+  let highlightAt = -1;
+  if (highlightWords.length) {
+    for (let index = 0; index + highlightWords.length <= quoteWords.length; index += 1) {
+      if (highlightWords.every((word, offset) => cleanWord(quoteWords[index + offset]) === word)) { highlightAt = index; break; }
+    }
+  }
+  quote.replaceChildren(...quoteWords.flatMap((word, index) => {
+    const marked = highlightAt >= 0 && index >= highlightAt && index < highlightAt + highlightWords.length;
+    const part = document.createElement(marked ? "em" : "span");
+    part.className = marked ? "cw letter-quote-highlight" : "cw";
+    part.style.setProperty("--i", index);
+    part.textContent = word;
+    return index ? [" ", part] : [part];
+  }));
 
   // Lugar: textos, enlace y fotografías vienen de config.js.
   const venue = config.venue || {};
@@ -75,7 +93,9 @@
     element.replaceChildren(...parts);
   }
   setText("venue-eyebrow", venue.eyebrow);
-  setText("venue-description", venue.description);
+  setText("venue-flavors", venue.flavors);
+  setText("venue-time-label", venue.timeLabel);
+  setText("venue-thanks", venue.thanks);
   setText("venue-date", eventDate);
   setText("venue-time", eventTime);
   setText("venue-name", venue.name);
@@ -96,8 +116,36 @@
     name.textContent = venue.name;
     element.replaceChildren(text.slice(0, at), name, text.slice(at + venue.name.length));
   }
-  textWithName("venue-title", venue.title, "em");
+  if (venue.title) buildTitle(document.getElementById("venue-title"), venue.title, venue.highlight, "venue-title-highlight");
+  // El nombre del lugar va en negritas al inicio de la descripción.
+  textWithName("venue-description", venue.description, "strong");
   textWithName("venue-food-caption", venue.foodCaption, "span");
+  // Lo especial del lugar: cada línea con su ícono dibujado.
+  if (Array.isArray(venue.highlights)) {
+    const list = document.getElementById("venue-highlights");
+    const icons = {};
+    list.querySelectorAll("[data-icon]").forEach(item => { icons[item.dataset.icon] = item.querySelector("svg"); });
+    const items = venue.highlights.filter(item => item && item.text).map(data => {
+      const item = document.createElement("li");
+      item.className = "venue-highlight";
+      const icon = icons[data.icon] || icons.corazon;
+      if (icon) item.append(icon.cloneNode(true));
+      const text = document.createElement("span");
+      const strong = String(data.strong || "");
+      const at = strong ? data.text.indexOf(strong) : -1;
+      if (at >= 0) {
+        const bold = document.createElement("strong");
+        bold.textContent = strong;
+        text.append(data.text.slice(0, at), bold, data.text.slice(at + strong.length));
+      } else {
+        text.textContent = data.text;
+      }
+      item.append(text);
+      return item;
+    });
+    list.replaceChildren(...items);
+    list.hidden = !items.length;
+  }
   if (venue.mapsUrl) document.getElementById("venue-map").href = venue.mapsUrl;
   const venuePhotos = venue.photos || {};
   document.querySelectorAll("[data-venue-photo]").forEach(frame => {
@@ -129,11 +177,14 @@
     image.src = data.src;
   });
 
+  // El control silencia la canción sin detenerla: al volver a activar el sonido sigue justo donde va.
   function updateMusic() {
     const playing = !audio.paused && !audio.ended;
-    musicButton.classList.toggle("is-playing", playing);
-    musicButton.setAttribute("aria-label", playing ? "Pausar música" : "Reanudar música");
-    musicLabel.textContent = playing ? "Pausar" : "Reanudar";
+    const muted = playing && audio.muted;
+    musicButton.classList.toggle("is-playing", playing && !muted);
+    musicButton.classList.toggle("is-muted", muted);
+    musicButton.setAttribute("aria-label", !playing ? "Reproducir música" : muted ? "Activar el sonido de la música" : "Silenciar la música");
+    musicLabel.textContent = !playing ? "Reproducir" : muted ? "Activar sonido" : "Silenciar";
     if (playing) musicStatus.textContent = "";
   }
   function applyStart() {
@@ -185,7 +236,7 @@
   audio.addEventListener("loadedmetadata", applyStart);
   audio.addEventListener("canplay", applyStart);
   audio.addEventListener("error", failAudio);
-  ["play", "pause", "ended"].forEach(event => audio.addEventListener(event, updateMusic));
+  ["play", "pause", "ended", "volumechange"].forEach(event => audio.addEventListener(event, updateMusic));
 
   // Video de fondo de la entrada (silenciado, en bucle).
   const entryVideo = document.getElementById("entry-video");
@@ -202,7 +253,7 @@
     // Si el navegador indica que este evento aún no es un gesto válido (el dedo apenas toca, Escape), se espera el siguiente.
     if (navigator.userActivation && !navigator.userActivation.isActive) return;
     unlockEvents.forEach(type => document.removeEventListener(type, unlockAudio, true));
-    if (audio.paused && !userPaused) playMusic();
+    if (audio.paused) playMusic();
   }
   if (config.audio) {
     loadAudio();
@@ -222,9 +273,9 @@
     entry.style.setProperty("--ox", `${origin.left + origin.width / 2}px`);
     entry.style.setProperty("--oy", `${origin.top + origin.height / 2}px`);
     void getComputedStyle(entry, "::after").clipPath; // Fija el origen antes de iniciar la transición.
-    // play() se llama dentro del gesto del usuario, sin esperar la transición. Si el invitado la pausó en la entrada, sigue en pausa.
+    // play() se llama dentro del gesto del usuario, sin esperar la transición. Si el invitado la silenció en la entrada, sigue en silencio.
     unlockEvents.forEach(type => document.removeEventListener(type, unlockAudio, true));
-    if (!userPaused) playMusic();
+    playMusic();
     entry.classList.add("is-leaving");
     window.setTimeout(() => {
       entry.hidden = true;
@@ -234,7 +285,7 @@
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
           invitation.classList.add("is-visible");
-          document.getElementById("cover-phrase").focus({ preventScroll:true });
+          document.getElementById("cover-title").focus({ preventScroll:true });
         });
       });
     }, reducedMotion.matches ? 0 : 800);
@@ -264,12 +315,12 @@
     invitation.addEventListener("pointerleave", resetTilt);
   }
   musicButton.addEventListener("click", () => {
-    if (audio.paused) { userPaused = false; playMusic(); }
-    else { userPaused = true; audio.pause(); }
+    if (audio.paused || audio.ended) { audio.muted = false; playMusic(); }
+    else audio.muted = !audio.muted;
   });
   // Celular: el control de música se hace a un lado mientras un título o un botón pasa por la esquina superior donde vive.
   const phoneLayout = window.matchMedia("(max-width:849px), (orientation:landscape) and (max-height:500px) and (pointer:coarse)");
-  const underMusic = document.querySelectorAll(".letter-title, .evolution-title, .album-title, .venue-title, .karaoke-title, .rsvp-title, .thanks-title, .closing-title, .button, .rsvp-option, .rsvp-input, .thanks-edit, .closing-back");
+  const underMusic = document.querySelectorAll(".letter-quote, .letter-title, .evolution-title, .venue-title, .karaoke-title, .rsvp-title, .thanks-title, .closing-title, .button, .rsvp-option, .rsvp-input, .thanks-edit, .closing-back");
   let musicBand = null;
   let musicBandTimer = 0;
   const watchMusicBand = () => {
@@ -514,7 +565,8 @@
   // Cada versión de mí: un montón de polaroids; la de arriba pasa detrás al deslizar.
   const evolution = config.evolution || {};
   const evolutionSection = document.getElementById("evolucion");
-  const stages = (Array.isArray(evolution.photos) ? evolution.photos : []).filter(photo => photo && typeof photo === "object" && photo.src);
+  // Fotos de cada etapa y tarjetas independientes (entradas con note y sin src).
+  const stages = (Array.isArray(evolution.photos) ? evolution.photos : []).filter(photo => photo && typeof photo === "object" && (photo.src || String(photo.note || "").trim()));
   if (!stages.length) {
     evolutionSection.hidden = true;
   } else {
@@ -529,6 +581,27 @@
     const items = stages.map((photo, index) => {
       const item = document.createElement("li");
       item.className = "evolution-card";
+      if (!photo.src) {
+        // Tarjeta independiente: el recorrido entre etapas, escrito a mano sobre papel.
+        item.classList.add("evolution-note");
+        item.dataset.label = String(photo.note).trim();
+        const card = document.createElement("div");
+        card.className = "evolution-note-card";
+        card.innerHTML = '<svg class="evolution-note-art" viewBox="0 0 120 40" aria-hidden="true"><path class="note-path" pathLength="1" d="M4 30C22 30 26 10 44 10S66 30 84 26S106 8 116 10"/><circle cx="4" cy="30" r="3"/><circle cx="44" cy="10" r="2.4"/><circle cx="84" cy="26" r="2.4"/><path class="note-heart" d="M116 17.5C113.7 15.6 108.6 12.8 108.9 9.2C109.1 5.9 113.5 5.6 116 8.8C118.5 5.6 122.9 5.9 123.1 9.2C123.4 12.8 118.3 15.6 116 17.5Z" transform="translate(-4 -4)"/></svg><p class="evolution-note-text"></p>';
+        const text = card.querySelector(".evolution-note-text");
+        // El año final se destaca.
+        const note = item.dataset.label;
+        const year = note.match(/(\d{4})\s*$/);
+        if (year) {
+          const strong = document.createElement("strong");
+          strong.textContent = year[1];
+          text.append(note.slice(0, year.index), strong);
+        } else {
+          text.textContent = note;
+        }
+        item.append(card);
+        return item;
+      }
       const figure = document.createElement("figure");
       figure.className = "evolution-figure";
       const frame = document.createElement("div");
@@ -538,7 +611,7 @@
       placeholder.setAttribute("role", "img");
       placeholder.setAttribute("aria-label", `Espacio reservado para la fotografía ${index + 1}`);
       placeholder.innerHTML = '<span class="evolution-ph-word"></span><span class="evolution-ph-note">Tu fotografía aquí</span>';
-      placeholder.querySelector(".evolution-ph-word").textContent = `Etapa ${index + 1}`;
+      placeholder.querySelector(".evolution-ph-word").textContent = photo.stage || `Etapa ${index + 1}`;
       // Sin filtros: la foto se muestra tal cual, solo se elige el encuadre.
       const image = document.createElement("img");
       image.alt = photo.alt || `${hostName}, fotografía ${index + 1} de ${stages.length} del recorrido`;
@@ -552,8 +625,10 @@
       frame.append(placeholder, image);
       figure.append(frame);
       const stageText = String(photo.stage || "").trim();
+      const titleText = String(photo.title || "").trim();
       const phraseText = String(photo.phrase || "").trim();
-      if (stageText || phraseText) {
+      item.dataset.label = [stageText, titleText].filter(Boolean).join(": ") || `Fotografía ${index + 1}`;
+      if (stageText || titleText || phraseText) {
         const caption = document.createElement("figcaption");
         caption.className = "evolution-caption";
         if (stageText) {
@@ -561,6 +636,12 @@
           stage.className = "evolution-stage";
           stage.textContent = stageText;
           caption.append(stage);
+        }
+        if (titleText) {
+          const title = document.createElement("span");
+          title.className = "evolution-name";
+          title.textContent = titleText;
+          caption.append(title);
         }
         if (phraseText) {
           const phrase = document.createElement("span");
@@ -596,15 +677,15 @@
         item.classList.toggle("is-active", depth === 0);
         item.setAttribute("aria-hidden", String(depth !== 0));
       });
-      count.textContent = `${String(activeStage + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}`;
-      count.setAttribute("aria-label", `Etapa ${activeStage + 1} de ${items.length}`);
+      count.textContent = `${items[activeStage].dataset.label} (${activeStage + 1} de ${items.length})`;
     }
-    function moveStack(direction) {
+    // direction: 1 avanza a la siguiente etapa, -1 regresa. side: hacia dónde sale volando la foto (el lado del gesto).
+    function moveStack(direction, side = direction) {
       if (movingStage || items.length < 2) return;
       movingStage = true;
       const outgoing = items[activeStage];
-      outgoing.style.setProperty("--swipe-exit", direction > 0 ? "-100vw" : "100vw");
-      outgoing.style.setProperty("--swipe-rotate", direction > 0 ? "-16deg" : "16deg");
+      outgoing.style.setProperty("--swipe-exit", side > 0 ? "-100vw" : "100vw");
+      outgoing.style.setProperty("--swipe-rotate", side > 0 ? "-16deg" : "16deg");
       outgoing.style.zIndex = String(items.length + 1);
       outgoing.classList.add("is-departing");
       const finish = () => {
@@ -652,12 +733,107 @@
       const dy = event.clientY - pointerStart.y;
       pointerStart = null;
       items[activeStage].classList.remove("is-dragging");
-      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) moveStack(dx < 0 ? 1 : -1);
+      // Deslizar hacia cualquier lado pasa siempre a la etapa siguiente, en orden (1, 2, la tarjeta, 3…).
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) moveStack(1, dx < 0 ? 1 : -1);
     });
     track.addEventListener("pointercancel", () => {
       pointerStart = null;
       items[activeStage].classList.remove("is-dragging");
     });
+  }
+
+  // Foto ampliada (la comparten la cinta de recuerdos y el corazón de fotos grupales): se ve completa,
+  // con su frase o sus nombres; flechas, deslizar o teclado para cambiar. Escape, la X o tocar el fondo la cierran.
+  const photoViewer = (() => {
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImage = document.getElementById("lightbox-img");
+    const lightboxCaption = document.getElementById("lightbox-caption");
+    const lightboxCount = document.getElementById("lightbox-count");
+    const prevButton = document.getElementById("lightbox-prev");
+    const nextButton = document.getElementById("lightbox-next");
+    let photos = [];
+    let current = 0;
+    let opener = null;
+    const show = (index, direction) => {
+      current = (index + photos.length) % photos.length;
+      const photo = photos[current];
+      lightbox.dataset.direction = direction > 0 ? "next" : direction < 0 ? "prev" : "";
+      lightbox.classList.remove("is-changing");
+      void lightbox.offsetWidth;
+      lightbox.classList.add("is-changing");
+      lightboxImage.src = photo.src;
+      lightboxImage.alt = photo.alt || "";
+      lightboxCaption.textContent = String(photo.caption || "").trim();
+      // Los nombres del álbum conservan su corazón de color.
+      if (photo.heart && lightboxCaption.textContent) {
+        lightboxCaption.append(" ");
+        lightboxCaption.append(heartIcon(photo.heart));
+      }
+      lightboxCaption.hidden = !lightboxCaption.textContent;
+      if (lightboxCaption.hidden) lightbox.setAttribute("aria-label", photo.alt || "Fotografía ampliada");
+      else lightbox.removeAttribute("aria-label");
+      lightboxCount.textContent = `${current + 1} / ${photos.length}`;
+    };
+    const step = direction => { if (photos.length > 1) show(current + direction, direction); };
+    const close = () => {
+      if (!lightbox.open) return;
+      lightbox.classList.add("is-closing");
+      window.setTimeout(() => {
+        lightbox.classList.remove("is-open", "is-closing");
+        if (typeof lightbox.close === "function") lightbox.close();
+        else { lightbox.removeAttribute("open"); lightbox.dispatchEvent(new Event("close")); }
+      }, reducedMotion.matches ? 0 : 260);
+    };
+    lightbox.addEventListener("close", () => {
+      lightbox.classList.remove("is-open", "is-closing");
+      document.documentElement.classList.remove("has-lightbox");
+      if (opener) opener.focus({ preventScroll:true });
+    });
+    lightbox.addEventListener("cancel", event => { event.preventDefault(); close(); });
+    document.getElementById("lightbox-close").addEventListener("click", close);
+    prevButton.addEventListener("click", () => step(-1));
+    nextButton.addEventListener("click", () => step(1));
+    // Tocar el fondo oscuro cierra la foto.
+    lightbox.addEventListener("click", event => {
+      if (event.target === lightbox || event.target.classList.contains("lightbox-stage")) close();
+    });
+    lightbox.addEventListener("keydown", event => {
+      if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); }
+      if (event.key === "ArrowRight") { event.preventDefault(); step(1); }
+    });
+    let swipe = null;
+    lightbox.addEventListener("pointerdown", event => { if (event.pointerType !== "mouse") swipe = { x:event.clientX, y:event.clientY }; });
+    lightbox.addEventListener("pointerup", event => {
+      if (!swipe) return;
+      const dx = event.clientX - swipe.x;
+      const dy = event.clientY - swipe.y;
+      swipe = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) step(dx < 0 ? 1 : -1);
+    });
+    lightbox.addEventListener("pointercancel", () => { swipe = null; });
+    return {
+      open(list, index, from) {
+        photos = list;
+        opener = from;
+        prevButton.hidden = nextButton.hidden = lightboxCount.hidden = photos.length < 2;
+        show(index, 0);
+        if (typeof lightbox.showModal === "function") lightbox.showModal();
+        else lightbox.setAttribute("open", "");
+        document.documentElement.classList.add("has-lightbox");
+        lightbox.classList.remove("is-closing");
+        lightbox.classList.add("is-open");
+      },
+    };
+  })();
+  // Corazón de color junto a los nombres (dibujado, se ve igual en cualquier teléfono).
+  function heartIcon(color) {
+    const heart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    heart.setAttribute("viewBox", "0 0 24 22");
+    heart.setAttribute("aria-hidden", "true");
+    heart.classList.add("film-heart");
+    heart.style.setProperty("--heart", color);
+    heart.innerHTML = '<path d="M12 20.5C9.2 18.1 1.7 13.8 2 7.6C2.3 2.5 8.6 2.1 12 7C15.4 2.1 21.7 2.5 22 7.6C22.3 13.8 14.8 18.1 12 20.5Z"/><path class="film-heart-shine" d="M6.2 6.4C7.4 5.4 9 5.6 10 6.8"/>';
+    return heart;
   }
 
   // Cintas de película: «Mis recuerdos» avanza hacia la izquierda y «Caminos compartidos» hacia la derecha.
@@ -696,6 +872,7 @@
       caption.className = `film-caption ${options.captionClass}`;
       const words = document.createElement("span");
       words.textContent = String(photo.caption || "").trim();
+      if (photo.heart && words.textContent) words.append(" ", heartIcon(photo.heart));
       caption.append(words);
       cell.append(edge, frame, caption);
       item.append(cell);
@@ -754,7 +931,8 @@
           velocity = 0;
           if (Math.abs(gap) < .5) { position = keyTarget; keyTarget = null; }
         } else {
-          const stopped = holding || hovering || focused || reducedMotion.matches;
+          // También se detiene mientras una foto está ampliada.
+          const stopped = holding || hovering || focused || reducedMotion.matches || document.documentElement.classList.contains("has-lightbox");
           const target = stopped ? 0 : cruise();
           // El impulso del gesto se disipa poco a poco hasta volver al ritmo de crucero (o detenerse si está en pausa).
           const ease = Math.abs(velocity) > Math.abs(cruise()) * 1.5 ? .55 : .35;
@@ -772,14 +950,14 @@
       if (event.button > 0) return;
       holding = true;
       keyTarget = null;
-      dragging = { id:event.pointerId, x:event.clientX, start:position, moved:false };
+      dragging = { id:event.pointerId, x:event.clientX, start:position, moved:false, slop:event.pointerType === "mouse" ? 3 : 7 };
       samples = [{ t:event.timeStamp, dx:0 }];
       velocity = 0;
     });
     roll.addEventListener("pointermove", event => {
       if (!dragging || event.pointerId !== dragging.id) return;
       const dx = event.clientX - dragging.x;
-      if (!dragging.moved && Math.abs(dx) > 3) {
+      if (!dragging.moved && Math.abs(dx) > dragging.slop) {
         dragging.moved = true;
         roll.classList.add("is-dragging");
         // Con mouse se captura el puntero para seguir el arrastre aunque salga de la cinta (el dedo ya queda capturado).
@@ -793,8 +971,23 @@
       samples.push({ t:event.timeStamp, dx });
       while (samples.length > 2 && event.timeStamp - samples[0].t > 90) samples.shift();
     });
+    // Un toque o clic sin arrastrar amplía la foto que está debajo (también las copias que hacen la cinta infinita).
+    const frameAt = x => frames.findIndex(item => {
+      if (item.hidden) return false;
+      const box = item.getBoundingClientRect();
+      return x >= box.left && x <= box.right;
+    });
+    const openPhoto = index => { if (index >= 0) photoViewer.open(photos, index % count, roll); };
+    let tapped = -1;
+    roll.addEventListener("click", () => {
+      const index = tapped;
+      tapped = -1;
+      openPhoto(index);
+    });
     const release = event => {
       if (!dragging || (event && event.pointerId !== dragging.id)) return;
+      // La foto se abre con el clic que sigue al toque, así ese mismo clic no cae sobre la foto ampliada.
+      tapped = !dragging.moved && event && event.type === "pointerup" ? frameAt(event.clientX) : -1;
       if (dragging.moved && samples.length > 1) {
         const first = samples[0];
         const last = samples[samples.length - 1];
@@ -815,6 +1008,13 @@
     roll.addEventListener("focusin", () => { focused = roll.matches(":focus-visible"); });
     roll.addEventListener("focusout", () => { focused = false; });
     roll.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        // Con teclado se amplía la foto que está al centro de la cinta.
+        event.preventDefault();
+        const box = roll.getBoundingClientRect();
+        openPhoto(frameAt(box.left + box.width / 2));
+        return;
+      }
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
       focused = true;
@@ -836,9 +1036,11 @@
   }
   // Con movimiento reducido las cintas no avanzan solas: la instrucción solo invita a deslizar.
   const filmHintText = () => reducedMotion.matches
-    ? (finePointer.matches ? "Arrastra para ver más fotos" : "Desliza para ver más fotos")
-    : (finePointer.matches ? "Pasa el mouse para pausar o arrastra para ver más" : "Toca para pausar o desliza para ver más");
-  document.querySelectorAll(".film-hint span").forEach(hint => { hint.textContent = filmHintText(); });
+    ? (finePointer.matches ? "Arrastra o haz clic en una foto para ampliarla" : "Desliza o toca una foto para ampliarla")
+    : (finePointer.matches ? "Pasa el mouse para pausar o haz clic en una foto para ampliarla" : "Desliza o toca una foto para ampliarla");
+  document.querySelectorAll(".film-hint:not(.collage-hint) span").forEach(hint => { hint.textContent = filmHintText(); });
+  const collageHint = document.getElementById("collage-hint-text");
+  if (collageHint && finePointer.matches) collageHint.textContent = "Haz clic en una foto para verla completa";
 
   // Álbum: rollo de película con las fotos en el orden de config.js.
   const album = config.album || {};
@@ -850,7 +1052,7 @@
     if (album.title) buildTitle(document.getElementById("album-title"), album.title, album.highlight, "album-highlight");
     buildFilmRoll(document.getElementById("album-film"), albumPhotos, { direction:1, captionClass:"film-caption-hand", label:"Recuerdo" });
   }
-  // Fotos grupales: segundo rollo, avanza en sentido contrario.
+  // Fotos grupales formando un corazón. Las fotos están fijas; al tocar una se amplía con su frase.
   const groupGallery = config.groupGallery || {};
   const groupSection = document.getElementById("grupales");
   const groupPhotos = (Array.isArray(groupGallery.photos) ? groupGallery.photos : []).filter(photo => photo && photo.src);
@@ -858,8 +1060,167 @@
     groupSection.hidden = true;
   } else {
     if (groupGallery.title) document.getElementById("group-title").textContent = groupGallery.title;
-    buildFilmRoll(document.getElementById("group-film"), groupPhotos, { direction:-1, captionClass:"film-caption-text", label:"Fotografía grupal" });
+    buildHeartCollage(document.getElementById("heart-collage"), groupPhotos);
   }
+
+  // Corazón de fotografías: el corazón se divide en filas (una foto por lóbulo arriba, la punta abajo) y cada foto
+  // ocupa el espacio que mejor le queda según su forma. La silueta la recorta una máscara con forma de corazón.
+  function heartRows(count) {
+    // La fila de arriba siempre se divide justo en el centro, donde el corazón se hunde, para no cortar caras.
+    const table = { 1:[1], 2:[2], 3:[2,1], 4:[2,2], 5:[2,2,1], 6:[2,3,1], 7:[2,3,2], 8:[2,4,2], 9:[2,3,3,1], 10:[2,4,3,1], 11:[2,4,4,1], 12:[4,4,3,1] };
+    if (table[count]) return table[count];
+    const rows = [2];
+    for (let left = count - 2; left > 0; left -= 4) rows.push(Math.min(4, left));
+    return rows;
+  }
+  // Ancho del corazón a cada altura (0 arriba, 1 abajo), en porcentaje: sirve para no poner fotos donde no se verían.
+  function heartSpan(y) {
+    // Medido sobre la misma curva de la máscara del corazón.
+    const profile = [[0,0,100],[.4,2.9,97.1],[.5,6.4,93.6],[.6,11.9,88.1],[.7,19.7,80.3],[.8,29.6,70.4],[.9,41,59],[.97,50,50],[1,50,50]];
+    for (let index = 1; index < profile.length; index += 1) {
+      const [y1, a1, b1] = profile[index];
+      const [y0, a0, b0] = profile[index - 1];
+      if (y <= y1) {
+        const t = (y - y0) / (y1 - y0 || 1);
+        return [a0 + (a1 - a0) * t, b0 + (b1 - b0) * t];
+      }
+    }
+    return [47, 53];
+  }
+  // Espacios en filas, de arriba abajo (sin foto central).
+  function rowSlots(count) {
+    const rows = heartRows(count);
+    const heights = { 1:[1], 2:[.54,.46], 3:[.46,.29,.25], 4:[.36,.26,.22,.16] }[rows.length] || rows.map(() => 1 / rows.length);
+    const slots = [];
+    let top = 0;
+    rows.forEach((columns, row) => {
+      const height = heights[row];
+      const [left, right] = heartSpan(top);
+      const width = (right - left) / columns;
+      for (let column = 0; column < columns; column += 1) {
+        slots.push({ x:left + width * column, y:top * 100, w:width, h:height * 100 });
+      }
+      top += height;
+    });
+    return slots;
+  }
+  // Con una foto destacada: ella ocupa el centro, vertical, con otra foto debajo; arriba una fila sobre los lóbulos,
+  // a cada lado una columna de fotos y abajo las filas que bajan hacia la punta.
+  function featuredSlots(count) {
+    const top = count >= 10 ? 4 : 2;
+    const topHeight = 24;
+    const rest = count - top - 1; // una foto va debajo de la destacada
+    const perSide = Math.min(3, Math.max(1, Math.floor((rest - 1) / 2)));
+    let left = rest - perSide * 2;
+    const lower = [];
+    if (left > 1) { lower.push(Math.min(4, left - 1)); left -= lower[0]; }
+    while (left > 0) { const columns = Math.min(4, left); lower.push(columns); left -= columns; }
+    const middleEnd = lower.length > 1 ? 74 : lower.length ? 80 : 100;
+    const slots = [];
+    for (let column = 0; column < top; column += 1) slots.push({ x:100 / top * column, y:0, w:100 / top, h:topHeight });
+    const side = 40; // la foto central ocupa el 20 % del ancho y el 62 % de la altura del bloque central
+    const sideHeight = (middleEnd - topHeight) / perSide;
+    // Cada foto empieza donde pasa el borde del corazón a la altura de su lado de arriba: el corazón queda lleno
+    // y la silueta solo recorta la esquina de abajo, así las caras quedan a la vista.
+    for (let row = 0; row < perSide; row += 1) {
+      const y = topHeight + sideHeight * row;
+      const [from, to] = heartSpan(y / 100);
+      slots.push({ x:from, y, w:side - from, h:sideHeight });
+      slots.push({ x:100 - side, y, w:to - (100 - side), h:sideHeight });
+    }
+    const lowerHeights = lower.length > 1 ? [14, 12] : [20];
+    let y = middleEnd;
+    lower.forEach((columns, row) => {
+      const height = lowerHeights[row] || 10;
+      const [from, to] = heartSpan(y / 100);
+      const width = (to - from) / columns;
+      for (let column = 0; column < columns; column += 1) slots.push({ x:from + width * column, y, w:width, h:height });
+      y += height;
+    });
+    const centerHeight = (middleEnd - topHeight) * .62;
+    slots.push({ x:side, y:topHeight + centerHeight, w:100 - side * 2, h:middleEnd - topHeight - centerHeight });
+    return { center:{ x:side, y:topHeight, w:100 - side * 2, h:centerHeight }, slots };
+  }
+  function buildHeartCollage(list, photos) {
+    // La foto marcada con featured va al centro, más grande (si hay suficientes fotos para rodearla).
+    const featured = photos.findIndex(photo => photo.featured);
+    const layout = featured >= 0 && photos.length >= 7 ? featuredSlots(photos.length - 1) : { center:null, slots:rowSlots(photos.length) };
+    const slots = layout.slots;
+    const tiles = photos.map((photo, index) => {
+      const item = document.createElement("li");
+      item.className = layout.center && index === featured ? "collage-tile is-featured" : "collage-tile";
+      item.style.setProperty("--k", index);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "collage-button";
+      button.setAttribute("aria-label", `Ampliar: ${photo.alt || `fotografía grupal ${index + 1}`}`);
+      const image = document.createElement("img");
+      image.alt = "";
+      image.decoding = "async";
+      image.loading = "lazy";
+      image.draggable = false;
+      // Las caras suelen estar arriba del centro: el recorte las conserva.
+      image.style.objectPosition = photo.position || photo.face || "50% 32%";
+      image.addEventListener("load", () => { item.classList.add("has-photo"); arrange(); }, { once:true });
+      image.addEventListener("error", () => arrange(), { once:true });
+      image.src = photo.src;
+      button.append(image);
+      button.addEventListener("click", () => photoViewer.open(photos, index, button));
+      item.append(button);
+      return { item, image, photo };
+    });
+    list.replaceChildren(...tiles.map(tile => tile.item));
+    // Cada foto va al espacio cuya forma se parece más a la suya: las verticales a los lóbulos, las horizontales a la punta.
+    const place = pairs => pairs.forEach(([tile, slot]) => {
+      const style = tile.item.style;
+      style.left = `${slot.x}%`;
+      style.top = `${slot.y}%`;
+      style.width = `${slot.w}%`;
+      style.height = `${slot.h}%`;
+    });
+    const centerTile = layout.center ? tiles[featured] : null;
+    const around = tiles.filter(tile => tile !== centerTile);
+    const withCenter = pairs => (centerTile ? [...pairs, [centerTile, layout.center]] : pairs);
+    place(withCenter(around.map((tile, index) => [tile, slots[index]])));
+    let pending = tiles.length;
+    function arrange() {
+      pending -= 1;
+      if (pending > 0) return;
+      const aspect = tile => (tile.image.naturalWidth && tile.image.naturalHeight ? tile.image.naturalWidth / tile.image.naturalHeight : 1);
+      const order = [...around].sort((a, b) => aspect(a) - aspect(b));
+      // Mismo orden que la forma real de cada espacio (el corazón es un poco más ancho que alto).
+      const spaces = [...slots].sort((a, b) => (a.w / a.h) - (b.w / b.h));
+      place(withCenter(order.map((tile, rank) => [tile, spaces[rank]])));
+      list.classList.toggle("has-center", Boolean(centerTile));
+      list.classList.add("is-ready");
+      focusFaces();
+      if ("ResizeObserver" in window) new ResizeObserver(focusFaces).observe(list);
+    }
+    // Encuadre centrado en las caras: con el tamaño real de cada espacio se calcula el recorte que deja
+    // el punto «face» de la foto (dónde están las caras) lo más cerca posible del centro del espacio.
+    function focusFaces() {
+      tiles.forEach(tile => {
+        const point = String(tile.photo.face || "").match(/[\d.]+/g);
+        const { naturalWidth:nw, naturalHeight:nh, clientWidth:w, clientHeight:h } = tile.image;
+        if (!point || point.length < 2 || !nw || !nh || !w || !h) return;
+        const scale = Math.max(w / nw, h / nh);
+        const axis = (focus, shown, room) => (shown - room > 1 ? Math.min(1, Math.max(0, (focus * shown - room / 2) / (shown - room))) : .5);
+        const x = axis(point[0] / 100, nw * scale, w);
+        const y = axis(point[1] / 100, nh * scale, h);
+        tile.image.style.objectPosition = `${(x * 100).toFixed(1)}% ${(y * 100).toFixed(1)}%`;
+      });
+    }
+    // Las fotos se piden cuando el corazón se acerca a la pantalla.
+    if ("IntersectionObserver" in window) {
+      const warm = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        tiles.forEach(tile => { tile.image.loading = "eager"; });
+        warm.disconnect();
+      }, { rootMargin:"120% 0px" });
+      warm.observe(list);
+    }
+  }
+
   // Cierre: título, mensaje, firma y pie vienen de config.js.
   const closing = config.closing || {};
   const closingTitle = document.getElementById("closing-title");
@@ -867,9 +1228,11 @@
   buildTitle(closingTitle, closing.title || closingTitle.textContent, closing.highlight, "closing-highlight", closingTitle.querySelector(".closing-swash"));
   const closingMessage = [].concat(closing.message || []).filter(Boolean);
   if (closingMessage.length) {
-    document.getElementById("closing-message").replaceChildren(...closingMessage.map(text => {
+    document.getElementById("closing-message").replaceChildren(...closingMessage.map((text, index) => {
       const paragraph = document.createElement("p");
       paragraph.textContent = text;
+      // Con varios párrafos, el último («Los quiero mucho.») se destaca.
+      if (closingMessage.length > 1 && index === closingMessage.length - 1) paragraph.className = "closing-love";
       return paragraph;
     }));
   }
@@ -884,7 +1247,7 @@
   document.getElementById("closing-back").addEventListener("click", event => {
     event.preventDefault();
     window.scrollTo({ top:0, behavior:reducedMotion.matches ? "auto" : "smooth" });
-    document.getElementById("cover-phrase").focus({ preventScroll:true });
+    document.getElementById("cover-title").focus({ preventScroll:true });
   });
 
   document.getElementById("next-section").addEventListener("click", () => {

@@ -2,11 +2,26 @@
 
 Invitación digital con entrada musical, portada, carta personal, álbum de fotos, lugar de la celebración, karaoke, confirmación de asistencia y cierre. HTML, CSS y JavaScript sin dependencias ni compilación.
 
+## Orden y fondos (observaciones de la clienta, 16 de octubre)
+
+1. Entrada: solo la frase «Como buenos productos del 14 de febrero, quienes cumplimos años en noviembre, aquí estamos presentes», que aparece palabra por palabra; después aparece el botón para abrir.
+2. Portada (cielo pintado): «Victoria / celebra su cumpleaños / la alegría de coincidir», boleto con fecha y hora (4:30 p. m.) y cuenta regresiva.
+3. Frase principal (blanco): «No tengo lugares favoritos, tengo personas favoritas» en letras muy grandes y, debajo, «Mi lugar favorito es con ustedes» con la explicación (`letter`).
+4. Etapas de mi vida (café): montón de polaroids con etapa, nombre y descripción de la clienta, más una tarjeta independiente «Y así pasaron etapas y décadas… hasta llegar al 2022».
+5. Carrusel de fotos individuales (arena): rollo de película con los nombres y un corazón de color distinto para cada foto (rojo para Yes).
+6. Fotografías grupales (cielo pintado): fijas, formando un corazón; al tocar una se amplía con su frase.
+7. Lugar (blanco): «¿Dónde nos vemos? ¡A comer rico y diferente!», textos de Doña Vero, hora de encuentro, dirección y agradecimiento a Camilo.
+8. Karaoke (café): «¡El micrófono nos espera!».
+9. Cierre (arena): agradecimiento de Victoria, «Los quiero mucho.» y la firma con un corazón rojo.
+10. Confirmación (cielo pintado): «¡Confirmen su asistencia!», y al pie «Volver al inicio» y el agradecimiento.
+
+Cada sección tiene un fondo distinto al de la anterior. Las secciones de color (clases `theme-white`, `theme-cafe`, `theme-arena` con `sheet` en `index.html`) son paneles de cristal translúcido (fondo al ~40 % con un desenfoque ligero, `--glass-blur` en `.sheet`) que flotan con un pequeño margen, para que se aprecie la pintura de Van Gogh detrás y los textos sigan leyéndose; las de cielo pintado usan `theme-night`. Los colores están al final de `styles.css` (`--ivory`, `--cafe`, `--arena`, `--ink-navy`, `--accent-warm`).
+
 ## Editar información
 
 Todos los datos están en `config.js`: nombre, fotografía, encuadre, fecha, hora, ruta de audio y segundo de inicio. No se incluye la fotografía de la clienta.
 
-La fotografía proporcionada por la clienta está en `assets/festejada.jpg`. La canción proporcionada por la clienta está en `assets/milagros.mp3`. Si la fotografía falta, se muestra un marcador editorial. Si el audio falta, no bloquea la apertura. La música intenta iniciar sola desde el segundo 35 al cargar la página; como la mayoría de los navegadores bloquea el audio automático, si no se permite empieza con el primer toque, clic o tecla (incluido el botón de entrada); deslizar no cuenta como toque. Pausar y reanudar conserva la posición. El control de música aparece en cuanto la música suena, también en la pantalla de entrada, para poder pausarla desde el principio: en celular es un ícono redondo arriba a la derecha que se hace a un lado mientras un título o un botón pasa por esa esquina; en laptops angostas (hasta 1299 px de ancho), un ícono redondo abajo a la derecha; en pantallas más anchas, la píldora «Pausar / Reanudar».
+La fotografía proporcionada por la clienta está en `assets/festejada.jpg`. La canción proporcionada por la clienta está en `assets/milagros.mp3`. Si la fotografía falta, se muestra un marcador editorial. Si el audio falta, no bloquea la apertura. La música intenta iniciar sola desde el segundo 35 al cargar la página; como la mayoría de los navegadores bloquea el audio automático, si no se permite empieza con el primer toque, clic o tecla (incluido el botón de entrada); deslizar no cuenta como toque. El control de música silencia la canción sin detenerla (bocina tachada) y al activar el sonido sigue donde va; si la canción terminó o el navegador no la dejó empezar, el mismo control la reproduce. Aparece en cuanto la música suena, también en la pantalla de entrada, para poder silenciarla desde el principio: en celular es un ícono redondo arriba a la derecha que se hace a un lado mientras un título o un botón pasa por esa esquina; en laptops angostas (hasta 1299 px de ancho), un ícono redondo abajo a la derecha; en pantallas más anchas, la píldora «Silenciar / Activar sonido».
 
 La pantalla de entrada usa como fondo `assets/fondo-inicio.mp4` (con respaldo `fondo-inicio.webm` e imagen fija `fondo-inicio.jpg`), silenciado y en bucle.
 
@@ -45,17 +60,19 @@ Entre la carta y el álbum está `#evolucion`, «Cada versión de mí»: un reco
 - Los botones «Etapa anterior» y «Etapa siguiente» permiten el mismo movimiento y muestran el número de etapa; también funcionan las flechas del teclado. El montón nunca avanza solo.
 - Al aparecer, la hoja y el montón entran suavemente. Con movimiento reducido el cambio de foto es inmediato.
 
-Las seis fotos de Victoria están en `assets/etapas/` y se editan en `config.js`, dentro de `evolution.photos`. Se muestran en el orden de la lista. Cada una lleva `src` (ruta), `alt` (lo que se ve), `stage` (nombre de la etapa), `phrase` (comentario de la clienta, opcional) y `position` (encuadre; `"50% 30%"` deja la foto centrada y un poco hacia arriba para no cortar la cabeza). El comentario sobre «hasta los 2022» está asociado a la etapa 2. Si `stage` y `phrase` van vacíos no se muestra nada debajo de la foto. Las fotos no llevan filtros ni se deforman: solo se elige el encuadre. Mientras falte un archivo se ve un espacio «Etapa N». Sin fotos en la lista se oculta la sección. `title`, `highlight` e `intro` son el título, la palabra en cursiva y el texto introductorio (provisional).
+Las seis fotos de Victoria están en `assets/etapas/` y se editan en `config.js`, dentro de `evolution.photos`, en el orden de la lista. Cada una lleva `src` (ruta), `alt` (lo que se ve), `stage` («Etapa 1»), `title` (nombre de la etapa, escrito a mano en la polaroid), `phrase` (descripción breve de la clienta) y `position` (encuadre). Una entrada con `note` y sin `src` es una tarjeta independiente de papel, sin foto (hoy, «Y así pasaron etapas y décadas… hasta llegar al 2022», entre la etapa 2 y la 3); el año final se destaca. Las fotos no llevan filtros ni se deforman: solo se elige el encuadre. Mientras falte un archivo se ve un espacio con el nombre de la etapa. Sin fotos ni tarjetas se oculta la sección. `title`, `highlight` e `intro` son el título, la palabra en cursiva y el texto introductorio (provisional).
 
 ## Álbum de fotos
 
-Entre «Cada versión de mí» y el lugar están `#album` («Mis recuerdos favoritos tienen compañía») y `#grupales` («Caminos compartidos»). Cada uno muestra sus fotos en un rollo de película sin contenedor ni fondo: una tira oscura cuyas perforaciones dejan ver el cielo, el texto «La alegría de coincidir» en el borde superior y, en la franja de abajo, el pie de cada foto (los nombres en el álbum, el párrafo en «Caminos compartidos»). La franja toma la altura del pie más largo, así ningún texto se corta. Las fotos se ven completas, sin recortes. Los títulos de ambas secciones siguen en el HTML solo para lectores de pantalla (no se ven), y los dos rollos van juntos, uno debajo del otro; cada uno entra desde su lado.
+Después de «Cada versión de mí» está `#album` («Mis recuerdos favoritos tienen compañía»): un rollo de película que avanza solo hacia la izquierda, con perforaciones, el texto «La alegría de coincidir» en el borde y, en la franja de abajo, los nombres escritos a mano con un corazón de color. Es infinito; se pausa con el dedo o el mouse encima, se desliza o arrastra, y al soltarlo sigue de inmediato con la inercia del gesto. Un toque o clic sin arrastrar amplía la foto, completa y con sus nombres, en la misma vista ampliada del corazón de fotos grupales. Con el teclado, las flechas lo recorren foto por foto y Enter amplía la foto del centro. Fuera de la pantalla o con movimiento reducido no avanza solo.
 
-Los rollos avanzan solos y en sentidos opuestos: el álbum hacia la izquierda y «Caminos compartidos» hacia la derecha. Son infinitos (al terminar vuelven a empezar sin salto). Se pausan mientras el dedo o el mouse está encima y se pueden deslizar con el dedo o arrastrar con el mouse. Al soltarlos o al retirar el mouse continúan de inmediato: conservan la inercia del deslizamiento y vuelven suavemente a su velocidad normal. Con el teclado, las flechas recorren el rollo foto por foto. Fuera de la pantalla, en otra pestaña o con movimiento reducido no avanzan solos. Debajo de los dos rollos hay una sola instrucción breve.
+Las fotos se editan en `config.js`, en `album.photos` (`src`, `alt`, `caption` con los nombres y `heart` con el color del corazón; cada uno distinto y el de Yes en rojo). El título queda solo para lectores de pantalla.
 
-Las fotos del álbum se editan en `config.js`, en `album.photos` (`src`, `alt`, `caption` en letra manuscrita); las de «Caminos compartidos», en `groupGallery.photos` (`src`, `alt`, `caption`). Agrega o borra elementos de la lista; sin fotos, la sección se oculta. Los títulos se editan en `album.title` / `album.highlight` y `groupGallery.title`. La velocidad está en `script.js` (`speed`, en píxeles por segundo).
+## Fotografías grupales en forma de corazón
 
-## Lugar (tercera sección)
+`#grupales` reúne las fotos grupales formando un corazón, fijas, sin movimiento. Son 14 fotos: la del vestido rojo, marcada con `featured: true`, va al centro, más grande y con un marco dorado fino (a petición de la clienta); alrededor, una fila sobre los lóbulos, una columna de fotos a cada lado y dos filas que bajan hacia la punta. Cada foto ocupa el espacio que mejor le queda según su forma (las verticales arriba, las horizontales a los lados y abajo). Sin foto destacada, el corazón se divide en filas (de 1 a 12 fotos con acomodos hechos a mano; más, en filas de cuatro). Al tocar o hacer clic en una foto se abre ampliada, completa y con su frase; se cambia con las flechas de la pantalla o del teclado, o deslizando, y se cierra con la X, tocando el fondo o con Escape. La música sigue sonando. Las fotos y frases se editan en `config.js`, en `groupGallery.photos` (`src`, `alt`, `caption` opcional, `featured` y `position` opcional para el encuadre dentro del corazón); el orden de la lista es el orden al ampliarlas. Las cinco frases se conservan en sus fotos; la que acompañaba a la foto que ya no está pasó a la de las mismas amigas frente al escenario.
+
+## Lugar
 
 Después de la carta está la sección `#lugar`, dedicada a Doña Vero. Sus datos se editan en `config.js`, dentro de `venue`:
 
@@ -78,7 +95,7 @@ El micrófono es solo decorativo: no graba, no pide permisos ni reproduce audio.
 
 Los textos se editan en `config.js`, dentro de `karaoke`: `eyebrow` (texto pequeño), `title`, `highlight` (palabra del título en cursiva), `description` y `cue` (frase final destacada; vacía para ocultarla). Anuncia el karaoke presencial: no incluye horarios, concursos, premios ni canciones.
 
-## Confirmación (cuarta sección)
+## Confirmación (al final)
 
 Después del lugar está `#confirmar`. Primero se elige «Sí, ahí estaré» o «Esta vez no podré». Con «Sí» se despliegan el nombre (obligatorio) y un mensaje opcional; con «No» solo aparece el botón para enviar, sin formulario. Al enviar, el formulario se desvanece y aparece el agradecimiento: un corazón dorado se dibuja, suelta destellos y el título entra palabra por palabra. Con movimiento reducido aparece sin animación. «Cambiar mi respuesta» regresa al formulario con los datos escritos.
 
@@ -89,7 +106,7 @@ Todo se edita en `config.js`, dentro de `rsvp`:
 - `thanksYesTitle`, `thanksYesText`, `thanksNoTitle`, `thanksNoText`, `whatsappReminder` y `editLabel`: textos del agradecimiento.
 - Etiquetas, botones (`button` con número, `buttonWithoutWhatsapp` sin número) y mensajes de validación.
 
-## Cierre (quinta sección)
+## Cierre (antes de la confirmación)
 
 Después de la confirmación está `#despedida`, «Qué bonito coincidir contigo»: composición centrada, título grande que entra palabra por palabra, la palabra resaltada en cursiva con un trazo amarillo, dos líneas que coinciden en un corazón de trazo fino y la firma. Cada parte aparece al llegar a ella; con movimiento reducido todo se muestra sin animación. La altura se adapta al contenido.
 
@@ -110,7 +127,7 @@ El texto actual es provisional.
 Al inicio de `config.js` está la lista; cada dato lleva la marca `PENDIENTE`:
 
 - Número de WhatsApp de Victoria en `rsvp.whatsapp` (sin él, las respuestas no llegan a nadie).
-- Textos definitivos de la carta (`letter`) y del cierre (`closing`), incluido el agradecimiento del pie.
+- Explicación bajo «Mi lugar favorito es con ustedes» (`letter.message`) y agradecimiento del pie (`closing.footerThanks`): son provisionales.
 - Acompañantes o fecha límite para confirmar: no se muestran hasta que la clienta lo indique.
 - Texto introductorio definitivo de «Cada versión de mí» y contexto opcional de las etapas; las seis fotografías ya están incorporadas.
 

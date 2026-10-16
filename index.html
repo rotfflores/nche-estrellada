@@ -14,9 +14,9 @@
   <!-- PENDIENTE al publicar: imagen para la vista previa con la dirección completa del sitio, por ejemplo
        <meta property="og:image" content="https://TU-DOMINIO/assets/compartir.jpg"> (1200 × 630 px) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1336'/%3E%3Cpath d='M32 50C25 43 9 34 10 21C11 8 26 8 32 20C37 8 53 9 54 21C55 33 40 44 32 50Z' fill='none' stroke='%23E8C86A' stroke-width='4.5' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261016-pies">
-  <script src="config.js?v=20261016-pies" defer></script>
-  <script src="script.js?v=20261016-pies" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261016-caras">
+  <script src="config.js?v=20261016-caras" defer></script>
+  <script src="script.js?v=20261016-caras" defer></script>
 </head>
 <body>
   <!-- Fondo de toda la invitación: cielo pintado y luces doradas que suben -->
@@ -34,25 +34,15 @@
     </div>
   </div>
 
-  <section class="entry" id="entry" aria-labelledby="entry-lead entry-phrase">
+  <section class="entry" id="entry" aria-labelledby="entry-lead">
     <video class="entry-video" id="entry-video" muted loop playsinline preload="auto" poster="assets/fondo-inicio.jpg" aria-hidden="true">
       <source src="assets/fondo-inicio.mp4" type="video/mp4">
       <source src="assets/fondo-inicio.webm" type="video/webm">
     </video>
     <div class="sky" aria-hidden="true"></div>
     <div class="entry-content">
-      <p class="entry-lead" id="entry-lead">Como buenos productos del 14 de febrero, los que cumplimos años en noviembre… ¡aquí estamos presentes! 😌</p>
-      <!-- Dos caminos que se encuentran y forman un corazón -->
-      <svg class="meeting" viewBox="0 0 420 190" aria-hidden="true">
-        <path class="route route-a" pathLength="1" d="M8 178C110 176 150 96 210 92"/>
-        <path class="route route-b" pathLength="1" d="M412 12C320 16 270 88 210 92"/>
-        <circle class="traveler" r="3.5"><animateMotion dur="1.7s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines=".5 0 .2 1" path="M8 178C110 176 150 96 210 92"/></circle>
-        <circle class="traveler" r="3.5"><animateMotion dur="1.7s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines=".5 0 .2 1" path="M412 12C320 16 270 88 210 92"/></circle>
-        <circle class="burst" cx="210" cy="92" r="30"/>
-        <path class="heart meet-heart" pathLength="1" transform="translate(177 63) scale(1.1)" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/>
-      </svg>
-      <p class="phrase entry-phrase" id="entry-phrase"><span class="w" style="--i:0">No</span> <span class="w" style="--i:1">tengo</span> <span class="w" style="--i:2">lugares</span> <span class="w" style="--i:3">favoritos,</span> <span class="w" style="--i:4">tengo</span> <span class="w" style="--i:5">personas</span> <span class="w" style="--i:6">favoritas</span> <span class="w" style="--i:7">🌍❤️</span></p>
-      <p class="eyebrow">La alegría de coincidir</p>
+      <!-- Al inicio solo se ve la frase; el botón aparece cuando termina de escribirse -->
+      <p class="entry-lead" id="entry-lead"><span class="w" style="--i:0">Como</span> <span class="w" style="--i:1">buenos</span> <span class="w" style="--i:2">productos</span> <span class="w" style="--i:3">del</span> <span class="w" style="--i:4">14</span> <span class="w" style="--i:5">de</span> <span class="w" style="--i:6">febrero,</span> <span class="w" style="--i:7">quienes</span> <span class="w" style="--i:8">cumplimos</span> <span class="w" style="--i:9">años</span> <span class="w" style="--i:10">en</span> <span class="w" style="--i:11">noviembre,</span> <span class="w ew-hl" style="--i:12">aquí</span> <span class="w ew-hl" style="--i:13">estamos</span> <span class="w ew-hl" style="--i:14">presentes</span></p>
       <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></button>
     </div>
   </section>
@@ -60,19 +50,15 @@
   <!-- Control de música: fuera de la invitación para poder pausar desde la entrada; aparece cuando la música suena -->
   <button class="music-control" id="music-control" type="button" aria-label="Reproducir música" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true" class="music-icon"><path d="M9 18V6l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>
-    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <!-- Sonando: bocina con ondas; silenciada: bocina tachada. La canción nunca se detiene, solo se silencia. -->
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="sound-icon"><path class="sound-body" d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path class="sound-wave sound-wave-1" d="M15.2 9.4a3.7 3.7 0 0 1 0 5.2"/><path class="sound-wave sound-wave-2" d="M17.8 6.8a7.4 7.4 0 0 1 0 10.4"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="mute-icon"><path class="sound-body" d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
     <span id="music-label">Reproducir</span>
   </button>
   <span id="music-status" class="sr-only" role="status"></span>
 
   <main class="invitation" id="invitation" hidden inert>
-    <section class="cover" aria-labelledby="birthday-name">
-      <p class="phrase cover-phrase reveal" style="--d:0" tabindex="-1" id="cover-phrase">No tengo lugares favoritos, tengo personas favoritas 🌍❤️</p>
-      <div class="ornament reveal" style="--d:1" aria-hidden="true">
-        <span></span>
-        <svg viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
-        <span></span>
-      </div>
+    <section class="cover theme-night" aria-labelledby="cover-title">
       <div class="editorial">
         <div class="portrait-wrap" id="portrait-wrap">
           <!-- Fotografía como instantánea: se "revela" al abrir la invitación -->
@@ -118,8 +104,12 @@
         </div>
         <div class="details">
           <svg class="heart cover-heart reveal" style="--d:3" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-          <h1 id="birthday-name">Victoria</h1>
-          <p class="celebrate reveal" style="--d:5">Celebremos mi cumpleaños</p>
+          <!-- Presentación: «Victoria celebra su cumpleaños: la alegría de coincidir» -->
+          <h1 class="cover-title" id="cover-title" tabindex="-1">
+            <span class="cover-name" id="birthday-name">Victoria</span>
+            <span class="celebrate reveal" style="--d:4">celebra su cumpleaños<span class="sr-only">:</span></span>
+            <span class="cover-tagline reveal" style="--d:5">la alegría de coincidir</span>
+          </h1>
           <div class="ticket reveal" style="--d:6">
             <div class="date-time" role="group" aria-label="Fecha y hora de la celebración">
               <div class="ticket-main">
@@ -145,7 +135,7 @@
                 <span class="admit" aria-hidden="true">Admite 1</span>
                 <div class="ticket-cell ticket-time">
                   <span class="ticket-label"><svg class="dt-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Hora</span>
-                  <p id="birthday-time">16:00 h</p>
+                  <p id="birthday-time">4:30 p. m.</p>
                 </div>
                 <svg class="stub-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
                 <svg class="barcode" viewBox="0 0 110 22" preserveAspectRatio="none" aria-hidden="true"><rect x="0" width="1" height="22"/><rect x="2" width="2" height="22"/><rect x="5" width="1" height="22"/><rect x="9" width="1" height="22"/><rect x="12" width="2" height="22"/><rect x="15" width="2" height="22"/><rect x="18" width="1" height="22"/><rect x="20" width="2" height="22"/><rect x="24" width="1" height="22"/><rect x="26" width="1" height="22"/><rect x="30" width="2" height="22"/><rect x="33" width="2" height="22"/><rect x="36" width="1" height="22"/><rect x="40" width="1" height="22"/><rect x="44" width="2" height="22"/><rect x="48" width="1" height="22"/><rect x="50" width="1" height="22"/><rect x="54" width="1" height="22"/><rect x="57" width="2" height="22"/><rect x="60" width="2" height="22"/><rect x="63" width="2" height="22"/><rect x="67" width="2" height="22"/><rect x="70" width="1" height="22"/><rect x="74" width="2" height="22"/><rect x="77" width="1" height="22"/><rect x="79" width="2" height="22"/><rect x="82" width="2" height="22"/><rect x="85" width="2" height="22"/><rect x="88" width="2" height="22"/><rect x="93" width="2" height="22"/><rect x="97" width="2" height="22"/><rect x="102" width="2" height="22"/><rect x="106" width="1" height="22"/><rect x="108" width="1" height="22"/></svg>
@@ -171,26 +161,26 @@
       </div>
     </section>
 
-    <!-- Segunda sección: carta personal. Los textos se editan en config.js (letter). -->
-    <section class="letter" id="carta" aria-labelledby="letter-title" tabindex="-1" data-reveal>
+    <!-- Frase principal en letras muy grandes y, debajo, «Mi lugar favorito es con ustedes» con la explicación. Textos en config.js (letter). -->
+    <section class="letter sheet theme-white" id="carta" aria-labelledby="letter-quote" tabindex="-1" data-reveal>
       <div class="letter-inner">
-        <svg class="heart letter-heart fade-up" style="--i:0" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-        <h2 class="letter-title fade-up" style="--i:1" id="letter-title">Mi lugar favorito es con ustedes</h2>
-        <span class="letter-rule fade-up" style="--i:2" aria-hidden="true"></span>
-        <div class="letter-body fade-up" style="--i:3" id="letter-body">
+        <h2 class="letter-quote" id="letter-quote">No tengo lugares favoritos, tengo <em class="cw letter-quote-highlight">personas</em> <em class="cw letter-quote-highlight">favoritas</em></h2>
+        <div class="letter-divider fade-up" style="--i:2" aria-hidden="true">
+          <span></span>
+          <svg class="letter-icons" viewBox="0 0 64 28"><g class="li-globe"><circle cx="14" cy="14" r="11"/><ellipse cx="14" cy="14" rx="4.6" ry="11"/><path d="M3.5 10.5h21M3.5 17.5h21"/></g><path class="li-heart" d="M46 24.5C41.5 20.6 31.5 15 32 7.9C32.5 1.4 41 1 46 7.2C51 1 59.5 1.4 60 7.9C60.5 15 50.5 20.6 46 24.5Z"/></svg>
+          <span></span>
+        </div>
+        <h3 class="letter-title fade-up" style="--i:3" id="letter-title">Mi lugar favorito es con ustedes</h3>
+        <div class="letter-body fade-up" style="--i:4" id="letter-body">
           <p>Este cumpleaños quiero celebrarlo cerca de las personas que hacen mis días más bonitos.</p>
           <p>Compartir la mesa, reírnos, cantar y sumar un recuerdo juntos será mi manera favorita de celebrar.</p>
           <p>Por eso, me encantaría que estuvieras ahí.</p>
         </div>
-        <p class="letter-signature fade-up" style="--i:4">
-          <span class="letter-closing" id="letter-closing">Con cariño,</span>
-          <span class="letter-name" id="letter-name">Victoria</span>
-        </p>
       </div>
     </section>
 
     <!-- Cada versión de mí: un montón de polaroids; la de arriba pasa detrás al deslizar. -->
-    <section class="evolution" id="evolucion" aria-labelledby="evolution-title" data-reveal>
+    <section class="evolution sheet theme-cafe" id="evolucion" aria-labelledby="evolution-title" data-reveal>
       <div class="evolution-sheet">
         <header class="evolution-head">
           <h2 class="evolution-title fade-up" style="--i:0" id="evolution-title">Cada <em class="cw evolution-highlight">versión</em> de mí</h2>
@@ -208,32 +198,33 @@
     </section>
 
     <!-- Álbum de fotos: rollo de película que avanza solo. Fotos y pies en config.js (album). -->
-    <section class="album" id="album" aria-labelledby="album-title" data-reveal>
+    <section class="album sheet sheet-end theme-arena" id="album" aria-labelledby="album-title" data-reveal>
       <div class="album-inner">
         <!-- El título solo lo leen los lectores de pantalla; a la vista quedan las cintas -->
         <h2 class="album-title sr-only" id="album-title">Mis recuerdos favoritos tienen <em class="cw album-highlight">compañía</em></h2>
         <!-- Las fotografías se crean desde config.js en el orden de la lista -->
         <div class="album-gallery fade-up" style="--i:1" role="group" aria-label="Recuerdos con mis personas favoritas">
-          <!-- Cinta de película: avanza sola hacia la izquierda; se detiene al tocarla y se puede deslizar -->
-          <div class="film" id="album-film" tabindex="0" aria-label="Rollo de fotos de mis recuerdos. Usa las flechas para recorrerlo."><ol class="film-track"></ol></div>
+          <!-- Cinta de película: avanza sola hacia la izquierda; se puede deslizar y al tocar una foto se amplía -->
+          <div class="film" id="album-film" tabindex="0" aria-label="Rollo de fotos de mis recuerdos. Usa las flechas para recorrerlo y Enter para ampliar la foto del centro."><ol class="film-track"></ol></div>
         </div>
+        <p class="film-hint fade-up" style="--i:2" id="film-hint"><svg viewBox="0 0 28 32" aria-hidden="true"><path class="evolution-hint-arrows" d="M4.5 5.5h12.5M7.5 2.5l-3 3 3 3M14 2.5l3 3-3 3"/><g class="evolution-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g></svg><span>Desliza o toca una foto para ampliarla</span></p>
       </div>
     </section>
 
-    <!-- Fotos grupales: segundo rollo de película, avanza en sentido contrario. Fotos y frases en config.js (groupGallery). -->
-    <section class="group-gallery" id="grupales" aria-labelledby="group-title" data-reveal>
+    <!-- Fotos grupales formando un corazón: fijas, sin movimiento. Al tocar una foto se amplía. Fotos y frases en config.js (groupGallery). -->
+    <section class="group-gallery theme-night" id="grupales" aria-labelledby="group-title" data-reveal>
       <div class="group-gallery-inner">
         <h2 class="group-title sr-only" id="group-title">Caminos compartidos</h2>
-        <!-- Segunda cinta: avanza sola hacia la derecha. Debajo, una sola instrucción para las dos cintas -->
-        <div class="group-roll fade-up" style="--i:2">
-          <div class="film" id="group-film" tabindex="0" role="group" aria-label="Rollo de fotografías grupales. Usa las flechas para recorrerlo."><ol class="film-track"></ol></div>
-          <p class="film-hint fade-up" style="--i:3" id="film-hint"><svg viewBox="0 0 28 32" aria-hidden="true"><path class="evolution-hint-arrows" d="M4.5 5.5h12.5M7.5 2.5l-3 3 3 3M14 2.5l3 3-3 3"/><g class="evolution-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g></svg><span>Toca para pausar o desliza para ver más</span></p>
+        <div class="heart-collage-wrap">
+          <svg class="heart-collage-line" viewBox="0 0 100 90" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M50 87.5C44 82.6 3.5 58 2 30C1 13 12.6 2.4 26.5 2.4C37.4 2.4 45.2 9 50 18.2C54.8 9 62.6 2.4 73.5 2.4C87.4 2.4 99 13 98 30C96.5 58 56 82.6 50 87.5Z"/></svg>
+          <ul class="heart-collage" id="heart-collage" aria-label="Fotografías grupales; toca una para verla completa"></ul>
         </div>
+        <p class="film-hint collage-hint fade-up" style="--i:2"><svg viewBox="0 0 28 32" aria-hidden="true"><g class="collage-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g><g class="collage-hint-ring"><circle cx="10.5" cy="9" r="3.2"/><circle cx="10.5" cy="9" r="6.4"/></g></svg><span id="collage-hint-text">Toca una foto para verla completa</span></p>
       </div>
     </section>
 
     <!-- Tercera sección: el lugar. Datos, enlace y fotografías se editan en config.js (venue). -->
-    <section class="venue" id="lugar" aria-labelledby="venue-title">
+    <section class="venue sheet theme-white" id="lugar" aria-labelledby="venue-title">
       <div class="venue-grid">
         <!-- Fotografía principal del espacio -->
         <div class="venue-main" data-reveal>
@@ -252,18 +243,25 @@
         <div class="venue-info" data-reveal>
           <p class="venue-eyebrow" style="--i:0">
             <svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-            <span id="venue-eyebrow">Compartamos la mesa</span>
+            <span id="venue-eyebrow">¿Dónde nos vemos?</span>
           </p>
-          <h2 class="venue-title" style="--i:1" id="venue-title">Nos vemos en <em class="venue-nowrap">Doña Vero</em></h2>
-          <p class="venue-description" style="--i:2" id="venue-description">Una tarde para reunirnos, disfrutar sabores mexicanos y celebrar con nuestras personas favoritas.</p>
-          <dl class="venue-facts" style="--i:3">
+          <h2 class="venue-title" style="--i:1" id="venue-title">¡A comer rico y <em>diferente!</em></h2>
+          <p class="venue-description" style="--i:2" id="venue-description"><strong class="venue-nowrap">Doña Vero:</strong> tradición mexicana con un toque extravagante.</p>
+          <p class="venue-flavors" style="--i:2" id="venue-flavors">Una aventura de sabores que va de lo prehispánico a lo inesperado, con tlayudas, opciones veganas y quesadillas fuera de lo común.</p>
+          <!-- Lo que hace especial al lugar, con íconos dibujados (sin emojis) -->
+          <ul class="venue-highlights" style="--i:3" id="venue-highlights">
+            <li class="venue-highlight" data-icon="trofeo"><svg class="venue-hl-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4ZM8 6H5v1.5A3.5 3.5 0 0 0 8.5 11M16 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5M12 13v4M8.5 20.5h7M9.5 20.5c0-2 1-3.5 2.5-3.5s2.5 1.5 2.5 3.5"/></svg><span><strong>¡Seis veces campeona</strong> de la quesadilla más exótica de la CDMX!</span></li>
+            <li class="venue-highlight" data-icon="corazon"><svg class="venue-hl-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3C9.6 18.2 3 14.4 3.3 9C3.6 4.6 9 4.3 12 8.5C15 4.3 20.4 4.6 20.7 9C21 14.4 14.4 18.2 12 20.3Z"/></svg><span>Tacos y tortillas en forma de corazón.</span></li>
+            <li class="venue-highlight" data-icon="flor"><svg class="venue-hl-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.6"/><path d="M12 9.4C10.4 7.6 10.6 4.6 12 3.4c1.4 1.2 1.6 4.2 0 6M14.6 12c1.8-1.6 4.8-1.4 6 0-1.2 1.4-4.2 1.6-6 0M12 14.6c1.6 1.8 1.4 4.8 0 6-1.4-1.2-1.6-4.2 0-6M9.4 12c-1.8 1.6-4.8 1.4-6 0 1.2-1.4 4.2-1.6 6 0M13.9 10.1c.2-2.4 2.4-4.4 4.2-4.2.2 1.8-1.8 4-4.2 4.2M13.9 13.9c2.4.2 4.4 2.4 4.2 4.2-1.8.2-4-1.8-4.2-4.2M10.1 13.9c-.2 2.4-2.4 4.4-4.2 4.2-.2-1.8 1.8-4 4.2-4.2M10.1 10.1C7.7 9.9 5.7 7.7 5.9 5.9c1.8-.2 4 1.8 4.2 4.2"/></svg><span>Pulque de cempasúchil, disponible por temporada, entre otros sabores…</span></li>
+          </ul>
+          <dl class="venue-facts" style="--i:4">
             <div class="venue-fact">
               <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Fecha</dt>
               <dd id="venue-date">07 de noviembre</dd>
             </div>
             <div class="venue-fact">
-              <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Hora</dt>
-              <dd id="venue-time">16:00 h</dd>
+              <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span id="venue-time-label">Hora de encuentro</span></dt>
+              <dd id="venue-time">4:30 p. m.</dd>
             </div>
             <div class="venue-fact venue-fact-wide">
               <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v18M4.5 3v4.5a2.5 2.5 0 0 0 5 0V3M17.5 21V3c-2.4 1.2-3.5 4-3.5 7.5V13h3.5"/></svg>Lugar</dt>
@@ -271,17 +269,18 @@
             </div>
             <div class="venue-fact venue-fact-wide">
               <dt><svg class="venue-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15.3 12 21 12 21Z"/><circle cx="12" cy="9.8" r="2.3"/></svg>Dirección</dt>
-              <dd id="venue-address">Av. Monterrey 313, Roma Sur, CDMX</dd>
+              <dd id="venue-address">Monterrey 313, Roma Sur</dd>
             </div>
           </dl>
-          <p class="venue-note" style="--i:4">
+          <p class="venue-note" style="--i:5">
             <svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-            <span id="venue-note">Tendremos un espacio reservado para nuestro festejo.</span>
+            <span id="venue-note">Espacio privado para nuestra celebración.</span>
           </p>
-          <div class="venue-action" style="--i:5">
+          <div class="venue-action" style="--i:6">
             <a class="button venue-button" id="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Do%C3%B1a+Vero+Av.+Monterrey+313+Roma+Sur+CDMX" target="_blank" rel="noopener noreferrer" aria-describedby="venue-map-hint">Cómo llegar <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
             <span class="sr-only" id="venue-map-hint">Abre Google Maps en una pestaña nueva</span>
           </div>
+          <p class="venue-thanks" style="--i:7" id="venue-thanks">Gracias, Camilo, por darnos un espacio.</p>
         </div>
 
         <!-- Dos fotografías pequeñas de la cocina: los tacos con tortillas de corazón al frente -->
@@ -314,7 +313,7 @@
 
     <!-- Karaoke: anuncia el karaoke presencial del festejo. Textos en config.js (karaoke).
          El micrófono es solo una ilustración: no graba, no pide permisos ni reproduce audio. -->
-    <section class="karaoke" id="karaoke" aria-labelledby="karaoke-title">
+    <section class="karaoke sheet theme-cafe" id="karaoke" aria-labelledby="karaoke-title">
       <div class="karaoke-panel" data-reveal>
         <div class="karaoke-art">
           <svg class="mic-art" viewBox="0 0 320 420" aria-hidden="true" focusable="false">
@@ -338,18 +337,40 @@
         </div>
         <div class="karaoke-text">
           <p class="karaoke-eyebrow" style="--i:0" id="karaoke-eyebrow">También se vale cantar a todo pulmón</p>
-          <h2 class="karaoke-title" style="--i:1" id="karaoke-title">El <em class="cw karaoke-highlight">micrófono</em> nos espera</h2>
-          <p class="karaoke-description" style="--i:2" id="karaoke-description">Habrá karaoke para cantar nuestras favoritas, reírnos y hacer de esta tarde un recuerdo todavía más bonito.</p>
+          <h2 class="karaoke-title" style="--i:1" id="karaoke-title">¡El <em class="cw karaoke-highlight">micrófono</em> nos espera!</h2>
+          <p class="karaoke-description" style="--i:2" id="karaoke-description">¡Habrá karaoke, dinámicas y sorpresas! Pero, sobre todo, mucho cariño y alegría de compartir con ustedes.</p>
           <p class="karaoke-cue" style="--i:3" id="karaoke-cue">¡Ve pensando cuál vas a cantar!</p>
         </div>
       </div>
     </section>
 
-    <!-- Cuarta sección: confirmación por WhatsApp. Número y textos en config.js (rsvp). -->
-    <section class="rsvp" id="confirmar" aria-labelledby="rsvp-title" data-reveal>
+    <!-- Cierre: agradecimiento de Victoria, antes de confirmar. Título, mensaje y firma se editan en config.js (closing). -->
+    <section class="closing sheet sheet-end theme-arena" id="despedida" aria-labelledby="closing-title">
+      <div class="closing-inner">
+        <h2 class="closing-title" id="closing-title" data-reveal>Qué bonito <em class="closing-highlight">coincidir<svg class="closing-swash" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M2 11C38 6 96 3.4 160 4.2S190 6 198 7.6"/></svg></em> contigo</h2>
+        <div class="closing-message" id="closing-message" data-reveal>
+          <p>Gracias por hacerse un espacio para acompañarme en un día tan especial. Son personas importantes para mí y me hace muy feliz coincidir con ustedes.</p>
+          <p class="closing-love">Los quiero mucho.</p>
+        </div>
+        <div class="closing-end" data-reveal>
+          <!-- Dos trazos que coinciden en un corazón, como en la entrada -->
+          <div class="closing-meet" aria-hidden="true">
+            <span class="closing-line"></span>
+            <svg class="heart closing-heart" viewBox="0 0 60 56"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
+            <span class="closing-line"></span>
+          </div>
+          <p class="closing-signature" style="--i:0">
+            <span class="closing-farewell" id="closing-farewell">Con cariño,</span>
+            <span class="closing-name"><span id="closing-name">Victoria</span><svg class="closing-red-heart" viewBox="0 0 24 22" aria-hidden="true"><path d="M12 20.5C9.2 18.1 1.7 13.8 2 7.6C2.3 2.5 8.6 2.1 12 7C15.4 2.1 21.7 2.5 22 7.6C22.3 13.8 14.8 18.1 12 20.5Z"/></svg></span>
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- Confirmación por WhatsApp, al final. Número y textos en config.js (rsvp). -->
+    <section class="rsvp theme-night" id="confirmar" aria-labelledby="rsvp-title" data-reveal>
       <div class="rsvp-inner">
         <svg class="heart rsvp-heart fade-up" style="--i:0" viewBox="0 0 60 56" aria-hidden="true"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-        <h2 class="rsvp-title fade-up" style="--i:1" id="rsvp-title">¿Compartimos este día?</h2>
+        <h2 class="rsvp-title fade-up" style="--i:1" id="rsvp-title">¡Confirmen su asistencia!</h2>
         <p class="rsvp-text fade-up" style="--i:2" id="rsvp-text">Me encantará celebrar contigo. Confírmame si podrás acompañarme para organizar nuestro encuentro.</p>
         <form class="rsvp-form fade-up" style="--i:3" id="rsvp-form" novalidate>
           <fieldset class="rsvp-field rsvp-choices" aria-describedby="rsvp-answer-error">
@@ -404,36 +425,28 @@
       </div>
     </section>
 
-    <!-- Quinta sección: cierre. Título, mensaje y firma se editan en config.js (closing). -->
-    <section class="closing" id="despedida" aria-labelledby="closing-title">
-      <div class="closing-inner">
-        <h2 class="closing-title" id="closing-title" data-reveal>Qué bonito <em class="closing-highlight">coincidir<svg class="closing-swash" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M2 11C38 6 96 3.4 160 4.2S190 6 198 7.6"/></svg></em> contigo</h2>
-        <div class="closing-message" id="closing-message" data-reveal>
-          <p>Lo que hará especial este cumpleaños será compartirlo con ustedes. Gracias por ser parte de mi vida y de los recuerdos que más quiero.</p>
-        </div>
-        <div class="closing-end" data-reveal>
-          <!-- Dos trazos que coinciden en un corazón, como en la entrada -->
-          <div class="closing-meet" aria-hidden="true">
-            <span class="closing-line"></span>
-            <svg class="heart closing-heart" viewBox="0 0 60 56"><path pathLength="1" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg>
-            <span class="closing-line"></span>
-          </div>
-          <p class="closing-signature" style="--i:0">
-            <span class="closing-farewell" id="closing-farewell">Con cariño,</span>
-            <span class="closing-name" id="closing-name">Victoria</span>
-          </p>
-          <a class="closing-back" style="--i:1" id="closing-back" href="#invitation">
+    <!-- Agradecimiento final de la festejada; se edita en config.js (closing.footerThanks) -->
+    <footer class="footer-thanks theme-night" data-reveal>
+      <a class="closing-back" id="closing-back" href="#invitation">
             <span class="closing-back-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18.5v-13M6.5 11 12 5.5l5.5 5.5"/></svg></span>
             <span class="closing-back-label" id="closing-back-label">Volver al inicio</span>
           </a>
-        </div>
-      </div>
-    </section>
-    <!-- Agradecimiento final de la festejada; se edita en config.js (closing.footerThanks) -->
-    <footer class="footer-thanks" data-reveal>
       <p class="footer-thanks-text" id="footer-thanks-text">Gracias por ser una de mis personas favoritas.</p>
     </footer>
   </main>
+  <!-- Foto ampliada: la usan el corazón de fotos grupales y la cinta de recuerdos -->
+  <dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-caption">
+    <div class="lightbox-stage">
+      <figure class="lightbox-figure">
+        <img class="lightbox-img" id="lightbox-img" alt="">
+        <figcaption class="lightbox-caption" id="lightbox-caption"></figcaption>
+      </figure>
+      <button class="lightbox-btn lightbox-prev" id="lightbox-prev" type="button" aria-label="Foto anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="lightbox-btn lightbox-next" id="lightbox-next" type="button" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <p class="lightbox-count" id="lightbox-count" aria-hidden="true"></p>
+    </div>
+  </dialog>
   <audio id="birthday-audio" preload="none"></audio>
   <noscript><p class="noscript">Activa JavaScript para abrir tu invitación.</p></noscript>
 </body>

@@ -94,6 +94,7 @@ window.INVITATION_CONFIG = Object.freeze({
     highlight: "diferente", // Palabra del título en cursiva. Vacío para no resaltar.
     description: "Doña Vero: tradición mexicana con un toque extravagante.", // El nombre del lugar va en negritas.
     flavors: "Una aventura de sabores que va de lo prehispánico a lo inesperado, con tlayudas, opciones veganas y quesadillas fuera de lo común.",
+    flavorsStrong: "tlayudas, opciones veganas y quesadillas fuera de lo común", // Parte que se destaca en dorado y negritas. Vacío para no destacar.
     // icon: "trofeo", "corazon" o "flor". strong: parte del texto que va en negritas (opcional).
     highlights: [
       { icon: "trofeo", text: "¡Seis veces campeona de la quesadilla más exótica de la CDMX!", strong: "¡Seis veces campeona" },

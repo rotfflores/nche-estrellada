@@ -94,6 +94,17 @@
   }
   setText("venue-eyebrow", venue.eyebrow);
   setText("venue-flavors", venue.flavors);
+  // Variedad de comida (veganas, tlayudas...) en dorado, a petición de la clienta.
+  {
+    const flavors = document.getElementById("venue-flavors");
+    const strong = String(venue.flavorsStrong || "");
+    const at = flavors && strong ? String(venue.flavors || "").indexOf(strong) : -1;
+    if (at >= 0) {
+      const bold = document.createElement("strong");
+      bold.textContent = strong;
+      flavors.replaceChildren(venue.flavors.slice(0, at), bold, venue.flavors.slice(at + strong.length));
+    }
+  }
   setText("venue-time-label", venue.timeLabel);
   setText("venue-thanks", venue.thanks);
   setText("venue-date", eventDate);
@@ -317,31 +328,6 @@
   musicButton.addEventListener("click", () => {
     if (audio.paused || audio.ended) { audio.muted = false; playMusic(); }
     else audio.muted = !audio.muted;
-  });
-  // Celular: el control de música se hace a un lado mientras un título o un botón pasa por la esquina superior donde vive.
-  const phoneLayout = window.matchMedia("(max-width:849px), (orientation:landscape) and (max-height:500px) and (pointer:coarse)");
-  const underMusic = document.querySelectorAll(".letter-quote, .letter-title, .evolution-title, .venue-title, .karaoke-title, .rsvp-title, .thanks-title, .closing-title, .button, .rsvp-option, .rsvp-input, .thanks-edit, .closing-back");
-  let musicBand = null;
-  let musicBandTimer = 0;
-  const watchMusicBand = () => {
-    if (musicBand) musicBand.disconnect();
-    if (!phoneLayout.matches || !("IntersectionObserver" in window)) { musicButton.classList.remove("is-tucked"); return; }
-    const under = new Set();
-    musicBand = new IntersectionObserver(entries => {
-      // Borde izquierdo sin el desplazamiento de «is-tucked»: offsetLeft no incluye transformaciones.
-      const left = (musicButton.hidden ? window.innerWidth - 58 : musicButton.offsetLeft) - 8;
-      entries.forEach(item => {
-        if (item.isIntersecting && item.boundingClientRect.right > left) under.add(item.target);
-        else under.delete(item.target);
-      });
-      musicButton.classList.toggle("is-tucked", under.size > 0);
-    }, { rootMargin:`0px 0px ${-(window.innerHeight - 66)}px 0px` });
-    underMusic.forEach(element => musicBand.observe(element));
-  };
-  watchMusicBand();
-  window.addEventListener("resize", () => {
-    window.clearTimeout(musicBandTimer);
-    musicBandTimer = window.setTimeout(watchMusicBand, 150);
   });
   // Confirmación: textos y número vienen de config.js.
   const rsvp = config.rsvp || {};

@@ -285,9 +285,9 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
 .evolution-track:focus-visible { outline:2px solid var(--iris); outline-offset:-2px; border-radius:6px; }
 .evolution-card { grid-area:1 / 1; width:min(76vw,300px,var(--card-fit)); min-width:0; transform:translate(calc(var(--depth,0) * 5px),calc(var(--depth,0) * 7px)) rotate(var(--tilt,0deg)) scale(calc(1 - var(--depth,0) * .025)); transform-origin:50% 75%; pointer-events:none; }
 .evolution-card.is-active { pointer-events:auto; }
-.evolution-card.is-dragging { transform:translateX(var(--drag-x,0px)) rotate(var(--drag-rotate,0deg)); transition:none!important; }
-.evolution-card.is-departing { transform:translateX(var(--swipe-exit)) rotate(var(--swipe-rotate)) scale(1.03); opacity:0; }
-.evolution-card.is-resetting { transition:none!important; }
+.evolution-card.is-dragging { transform:translateX(var(--drag-x,0px)) rotate(calc(var(--tilt,0deg) + var(--drag-rotate,0deg))); transition:none!important; will-change:transform; }
+.evolution-card.is-departing { transform:translateX(var(--swipe-exit)) rotate(var(--swipe-rotate)) scale(1.03); opacity:0; pointer-events:none; will-change:transform,opacity; }
+.evolution-card.is-resetting { opacity:0!important; transition:none!important; }
 .evolution-figure { margin:0; padding:9px 9px 16px; background:#FFFEFA; box-shadow:0 2px 3px rgba(28,33,70,.15),0 18px 32px -18px rgba(28,33,70,.55); }
 .evolution-photo { position:relative; aspect-ratio:4 / 5; overflow:hidden; background:#E8EAF2; }
 .evolution-photo img, .evolution-ph { position:absolute; inset:0; width:100%; height:100%; }

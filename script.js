@@ -682,12 +682,26 @@
       if (movingStage || items.length < 2) return;
       movingStage = true;
       const outgoing = items[activeStage];
+      // Conserva el punto exacto donde se soltó la foto para que no salte al centro.
+      const heldTransform = window.getComputedStyle(outgoing).transform;
+      outgoing.classList.remove("is-dragging");
+      outgoing.style.transform = heldTransform;
+      activeStage = (activeStage + direction + items.length) % items.length;
+      showStack(); // La siguiente foto avanza mientras la anterior sale.
       outgoing.style.setProperty("--swipe-exit", side > 0 ? "-100vw" : "100vw");
       outgoing.style.setProperty("--swipe-rotate", side > 0 ? "-16deg" : "16deg");
       outgoing.style.zIndex = String(items.length + 1);
+      // Fija el estado inicial antes de activar la transición de salida.
+      outgoing.getBoundingClientRect();
       outgoing.classList.add("is-departing");
+      outgoing.style.removeProperty("transform");
+      let finished = false;
+      let fallback;
       const finish = () => {
-        activeStage = (activeStage + direction + items.length) % items.length;
+        if (finished) return;
+        finished = true;
+        window.clearTimeout(fallback);
+        outgoing.removeEventListener("transitionend", onTransitionEnd);
         outgoing.classList.add("is-resetting");
         outgoing.classList.remove("is-departing");
         showStack();
@@ -696,8 +710,14 @@
           movingStage = false;
         }));
       };
+      const onTransitionEnd = event => {
+        if (event.target === outgoing && event.propertyName === "transform") finish();
+      };
       if (reducedMotion.matches) finish();
-      else window.setTimeout(finish, 380);
+      else {
+        outgoing.addEventListener("transitionend", onTransitionEnd);
+        fallback = window.setTimeout(finish, 650);
+      }
     }
     controls.hidden = items.length < 2;
     if (items.length > 1) track.tabIndex = 0;
@@ -712,29 +732,39 @@
     });
     let pointerStart = null;
     track.addEventListener("pointerdown", event => {
-      if (movingStage || items.length < 2 || (event.pointerType === "mouse" && event.button !== 0)) return;
-      pointerStart = { id:event.pointerId, x:event.clientX, y:event.clientY };
-      items[activeStage].classList.add("is-dragging");
-      track.setPointerCapture(event.pointerId);
+      if (movingStage || pointerStart || items.length < 2 || (event.pointerType === "mouse" && event.button !== 0)) return;
+      pointerStart = { id:event.pointerId, x:event.clientX, y:event.clientY, time:performance.now(), dragging:false };
+      items[activeStage].style.setProperty("--drag-x", "0px");
+      items[activeStage].style.setProperty("--drag-rotate", "0deg");
     });
     track.addEventListener("pointermove", event => {
       if (!pointerStart || event.pointerId !== pointerStart.id) return;
       const dx = event.clientX - pointerStart.x;
       const dy = event.clientY - pointerStart.y;
-      const drag = Math.abs(dx) > Math.abs(dy) * 1.1 ? dx : 0;
-      items[activeStage].style.setProperty("--drag-x", `${drag}px`);
-      items[activeStage].style.setProperty("--drag-rotate", `${Math.max(-12, Math.min(12, drag / 18))}deg`);
+      if (!pointerStart.dragging) {
+        if (Math.abs(dx) < 9 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+        pointerStart.dragging = true;
+        items[activeStage].classList.add("is-dragging");
+        track.setPointerCapture(event.pointerId);
+      }
+      items[activeStage].style.setProperty("--drag-x", `${dx}px`);
+      items[activeStage].style.setProperty("--drag-rotate", `${Math.max(-12, Math.min(12, dx / 18))}deg`);
     });
     track.addEventListener("pointerup", event => {
       if (!pointerStart || event.pointerId !== pointerStart.id) return;
       const dx = event.clientX - pointerStart.x;
-      const dy = event.clientY - pointerStart.y;
+      const dragging = pointerStart.dragging;
+      const speed = Math.abs(dx) / Math.max(1, performance.now() - pointerStart.time);
       pointerStart = null;
-      items[activeStage].classList.remove("is-dragging");
       // Deslizar hacia cualquier lado pasa siempre a la etapa siguiente, en orden (1, 2, la tarjeta, 3…).
-      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) moveStack(1, dx < 0 ? 1 : -1);
+      if (dragging && (Math.abs(dx) >= 36 || (Math.abs(dx) >= 18 && speed > .35))) {
+        moveStack(1, dx < 0 ? 1 : -1);
+      } else {
+        items[activeStage].classList.remove("is-dragging");
+      }
     });
-    track.addEventListener("pointercancel", () => {
+    track.addEventListener("pointercancel", event => {
+      if (!pointerStart || event.pointerId !== pointerStart.id) return;
       pointerStart = null;
       items[activeStage].classList.remove("is-dragging");
     });

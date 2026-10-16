@@ -14,9 +14,9 @@
   <!-- PENDIENTE al publicar: imagen para la vista previa con la dirección completa del sitio, por ejemplo
        <meta property="og:image" content="https://TU-DOMINIO/assets/compartir.jpg"> (1200 × 630 px) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1336'/%3E%3Cpath d='M32 50C25 43 9 34 10 21C11 8 26 8 32 20C37 8 53 9 54 21C55 33 40 44 32 50Z' fill='none' stroke='%23E8C86A' stroke-width='4.5' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261016-caras">
-  <script src="config.js?v=20261016-caras" defer></script>
-  <script src="script.js?v=20261016-caras" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261016-corazon-inicio">
+  <script src="config.js?v=20261016-corazon-inicio" defer></script>
+  <script src="script.js?v=20261016-corazon-inicio" defer></script>
 </head>
 <body>
   <!-- Fondo de toda la invitación: cielo pintado y luces doradas que suben -->
@@ -43,6 +43,15 @@
     <div class="entry-content">
       <!-- Al inicio solo se ve la frase; el botón aparece cuando termina de escribirse -->
       <p class="entry-lead" id="entry-lead"><span class="w" style="--i:0">Como</span> <span class="w" style="--i:1">buenos</span> <span class="w" style="--i:2">productos</span> <span class="w" style="--i:3">del</span> <span class="w" style="--i:4">14</span> <span class="w" style="--i:5">de</span> <span class="w" style="--i:6">febrero,</span> <span class="w" style="--i:7">quienes</span> <span class="w" style="--i:8">cumplimos</span> <span class="w" style="--i:9">años</span> <span class="w" style="--i:10">en</span> <span class="w" style="--i:11">noviembre,</span> <span class="w ew-hl" style="--i:12">aquí</span> <span class="w ew-hl" style="--i:13">estamos</span> <span class="w ew-hl" style="--i:14">presentes</span></p>
+      <!-- Dos caminos que se encuentran y forman un corazón (empieza cuando termina de aparecer la frase) -->
+      <svg class="meeting" viewBox="0 0 420 190" aria-hidden="true">
+        <path class="route route-a" pathLength="1" d="M8 178C110 176 150 96 210 92"/>
+        <path class="route route-b" pathLength="1" d="M412 12C320 16 270 88 210 92"/>
+        <circle class="traveler" r="3.5"><animateMotion begin="1.4s" dur="1.7s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines=".5 0 .2 1" path="M8 178C110 176 150 96 210 92"/></circle>
+        <circle class="traveler" r="3.5"><animateMotion begin="1.4s" dur="1.7s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines=".5 0 .2 1" path="M412 12C320 16 270 88 210 92"/></circle>
+        <circle class="burst" cx="210" cy="92" r="30"/>
+        <path class="heart meet-heart" pathLength="1" transform="translate(177 63) scale(1.1)" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/>
+      </svg>
       <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></button>
     </div>
   </section>

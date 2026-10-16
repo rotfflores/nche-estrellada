@@ -14,9 +14,9 @@
   <!-- PENDIENTE al publicar: imagen para la vista previa con la dirección completa del sitio, por ejemplo
        <meta property="og:image" content="https://TU-DOMINIO/assets/compartir.jpg"> (1200 × 630 px) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1336'/%3E%3Cpath d='M32 50C25 43 9 34 10 21C11 8 26 8 32 20C37 8 53 9 54 21C55 33 40 44 32 50Z' fill='none' stroke='%23E8C86A' stroke-width='4.5' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css">
-  <script src="config.js" defer></script>
-  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261016-pies">
+  <script src="config.js?v=20261016-pies" defer></script>
+  <script src="script.js?v=20261016-pies" defer></script>
 </head>
 <body>
   <!-- Fondo de toda la invitación: cielo pintado y luces doradas que suben -->
@@ -34,13 +34,14 @@
     </div>
   </div>
 
-  <section class="entry" id="entry" aria-labelledby="entry-phrase">
+  <section class="entry" id="entry" aria-labelledby="entry-lead entry-phrase">
     <video class="entry-video" id="entry-video" muted loop playsinline preload="auto" poster="assets/fondo-inicio.jpg" aria-hidden="true">
       <source src="assets/fondo-inicio.mp4" type="video/mp4">
       <source src="assets/fondo-inicio.webm" type="video/webm">
     </video>
     <div class="sky" aria-hidden="true"></div>
     <div class="entry-content">
+      <p class="entry-lead" id="entry-lead">Como buenos productos del 14 de febrero, los que cumplimos años en noviembre… ¡aquí estamos presentes! 😌</p>
       <!-- Dos caminos que se encuentran y forman un corazón -->
       <svg class="meeting" viewBox="0 0 420 190" aria-hidden="true">
         <path class="route route-a" pathLength="1" d="M8 178C110 176 150 96 210 92"/>
@@ -50,7 +51,7 @@
         <circle class="burst" cx="210" cy="92" r="30"/>
         <path class="heart meet-heart" pathLength="1" transform="translate(177 63) scale(1.1)" d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/>
       </svg>
-      <p class="phrase entry-phrase" id="entry-phrase"><span class="w" style="--i:0">No</span> <span class="w" style="--i:1">tengo</span> <span class="w" style="--i:2">lugares</span> <span class="w" style="--i:3">favoritos,</span> <span class="w" style="--i:4">tengo</span> <span class="w" style="--i:5">personas</span> <span class="w" style="--i:6">favoritas.</span> <span class="w phrase-icons" style="--i:7" role="img" aria-label="Un mundo y un corazón"><svg class="pi-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.6 7.5h14.8M4.6 16.5h14.8"/></svg><svg class="pi-heart" viewBox="0 0 60 56"><path d="M30 50C23 43 5 33 6 18C7 4 24 3 30 15C36 3 53 4 54 18C55 33 37 43 30 50Z"/></svg></span></p>
+      <p class="phrase entry-phrase" id="entry-phrase"><span class="w" style="--i:0">No</span> <span class="w" style="--i:1">tengo</span> <span class="w" style="--i:2">lugares</span> <span class="w" style="--i:3">favoritos,</span> <span class="w" style="--i:4">tengo</span> <span class="w" style="--i:5">personas</span> <span class="w" style="--i:6">favoritas</span> <span class="w" style="--i:7">🌍❤️</span></p>
       <p class="eyebrow">La alegría de coincidir</p>
       <button class="button" id="open-invitation" type="button">Abrir mi invitación <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></button>
     </div>
@@ -66,7 +67,7 @@
 
   <main class="invitation" id="invitation" hidden inert>
     <section class="cover" aria-labelledby="birthday-name">
-      <p class="phrase cover-phrase reveal" style="--d:0" tabindex="-1" id="cover-phrase">No tengo lugares favoritos, tengo personas favoritas. <span class="phrase-icons" role="img" aria-label="Un mundo y un corazón"><svg class="pi-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.6 7.5h14.8M4.6 16.5h14.8"/></svg><svg class="pi-heart" viewBox="0 0 60 56"><path d="M30 50C23 43 5 33 6 18C7 4 24 3 30 15C36 3 53 4 54 18C55 33 37 43 30 50Z"/></svg></span></p>
+      <p class="phrase cover-phrase reveal" style="--d:0" tabindex="-1" id="cover-phrase">No tengo lugares favoritos, tengo personas favoritas 🌍❤️</p>
       <div class="ornament reveal" style="--d:1" aria-hidden="true">
         <span></span>
         <svg viewBox="0 0 24 24"><path d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></svg>
@@ -188,36 +189,46 @@
       </div>
     </section>
 
-    <!-- Cada versión de mí: recorrido fotográfico por etapas, de la más antigua a la más reciente. Fotos, etapas, frases y encuadres en config.js (evolution). -->
+    <!-- Cada versión de mí: un montón de polaroids; la de arriba pasa detrás al deslizar. -->
     <section class="evolution" id="evolucion" aria-labelledby="evolution-title" data-reveal>
       <div class="evolution-sheet">
         <header class="evolution-head">
           <h2 class="evolution-title fade-up" style="--i:0" id="evolution-title">Cada <em class="cw evolution-highlight">versión</em> de mí</h2>
           <p class="evolution-intro fade-up" style="--i:1" id="evolution-intro">He cambiado, he aprendido y he descubierto nuevas formas de ser yo. Hoy celebro todo lo vivido y la persona en la que me estoy convirtiendo.</p>
         </header>
-        <!-- Las fotografías se crean desde config.js y se deslizan a los lados; al soltar, cada una queda alineada -->
-        <ol class="evolution-track" id="evolution-track" aria-label="Recorrido fotográfico, de la etapa más antigua a la más reciente"></ol>
+        <!-- Las polaroids se crean desde config.js y se muestran una sobre otra -->
+        <ol class="evolution-track" id="evolution-track" aria-label="Montón de polaroids de las etapas; desliza a un lado para cambiar de foto"></ol>
         <div class="evolution-controls fade-up" style="--i:3" id="evolution-controls" hidden>
-          <button class="evolution-btn evolution-prev" id="evolution-prev" type="button" aria-label="Etapa anterior" aria-controls="evolution-track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-          <button class="evolution-btn evolution-next" id="evolution-next" type="button" aria-label="Etapa siguiente" aria-controls="evolution-track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <!-- Instrucción para deslizar (sin flechas ni contador a la vista) -->
+          <p class="evolution-hint"><svg viewBox="0 0 28 32" aria-hidden="true"><path class="evolution-hint-arrows" d="M4.5 5.5h12.5M7.5 2.5l-3 3 3 3M14 2.5l3 3-3 3"/><g class="evolution-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g></svg><span>Desliza las fotos para descubrir cada etapa</span></p>
+          <!-- La etapa actual solo se anuncia a lectores de pantalla -->
+          <span class="sr-only" id="evolution-count" role="status" aria-live="polite"></span>
         </div>
       </div>
     </section>
 
-    <!-- Álbum de fotos: una pila de instantáneas que se desliza a los lados. Fotos, pies y encuadres en config.js (album). -->
+    <!-- Álbum de fotos: rollo de película que avanza solo. Fotos y pies en config.js (album). -->
     <section class="album" id="album" aria-labelledby="album-title" data-reveal>
       <div class="album-inner">
-        <h2 class="album-title fade-up" style="--i:0" id="album-title">Mis recuerdos favoritos tienen <em class="cw album-highlight">compañía</em></h2>
-        <!-- Las fotografías se crean desde config.js; la de arriba se arrastra con el dedo o el mouse -->
-        <div class="album-stage fade-up" style="--i:1" id="album-stage" role="group" aria-roledescription="álbum" aria-label="Álbum de fotos. Usa las flechas izquierda y derecha para cambiar de foto." tabindex="0">
-          <div class="album-stack" id="album-stack"></div>
+        <!-- El título solo lo leen los lectores de pantalla; a la vista quedan las cintas -->
+        <h2 class="album-title sr-only" id="album-title">Mis recuerdos favoritos tienen <em class="cw album-highlight">compañía</em></h2>
+        <!-- Las fotografías se crean desde config.js en el orden de la lista -->
+        <div class="album-gallery fade-up" style="--i:1" role="group" aria-label="Recuerdos con mis personas favoritas">
+          <!-- Cinta de película: avanza sola hacia la izquierda; se detiene al tocarla y se puede deslizar -->
+          <div class="film" id="album-film" tabindex="0" aria-label="Rollo de fotos de mis recuerdos. Usa las flechas para recorrerlo."><ol class="film-track"></ol></div>
         </div>
-        <!-- Instrucción para deslizar: el texto se edita en config.js (album.hint) -->
-        <p class="album-hint fade-up" style="--i:2" id="album-hint-row">
-          <svg viewBox="0 0 28 32" aria-hidden="true"><path class="album-hint-arrows" d="M4.5 5.5h12.5M7.5 2.5l-3 3 3 3M14 2.5l3 3-3 3"/><g class="album-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g></svg>
-          <span id="album-hint">Desliza las fotos para descubrir más recuerdos</span>
-        </p>
-        <p class="sr-only" id="album-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- Fotos grupales: segundo rollo de película, avanza en sentido contrario. Fotos y frases en config.js (groupGallery). -->
+    <section class="group-gallery" id="grupales" aria-labelledby="group-title" data-reveal>
+      <div class="group-gallery-inner">
+        <h2 class="group-title sr-only" id="group-title">Caminos compartidos</h2>
+        <!-- Segunda cinta: avanza sola hacia la derecha. Debajo, una sola instrucción para las dos cintas -->
+        <div class="group-roll fade-up" style="--i:2">
+          <div class="film" id="group-film" tabindex="0" role="group" aria-label="Rollo de fotografías grupales. Usa las flechas para recorrerlo."><ol class="film-track"></ol></div>
+          <p class="film-hint fade-up" style="--i:3" id="film-hint"><svg viewBox="0 0 28 32" aria-hidden="true"><path class="evolution-hint-arrows" d="M4.5 5.5h12.5M7.5 2.5l-3 3 3 3M14 2.5l3 3-3 3"/><g class="evolution-hint-hand"><g transform="translate(3.5 9) scale(.92)"><path d="M18 11V10a2 2 0 0 0-4 0v1M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g></g></svg><span>Toca para pausar o desliza para ver más</span></p>
+        </div>
       </div>
     </section>
 

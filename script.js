@@ -493,11 +493,11 @@
       });
     }, { threshold:0, rootMargin:"0px 0px -60px 0px" });
     revealItems.forEach(item => observer.observe(item));
-    // Los adornos en bucle (sello, mano del álbum, ondas del micrófono…) se detienen lejos de la pantalla.
+    // Los adornos en bucle (sello, ondas del micrófono…) se detienen lejos de la pantalla.
     const loops = new IntersectionObserver(entries => {
       entries.forEach(item => item.target.classList.toggle("is-offscreen", !item.isIntersecting));
     }, { rootMargin:"120px 0px" });
-    document.querySelectorAll(".cover, #evolucion, #album, .karaoke-panel, #rsvp-thanks").forEach(element => loops.observe(element));
+    document.querySelectorAll(".cover, #evolucion, #album, #grupales, .karaoke-panel, #rsvp-thanks").forEach(element => loops.observe(element));
   } else {
     revealItems.forEach(item => item.classList.add("is-in"));
   }
@@ -511,7 +511,7 @@
   if (karaoke.cue !== undefined) karaokeCue.textContent = karaoke.cue;
   karaokeCue.hidden = !karaokeCue.textContent.trim();
 
-  // Cada versión de mí: recorrido fotográfico en el orden de config.js. Se desliza con el dedo o con los botones.
+  // Cada versión de mí: un montón de polaroids; la de arriba pasa detrás al deslizar.
   const evolution = config.evolution || {};
   const evolutionSection = document.getElementById("evolucion");
   const stages = (Array.isArray(evolution.photos) ? evolution.photos : []).filter(photo => photo && typeof photo === "object" && photo.src);
@@ -526,11 +526,9 @@
     const controls = document.getElementById("evolution-controls");
     const previousStage = document.getElementById("evolution-prev");
     const nextStage = document.getElementById("evolution-next");
-    track.style.setProperty("--n", String(stages.length));
     const items = stages.map((photo, index) => {
       const item = document.createElement("li");
       item.className = "evolution-card";
-      item.style.setProperty("--c", String(index));
       const figure = document.createElement("figure");
       figure.className = "evolution-figure";
       const frame = document.createElement("div");
@@ -552,12 +550,7 @@
       image.loading = "lazy";
       image.src = photo.src;
       frame.append(placeholder, image);
-      // Punto sobre la línea que une las etapas
-      const mark = document.createElement("div");
-      mark.className = "evolution-mark";
-      mark.setAttribute("aria-hidden", "true");
-      mark.innerHTML = '<span class="evolution-dot"></span>';
-      figure.append(frame, mark);
+      figure.append(frame);
       const stageText = String(photo.stage || "").trim();
       const phraseText = String(photo.phrase || "").trim();
       if (stageText || phraseText) {
@@ -591,216 +584,282 @@
       warm.observe(evolutionSection);
     }
 
-    // Los botones llevan a la foto anterior o siguiente; solo aparecen si las fotos no caben a la vista.
-    const startOffset = () => parseFloat(getComputedStyle(track).paddingLeft) || 0;
-    function nearestStage() {
-      const position = track.scrollLeft + startOffset();
-      let best = 0;
+    let activeStage = 0;
+    let movingStage = false;
+    const count = document.getElementById("evolution-count");
+    function showStack() {
       items.forEach((item, index) => {
-        if (Math.abs(item.offsetLeft - position) < Math.abs(items[best].offsetLeft - position)) best = index;
+        const depth = (index - activeStage + items.length) % items.length;
+        item.style.setProperty("--depth", String(Math.min(depth, 4)));
+        item.style.setProperty("--tilt", depth === 0 ? "-2deg" : `${depth % 2 ? 3 : -3}deg`);
+        item.style.zIndex = String(items.length - depth);
+        item.classList.toggle("is-active", depth === 0);
+        item.setAttribute("aria-hidden", String(depth !== 0));
       });
-      return best;
+      count.textContent = `${String(activeStage + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}`;
+      count.setAttribute("aria-label", `Etapa ${activeStage + 1} de ${items.length}`);
     }
-    function goToStage(index) {
-      const target = items[Math.max(0, Math.min(items.length - 1, index))];
-      track.scrollTo({ left: target.offsetLeft - startOffset(), behavior: reducedMotion.matches ? "auto" : "smooth" });
+    function moveStack(direction) {
+      if (movingStage || items.length < 2) return;
+      movingStage = true;
+      const outgoing = items[activeStage];
+      outgoing.style.setProperty("--swipe-exit", direction > 0 ? "-100vw" : "100vw");
+      outgoing.style.setProperty("--swipe-rotate", direction > 0 ? "-16deg" : "16deg");
+      outgoing.style.zIndex = String(items.length + 1);
+      outgoing.classList.add("is-departing");
+      const finish = () => {
+        activeStage = (activeStage + direction + items.length) % items.length;
+        outgoing.classList.add("is-resetting");
+        outgoing.classList.remove("is-departing");
+        showStack();
+        window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+          outgoing.classList.remove("is-resetting");
+          movingStage = false;
+        }));
+      };
+      if (reducedMotion.matches) finish();
+      else window.setTimeout(finish, 380);
     }
-    function updateStages() {
-      const max = track.scrollWidth - track.clientWidth;
-      const scrollable = max > 2;
-      controls.hidden = !scrollable;
-      track.classList.toggle("is-scrollable", scrollable);
-      if (scrollable) track.setAttribute("tabindex", "0");
-      else track.removeAttribute("tabindex");
-      previousStage.setAttribute("aria-disabled", String(track.scrollLeft <= 2));
-      nextStage.setAttribute("aria-disabled", String(track.scrollLeft >= max - 2));
-    }
-    let stagesFrame = 0;
-    const requestStages = () => {
-      if (stagesFrame) return;
-      stagesFrame = window.requestAnimationFrame(() => { stagesFrame = 0; updateStages(); });
-    };
-    previousStage.addEventListener("click", () => {
-      if (previousStage.getAttribute("aria-disabled") !== "true") goToStage(nearestStage() - 1);
+    controls.hidden = items.length < 2;
+    if (items.length > 1) track.tabIndex = 0;
+    showStack();
+    // Las flechas se quitaron: se cambia de foto deslizando o con las teclas izquierda y derecha.
+    if (previousStage) previousStage.addEventListener("click", () => moveStack(-1));
+    if (nextStage) nextStage.addEventListener("click", () => moveStack(1));
+    track.addEventListener("keydown", event => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      moveStack(event.key === "ArrowLeft" ? -1 : 1);
     });
-    nextStage.addEventListener("click", () => {
-      if (nextStage.getAttribute("aria-disabled") !== "true") goToStage(nearestStage() + 1);
+    let pointerStart = null;
+    track.addEventListener("pointerdown", event => {
+      if (movingStage || items.length < 2 || (event.pointerType === "mouse" && event.button !== 0)) return;
+      pointerStart = { id:event.pointerId, x:event.clientX, y:event.clientY };
+      items[activeStage].classList.add("is-dragging");
+      track.setPointerCapture(event.pointerId);
     });
-    track.addEventListener("scroll", requestStages, { passive:true });
-    if ("ResizeObserver" in window) new ResizeObserver(requestStages).observe(track);
-    else window.addEventListener("resize", requestStages);
-    updateStages();
+    track.addEventListener("pointermove", event => {
+      if (!pointerStart || event.pointerId !== pointerStart.id) return;
+      const dx = event.clientX - pointerStart.x;
+      const dy = event.clientY - pointerStart.y;
+      const drag = Math.abs(dx) > Math.abs(dy) * 1.1 ? dx : 0;
+      items[activeStage].style.setProperty("--drag-x", `${drag}px`);
+      items[activeStage].style.setProperty("--drag-rotate", `${Math.max(-12, Math.min(12, drag / 18))}deg`);
+    });
+    track.addEventListener("pointerup", event => {
+      if (!pointerStart || event.pointerId !== pointerStart.id) return;
+      const dx = event.clientX - pointerStart.x;
+      const dy = event.clientY - pointerStart.y;
+      pointerStart = null;
+      items[activeStage].classList.remove("is-dragging");
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) moveStack(dx < 0 ? 1 : -1);
+    });
+    track.addEventListener("pointercancel", () => {
+      pointerStart = null;
+      items[activeStage].classList.remove("is-dragging");
+    });
   }
 
-  // Álbum: pila de instantáneas. La foto de arriba se arrastra a los lados y pasa al fondo de la pila.
+  // Cintas de película: «Mis recuerdos» avanza hacia la izquierda y «Caminos compartidos» hacia la derecha.
+  // Avanzan solas; se detienen con suavidad mientras el dedo o el mouse está encima, se arrastran a mano
+  // y, al soltarlas, conservan el impulso del gesto y regresan enseguida a su ritmo.
+  const finePointer = window.matchMedia("(hover:hover) and (pointer:fine)");
+  function buildFilmRoll(roll, photos, options) {
+    const track = roll.querySelector(".film-track");
+    const makeFrame = (photo, index, copy) => {
+      const item = document.createElement("li");
+      item.className = "film-frame";
+      if (copy) {
+        // Las copias solo sirven para que la cinta no tenga fin; los lectores de pantalla leen una sola vez.
+        item.setAttribute("aria-hidden", "true");
+        item.inert = true;
+      }
+      const cell = document.createElement("div");
+      cell.className = "film-cell";
+      const edge = document.createElement("span");
+      edge.className = "film-edge";
+      edge.setAttribute("aria-hidden", "true");
+      edge.textContent = "La alegría de coincidir";
+      const frame = document.createElement("figure");
+      frame.className = "film-window";
+      const image = document.createElement("img");
+      image.alt = copy ? "" : (photo.alt || `${options.label} ${index + 1}`);
+      image.decoding = "async";
+      image.loading = "lazy";
+      image.draggable = false;
+      image.addEventListener("load", () => item.classList.add("has-photo"));
+      image.addEventListener("error", () => { item.hidden = true; });
+      if (photo.src) image.src = photo.src;
+      frame.append(image);
+      // El nombre o el párrafo de cada foto va impreso en la cinta, debajo del cuadro.
+      const caption = document.createElement("p");
+      caption.className = `film-caption ${options.captionClass}`;
+      const words = document.createElement("span");
+      words.textContent = String(photo.caption || "").trim();
+      caption.append(words);
+      cell.append(edge, frame, caption);
+      item.append(cell);
+      return item;
+    };
+    // La tira oscura con perforaciones es una sola pieza continua detrás de todas las fotos.
+    const band = document.createElement("li");
+    band.className = "film-band";
+    band.setAttribute("aria-hidden", "true");
+    // Tres juegos seguidos: se avanza por el del centro y al llegar a un extremo se salta al juego equivalente.
+    track.replaceChildren(band, ...[0, 1, 2].flatMap(copy => photos.map((photo, index) => makeFrame(photo, index, copy !== 1))));
+    const frames = [...track.querySelectorAll(".film-frame")];
+    const count = photos.length;
+    let setWidth = 0;
+    let position = 0; // cuánto se ha recorrido la cinta, en píxeles
+    let velocity = 0; // píxeles por segundo; positivo avanza hacia la izquierda
+    let dragging = null;
+    let holding = false;
+    let hovering = false;
+    let focused = false;
+    let visible = !("IntersectionObserver" in window);
+    let keyTarget = null;
+    let previous = 0;
+    const cruise = () => (window.innerWidth < 850 ? 26 : 34) * options.direction;
+    const wrap = () => {
+      if (!setWidth) return;
+      while (position < setWidth * .5) position += setWidth;
+      while (position > setWidth * 1.5) position -= setWidth;
+    };
+    const render = () => { track.style.transform = `translate3d(${(-position).toFixed(2)}px,0,0)`; };
+    const captions = [...track.querySelectorAll(".film-caption span")];
+    let captionHeight = 0;
+    const measure = () => {
+      // La franja de texto mide lo que el pie más largo, para que ningún texto se corte.
+      const tallest = Math.ceil(Math.max(0, ...captions.map(text => text.offsetHeight)));
+      if (tallest && tallest !== captionHeight) {
+        captionHeight = tallest;
+        roll.style.setProperty("--cap-h", `${tallest}px`);
+      }
+      const width = frames[count].offsetLeft - frames[0].offsetLeft;
+      if (!width) return;
+      // Conserva el punto de la cinta cuando cambia el ancho (fotos que terminan de cargar, giro de pantalla).
+      position = setWidth ? width + (position - setWidth) * (width / setWidth) : width;
+      setWidth = width;
+      wrap();
+      render();
+    };
+    const step = now => {
+      const dt = previous ? Math.min(now - previous, 50) / 1000 : 0;
+      previous = now;
+      if (setWidth && !dragging && visible && !document.hidden) {
+        if (keyTarget !== null) {
+          // Flechas del teclado: se desliza hasta la siguiente foto con una curva suave.
+          const gap = keyTarget - position;
+          position += gap * (1 - Math.exp(-dt / .12));
+          velocity = 0;
+          if (Math.abs(gap) < .5) { position = keyTarget; keyTarget = null; }
+        } else {
+          const stopped = holding || hovering || focused || reducedMotion.matches;
+          const target = stopped ? 0 : cruise();
+          // El impulso del gesto se disipa poco a poco hasta volver al ritmo de crucero (o detenerse si está en pausa).
+          const ease = Math.abs(velocity) > Math.abs(cruise()) * 1.5 ? .55 : .35;
+          velocity += (target - velocity) * (1 - Math.exp(-dt / ease));
+          position += velocity * dt;
+        }
+        wrap();
+        render();
+      }
+      window.requestAnimationFrame(step);
+    };
+    // Arrastre con el dedo o el mouse. touch-action: pan-y deja libre el desplazamiento vertical de la página.
+    let samples = [];
+    roll.addEventListener("pointerdown", event => {
+      if (event.button > 0) return;
+      holding = true;
+      keyTarget = null;
+      dragging = { id:event.pointerId, x:event.clientX, start:position, moved:false };
+      samples = [{ t:event.timeStamp, dx:0 }];
+      velocity = 0;
+    });
+    roll.addEventListener("pointermove", event => {
+      if (!dragging || event.pointerId !== dragging.id) return;
+      const dx = event.clientX - dragging.x;
+      if (!dragging.moved && Math.abs(dx) > 3) {
+        dragging.moved = true;
+        roll.classList.add("is-dragging");
+        // Con mouse se captura el puntero para seguir el arrastre aunque salga de la cinta (el dedo ya queda capturado).
+        if (event.pointerType === "mouse") try { roll.setPointerCapture(event.pointerId); } catch { /* el puntero ya se soltó */ }
+      }
+      if (!dragging.moved) return;
+      position = dragging.start - dx;
+      wrap();
+      if (position - dragging.start + dx !== 0) { dragging.start = position + dx; }
+      render();
+      samples.push({ t:event.timeStamp, dx });
+      while (samples.length > 2 && event.timeStamp - samples[0].t > 90) samples.shift();
+    });
+    const release = event => {
+      if (!dragging || (event && event.pointerId !== dragging.id)) return;
+      if (dragging.moved && samples.length > 1) {
+        const first = samples[0];
+        const last = samples[samples.length - 1];
+        const span = (last.t - first.t) / 1000;
+        // Velocidad del gesto en los últimos instantes: la cinta sigue con ese impulso.
+        if (span > 0) velocity = Math.max(-2600, Math.min(2600, -(last.dx - first.dx) / span));
+      }
+      dragging = null;
+      holding = false; // Al soltar, la cinta sigue de inmediato.
+      roll.classList.remove("is-dragging");
+    };
+    roll.addEventListener("pointerup", release);
+    roll.addEventListener("pointercancel", release);
+    roll.addEventListener("pointerleave", event => { if (event.pointerType !== "mouse" && !dragging) holding = false; });
+    roll.addEventListener("mouseenter", () => { if (finePointer.matches) hovering = true; });
+    roll.addEventListener("mouseleave", () => { hovering = false; });
+    // Solo el foco con teclado detiene la cinta; un clic con el mouse no la deja quieta.
+    roll.addEventListener("focusin", () => { focused = roll.matches(":focus-visible"); });
+    roll.addEventListener("focusout", () => { focused = false; });
+    roll.addEventListener("keydown", event => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      focused = true;
+      const frameWidth = setWidth / count || 240;
+      keyTarget = (keyTarget ?? position) + (event.key === "ArrowLeft" ? -frameWidth : frameWidth);
+    });
+    if (!visible) {
+      new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        // Las fotos se piden cuando la cinta se acerca a la pantalla.
+        if (visible) track.querySelectorAll("img").forEach(img => { img.loading = "eager"; });
+      }, { rootMargin:"60% 0px" }).observe(roll);
+    }
+    if ("ResizeObserver" in window) new ResizeObserver(measure).observe(track);
+    window.addEventListener("resize", measure);
+    velocity = reducedMotion.matches ? 0 : cruise();
+    measure();
+    window.requestAnimationFrame(step);
+  }
+  // Con movimiento reducido las cintas no avanzan solas: la instrucción solo invita a deslizar.
+  const filmHintText = () => reducedMotion.matches
+    ? (finePointer.matches ? "Arrastra para ver más fotos" : "Desliza para ver más fotos")
+    : (finePointer.matches ? "Pasa el mouse para pausar o arrastra para ver más" : "Toca para pausar o desliza para ver más");
+  document.querySelectorAll(".film-hint span").forEach(hint => { hint.textContent = filmHintText(); });
+
+  // Álbum: rollo de película con las fotos en el orden de config.js.
   const album = config.album || {};
   const albumSection = document.getElementById("album");
-  const albumPhotos = (Array.isArray(album.photos) ? album.photos : []).filter(photo => photo && typeof photo === "object");
+  const albumPhotos = (Array.isArray(album.photos) ? album.photos : []).filter(photo => photo && typeof photo === "object" && photo.src);
   if (!albumPhotos.length) {
     albumSection.hidden = true;
   } else {
     if (album.title) buildTitle(document.getElementById("album-title"), album.title, album.highlight, "album-highlight");
-    setText("album-hint", album.hint);
-    const stage = document.getElementById("album-stage");
-    const stack = document.getElementById("album-stack");
-    const status = document.getElementById("album-status");
-    const total = albumPhotos.length;
-    // Cada foto con una inclinación distinta; las de abajo se asoman por los bordes.
-    const tilts = [-2.5, 3.5, -5, 2, 5.5, -3.5, 4.5, -1.5];
-    const offsets = [[0, 0], [22, 10], [-24, 16], [12, 26]];
-    const visible = offsets.length;
-    const cards = albumPhotos.map((photo, index) => {
-      const card = document.createElement("figure");
-      card.className = "album-card";
-      card.style.setProperty("--r", `${tilts[index % tilts.length]}deg`);
-      card.dataset.tint = String(index % 3);
-      const frame = document.createElement("div");
-      frame.className = "album-photo";
-      const placeholder = document.createElement("div");
-      placeholder.className = "album-ph";
-      placeholder.setAttribute("role", "img");
-      placeholder.setAttribute("aria-label", `Espacio reservado para el recuerdo ${index + 1}`);
-      placeholder.innerHTML = '<svg class="heart" viewBox="0 0 60 56" aria-hidden="true"><path d="M30 47C23 40 7 31 8 18C9 5 24 5 30 17C35 5 51 6 52 18C53 30 38 41 30 47Z"/></svg><span class="album-ph-word"></span><span class="album-ph-note">Tu fotografía aquí</span>';
-      placeholder.querySelector(".album-ph-word").textContent = `Recuerdo ${index + 1}`;
-      const image = document.createElement("img");
-      image.alt = photo.alt || `Recuerdo ${index + 1}`;
-      image.decoding = "async";
-      image.draggable = false;
-      image.style.objectPosition = photo.position || "50% 50%";
-      image.addEventListener("load", () => card.classList.add("has-photo"));
-      image.addEventListener("error", () => card.classList.remove("has-photo"));
-      image.loading = "lazy";
-      if (photo.src) image.src = photo.src;
-      frame.append(placeholder, image);
-      const caption = document.createElement("figcaption");
-      caption.className = "album-caption";
-      caption.textContent = photo.caption || "";
-      card.append(frame, caption);
-      stack.append(card);
-      return card;
-    });
-    let order = cards.map((card, index) => index);
-    let busy = false;
-    let drag = null;
-    const tiltOf = card => parseFloat(card.style.getPropertyValue("--r")) || 0;
-    const wait = (ms, done) => window.setTimeout(done, reducedMotion.matches ? 0 : ms);
-    // Coloca una foto según su lugar en la pila (0 = arriba).
-    function place(card, depth) {
-      const [x, y] = offsets[Math.min(depth, visible - 1)];
-      card.style.setProperty("--x", `${x}px`);
-      card.style.setProperty("--y", `${y}px`);
-      card.style.setProperty("--s", String(1 - Math.min(depth, visible - 1) * .025));
-      card.style.setProperty("--rd", String(Math.max(0, Math.min(total, visible) - 1 - depth)));
-      card.style.zIndex = String(total - depth);
-      card.classList.toggle("is-top", depth === 0);
-      card.classList.toggle("is-hidden", depth >= visible);
-      card.setAttribute("aria-hidden", depth === 0 ? "false" : "true");
-    }
-    function layout(except) {
-      order.forEach((index, depth) => { if (cards[index] !== except) place(cards[index], depth); });
-    }
-    function announce() {
-      const photo = albumPhotos[order[0]];
-      status.textContent = `Foto ${order[0] + 1} de ${total}. ${photo.caption || photo.alt || `Recuerdo ${order[0] + 1}`}`;
-    }
-    // La foto de arriba sale hacia un lado y pasa al fondo; la siguiente queda al frente.
-    function next(direction) {
-      if (busy || total < 2) return;
-      busy = true;
-      const card = cards[order[0]];
-      card.classList.remove("is-dragging");
-      card.classList.add("is-flying");
-      card.style.zIndex = String(total + 1);
-      card.style.transform = `translate(${direction * card.offsetWidth * 1.08}px, -14px) rotate(${tiltOf(card) + direction * 14}deg)`;
-      order.push(order.shift());
-      layout(card);
-      announce();
-      wait(360, () => {
-        card.classList.remove("is-flying");
-        place(card, total - 1);
-        card.style.removeProperty("transform");
-        wait(160, () => { busy = false; });
-      });
-    }
-    // La foto del fondo sale por un lado y vuelve al frente.
-    function previous() {
-      if (busy || total < 2) return;
-      busy = true;
-      const card = cards[order[order.length - 1]];
-      order.unshift(order.pop());
-      layout(card);
-      card.classList.remove("is-hidden");
-      card.classList.add("is-flying");
-      card.style.zIndex = "0";
-      card.style.transform = `translate(${-card.offsetWidth * 1.08}px, -14px) rotate(${tiltOf(card) - 14}deg)`;
-      announce();
-      wait(360, () => {
-        card.classList.remove("is-flying");
-        place(card, 0);
-        card.style.removeProperty("transform");
-        wait(160, () => { busy = false; });
-      });
-    }
-
-    layout();
-    if (total < 2) {
-      document.getElementById("album-hint-row").hidden = true;
-      stage.removeAttribute("tabindex");
-      stage.removeAttribute("aria-label");
-    } else {
-      stage.classList.add("is-interactive");
-      stage.addEventListener("keydown", event => {
-        if (event.key === "ArrowRight") { event.preventDefault(); next(-1); }
-        if (event.key === "ArrowLeft") { event.preventDefault(); previous(); }
-      });
-
-      // Arrastre con dedo o mouse. Solo se activa si el gesto es horizontal: el desplazamiento vertical sigue funcionando.
-      stage.addEventListener("pointerdown", event => {
-        if (busy || !event.isPrimary || event.button > 0) return;
-        const card = cards[order[0]];
-        if (!card.contains(event.target)) return;
-        drag = { id:event.pointerId, card, x0:event.clientX, y0:event.clientY, dx:0, dy:0, active:false, lastX:event.clientX, lastT:event.timeStamp, vx:0 };
-        if (event.pointerType === "mouse") event.preventDefault();
-      });
-      stage.addEventListener("pointermove", event => {
-        if (!drag || event.pointerId !== drag.id) return;
-        drag.dx = event.clientX - drag.x0;
-        drag.dy = event.clientY - drag.y0;
-        if (!drag.active) {
-          if (Math.abs(drag.dx) < 8 && Math.abs(drag.dy) < 8) return;
-          if (Math.abs(drag.dx) <= Math.abs(drag.dy)) { drag = null; return; }
-          drag.active = true;
-          try { drag.card.setPointerCapture(event.pointerId); } catch (error) { /* El arrastre sigue sin captura. */ }
-          drag.card.classList.add("is-dragging");
-        }
-        const elapsed = event.timeStamp - drag.lastT;
-        if (elapsed > 0) drag.vx = (event.clientX - drag.lastX) / elapsed;
-        drag.lastX = event.clientX;
-        drag.lastT = event.timeStamp;
-        // La foto sigue al dedo y gira un poco hacia el lado del movimiento.
-        const turn = Math.max(-16, Math.min(16, drag.dx * .06));
-        drag.card.style.transform = `translate(${drag.dx}px, ${drag.dy * .18}px) rotate(${tiltOf(drag.card) + turn}deg)`;
-      });
-      const release = event => {
-        if (!drag || event.pointerId !== drag.id) return;
-        const { card, dx, vx, active } = drag;
-        drag = null;
-        if (!active) return;
-        const limit = Math.min(130, card.offsetWidth * .32);
-        const flung = Math.abs(dx) > 40 && Math.abs(vx) > .55 && Math.sign(vx) === Math.sign(dx);
-        if (event.type === "pointerup" && (Math.abs(dx) > limit || flung)) {
-          next(Math.sign(dx));
-        } else {
-          // No llegó lejos: regresa suavemente a su lugar.
-          card.classList.remove("is-dragging");
-          card.style.removeProperty("transform");
-        }
-      };
-      stage.addEventListener("pointerup", release);
-      stage.addEventListener("pointercancel", release);
-    }
+    buildFilmRoll(document.getElementById("album-film"), albumPhotos, { direction:1, captionClass:"film-caption-hand", label:"Recuerdo" });
   }
-
+  // Fotos grupales: segundo rollo, avanza en sentido contrario.
+  const groupGallery = config.groupGallery || {};
+  const groupSection = document.getElementById("grupales");
+  const groupPhotos = (Array.isArray(groupGallery.photos) ? groupGallery.photos : []).filter(photo => photo && photo.src);
+  if (!groupPhotos.length) {
+    groupSection.hidden = true;
+  } else {
+    if (groupGallery.title) document.getElementById("group-title").textContent = groupGallery.title;
+    buildFilmRoll(document.getElementById("group-film"), groupPhotos, { direction:-1, captionClass:"film-caption-text", label:"Fotografía grupal" });
+  }
   // Cierre: título, mensaje, firma y pie vienen de config.js.
   const closing = config.closing || {};
   const closingTitle = document.getElementById("closing-title");

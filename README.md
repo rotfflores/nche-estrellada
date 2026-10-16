@@ -6,11 +6,13 @@ Invitación digital con entrada musical, portada, carta personal, álbum de foto
 
 Todos los datos están en `config.js`: nombre, fotografía, encuadre, fecha, hora, ruta de audio y segundo de inicio. No se incluye la fotografía de la clienta.
 
-Coloca la fotografía en `assets/festejada.jpg`. La canción proporcionada por la clienta está en `assets/milagros.mp3`. Si la fotografía falta, se muestra un marcador editorial. Si el audio falta, no bloquea la apertura. La música intenta iniciar sola desde el segundo 35 al cargar la página; como la mayoría de los navegadores bloquea el audio automático, si no se permite empieza con el primer toque, clic o tecla (incluido el botón de entrada); deslizar no cuenta como toque. Pausar y reanudar conserva la posición. El control de música aparece en cuanto la música suena, también en la pantalla de entrada, para poder pausarla desde el principio: en celular es un ícono redondo arriba a la derecha que se hace a un lado mientras un título o un botón pasa por esa esquina; en laptops angostas (hasta 1299 px de ancho), un ícono redondo abajo a la derecha; en pantallas más anchas, la píldora «Pausar / Reanudar».
+La fotografía proporcionada por la clienta está en `assets/festejada.jpg`. La canción proporcionada por la clienta está en `assets/milagros.mp3`. Si la fotografía falta, se muestra un marcador editorial. Si el audio falta, no bloquea la apertura. La música intenta iniciar sola desde el segundo 35 al cargar la página; como la mayoría de los navegadores bloquea el audio automático, si no se permite empieza con el primer toque, clic o tecla (incluido el botón de entrada); deslizar no cuenta como toque. Pausar y reanudar conserva la posición. El control de música aparece en cuanto la música suena, también en la pantalla de entrada, para poder pausarla desde el principio: en celular es un ícono redondo arriba a la derecha que se hace a un lado mientras un título o un botón pasa por esa esquina; en laptops angostas (hasta 1299 px de ancho), un ícono redondo abajo a la derecha; en pantallas más anchas, la píldora «Pausar / Reanudar».
 
 La pantalla de entrada usa como fondo `assets/fondo-inicio.mp4` (con respaldo `fondo-inicio.webm` e imagen fija `fondo-inicio.jpg`), silenciado y en bucle.
 
-El fondo de la invitación abierta es la pintura `assets/fondo-cielo.jpg`. El remolino de la luna (`assets/remolino.webp`, con `remolino.png` como original y respaldo) gira despacio, un brillo cálido recorre las pinceladas y las estrellas doradas titilan. Los adornos que se mueven en bucle (sello del boleto, mano del álbum, ondas del micrófono, etc.) se detienen mientras su sección está lejos de la pantalla. En pantallas anchas la pintura se recorre de arriba abajo al desplazarse. Con movimiento reducido el fondo queda quieto.
+El inicio abre con la frase que dio Victoria sobre cumplir años en noviembre; después muestra «No tengo lugares favoritos, tengo personas favoritas 🌍❤️» y «La alegría de coincidir».
+
+El fondo de la invitación abierta es la pintura `assets/fondo-cielo.jpg`. El remolino de la luna (`assets/remolino.webp`, con `remolino.png` como original y respaldo) gira despacio, un brillo cálido recorre las pinceladas y las estrellas doradas titilan. Los adornos que se mueven en bucle (sello del boleto, ondas del micrófono, etc.) se detienen mientras su sección está lejos de la pantalla. En pantallas anchas la pintura se recorre de arriba abajo al desplazarse. Con movimiento reducido el fondo queda quieto.
 
 ## Vista local
 
@@ -37,27 +39,21 @@ El texto actual es provisional.
 
 Entre la carta y el álbum está `#evolucion`, «Cada versión de mí»: un recorrido fotográfico por las etapas de la festejada, de la más antigua a la más reciente. Va sobre una hoja de papel crema, con el título en azul iris (la palabra «versión» en cursiva con un trazo amarillo mantequilla) y el texto introductorio debajo.
 
-- Las fotos son rectangulares, montadas con un borde blanco fino y un filete azul; no se apilan. Debajo, una línea fina las une con un punto amarillo mantequilla por etapa; la línea entra desde la izquierda y sigue hacia la derecha después de la última foto, que tiene un brillo suave.
-- En celular se ve una foto completa y asoma la siguiente. Se desliza con el dedo y al soltar cada foto queda alineada; deslizar hacia arriba o abajo sigue moviendo la página.
-- En escritorio las fotos se acomodan en una fila si caben; si no, se recorren igual que en celular.
-- La hoja se ajusta al alto de la pantalla (título, fotos y tamaños se reducen en laptops y celulares bajos) para que se vea completa sin cortarse.
-- Los botones «Etapa anterior» y «Etapa siguiente» aparecen solo cuando hay fotos fuera de la vista y funcionan con teclado. El recorrido nunca avanza solo.
-- Al aparecer, la hoja sube, las fotos entran en orden y la línea se dibuja de punto en punto. Con movimiento reducido todo se muestra quieto.
+- Las seis fotos forman un solo montón de polaroids blancas, ligeramente giradas. Se ve una al frente y los bordes de las demás detrás. Las etiquetas de etapa y cualquier comentario forman parte del borde inferior de cada polaroid.
+- Al deslizar la polaroid superior hacia la izquierda, pasa detrás del montón y aparece la siguiente. Hacia la derecha se ve la anterior. El recorrido vuelve a empezar después de la sexta. Deslizar hacia arriba o abajo sigue moviendo la página.
+- La hoja se adapta al ancho de la pantalla. En pantallas bajas puede continuar verticalmente para mantener las polaroids legibles.
+- Los botones «Etapa anterior» y «Etapa siguiente» permiten el mismo movimiento y muestran el número de etapa; también funcionan las flechas del teclado. El montón nunca avanza solo.
+- Al aparecer, la hoja y el montón entran suavemente. Con movimiento reducido el cambio de foto es inmediato.
 
-Las fotos se editan en `config.js`, dentro de `evolution.photos`, y se muestran en el orden de la lista (de tres a cinco). Cada una lleva `src` (ruta), `alt` (lo que se ve), `stage` (fecha o nombre de la etapa, opcional), `phrase` (frase breve de la clienta, opcional) y `position` (encuadre; `"50% 30%"` deja la foto centrada y un poco hacia arriba para no cortar la cabeza). Si `stage` y `phrase` van vacíos no se muestra nada debajo de la foto. Las fotos no llevan filtros ni se deforman: solo se elige el encuadre. Mientras falte un archivo se ve un espacio «Etapa N». Sin fotos en la lista se oculta la sección. `title`, `highlight` e `intro` son el título, la palabra en cursiva y el texto introductorio (provisional).
+Las seis fotos de Victoria están en `assets/etapas/` y se editan en `config.js`, dentro de `evolution.photos`. Se muestran en el orden de la lista. Cada una lleva `src` (ruta), `alt` (lo que se ve), `stage` (nombre de la etapa), `phrase` (comentario de la clienta, opcional) y `position` (encuadre; `"50% 30%"` deja la foto centrada y un poco hacia arriba para no cortar la cabeza). El comentario sobre «hasta los 2022» está asociado a la etapa 2. Si `stage` y `phrase` van vacíos no se muestra nada debajo de la foto. Las fotos no llevan filtros ni se deforman: solo se elige el encuadre. Mientras falte un archivo se ve un espacio «Etapa N». Sin fotos en la lista se oculta la sección. `title`, `highlight` e `intro` son el título, la palabra en cursiva y el texto introductorio (provisional).
 
 ## Álbum de fotos
 
-Entre «Cada versión de mí» y el lugar está `#album`, «Mis recuerdos favoritos tienen compañía»: una pila centrada de fotografías tipo instantánea con borde blanco cálido, margen inferior amplio, inclinaciones distintas y sombra suave. Se ven hasta cuatro a la vez; la de arriba completa y las demás asomándose por los bordes.
+Entre «Cada versión de mí» y el lugar están `#album` («Mis recuerdos favoritos tienen compañía») y `#grupales` («Caminos compartidos»). Cada uno muestra sus fotos en un rollo de película sin contenedor ni fondo: una tira oscura cuyas perforaciones dejan ver el cielo, el texto «La alegría de coincidir» en el borde superior y, en la franja de abajo, el pie de cada foto (los nombres en el álbum, el párrafo en «Caminos compartidos»). La franja toma la altura del pie más largo, así ningún texto se corta. Las fotos se ven completas, sin recortes. Los títulos de ambas secciones siguen en el HTML solo para lectores de pantalla (no se ven), y los dos rollos van juntos, uno debajo del otro; cada uno entra desde su lado.
 
-- La foto de arriba se arrastra con el dedo o el mouse: sigue el movimiento y gira un poco. Si pasa cierta distancia (o se lanza rápido) sale hacia ese lado y pasa al fondo; si no, regresa a su lugar. Un gesto mueve solo una foto.
-- El arrastre solo se activa cuando el gesto es horizontal: deslizar hacia arriba o abajo sigue desplazando la página.
-- Debajo de las fotos hay una indicación con una mano que hace el gesto de deslizar («Desliza las fotos para descubrir más recuerdos»); no hay botones ni contador. Con el álbum enfocado, las flechas izquierda y derecha del teclado también cambian de foto. El álbum es circular y nunca avanza solo.
-- Con movimiento reducido las fotos cambian sin animación.
+Los rollos avanzan solos y en sentidos opuestos: el álbum hacia la izquierda y «Caminos compartidos» hacia la derecha. Son infinitos (al terminar vuelven a empezar sin salto). Se pausan mientras el dedo o el mouse está encima y se pueden deslizar con el dedo o arrastrar con el mouse. Al soltarlos o al retirar el mouse continúan de inmediato: conservan la inercia del deslizamiento y vuelven suavemente a su velocidad normal. Con el teclado, las flechas recorren el rollo foto por foto. Fuera de la pantalla, en otra pestaña o con movimiento reducido no avanzan solos. Debajo de los dos rollos hay una sola instrucción breve.
 
-Las fotos se editan en `config.js`, dentro de `album.photos`; cada una lleva `src` (ruta), `alt` (lo que se ve), `caption` (pie de foto opcional, en letra manuscrita) y `position` (encuadre, por ejemplo `"50% 30%"`). La imagen nunca se deforma: se recorta según el encuadre. Agrega o borra elementos de la lista: con una sola foto se oculta la indicación; sin fotos se oculta la sección. `title`, `highlight` y `hint` son el título, la palabra en cursiva y la indicación.
-
-Coloca las fotografías en `assets/album/` (hoy la lista espera `recuerdo-1.jpg` a `recuerdo-6.jpg`). Mientras falte un archivo se ve un espacio provisional.
+Las fotos del álbum se editan en `config.js`, en `album.photos` (`src`, `alt`, `caption` en letra manuscrita); las de «Caminos compartidos», en `groupGallery.photos` (`src`, `alt`, `caption`). Agrega o borra elementos de la lista; sin fotos, la sección se oculta. Los títulos se editan en `album.title` / `album.highlight` y `groupGallery.title`. La velocidad está en `script.js` (`speed`, en píxeles por segundo).
 
 ## Lugar (tercera sección)
 
@@ -113,12 +109,10 @@ El texto actual es provisional.
 
 Al inicio de `config.js` está la lista; cada dato lleva la marca `PENDIENTE`:
 
-- Fotografía de la festejada en `assets/festejada.jpg`.
 - Número de WhatsApp de Victoria en `rsvp.whatsapp` (sin él, las respuestas no llegan a nadie).
 - Textos definitivos de la carta (`letter`) y del cierre (`closing`), incluido el agradecimiento del pie.
 - Acompañantes o fecha límite para confirmar: no se muestran hasta que la clienta lo indique.
-- Fotografías del álbum en `assets/album/`, con su `alt` y pie de foto.
-- Fotografías de «Cada versión de mí» en `assets/etapas/`, de la etapa más antigua a la más reciente, con su `alt`; etapa y frase solo si la clienta las da. El texto introductorio es provisional.
+- Texto introductorio definitivo de «Cada versión de mí» y contexto opcional de las etapas; las seis fotografías ya están incorporadas.
 
 ## Navegación
 
@@ -128,8 +122,8 @@ El diseño respeta `prefers-reduced-motion` (sin destello al abrir, sin movimien
 
 ## Ajuste a cada pantalla
 
-- Laptops (desde 850 px de ancho): la portada, la carta, el álbum, los datos del lugar y el karaoke se ajustan al alto de la pantalla (`--screen-h` en `styles.css`), así que en laptops de 600 a 730 px de alto la portada se ve completa con la cuenta regresiva, y la carta llega con la firma a la vista. En monitores altos todo conserva su tamaño completo.
-- Celular acostado: usa el diseño de celular; la entrada, «Cada versión de mí», el álbum y la foto del lugar se compactan para caber en la pantalla baja.
+- Laptops (desde 850 px de ancho): la portada, la carta, los datos del lugar y el karaoke se ajustan al alto de la pantalla (`--screen-h` en `styles.css`), así que en laptops de 600 a 730 px de alto la portada se ve completa con la cuenta regresiva, y la carta llega con la firma a la vista.
+- Celular acostado: usa el diseño de celular; la entrada, «Cada versión de mí» y la foto del lugar se compactan para la pantalla baja.
 - Si `config.js` tiene un error de escritura (una coma o comilla de más), la invitación abre igual con los textos de `index.html` y la consola del navegador lo indica. En ese caso no suena la música hasta corregir `config.js`.
 
 ## Al publicar

@@ -1,16 +1,14 @@
 // Toda la información que cambia durante el desarrollo está aquí.
 //
 // PENDIENTE DE LA CLIENTA (busca «PENDIENTE» en este archivo):
-// 1. Fotografía de la festejada: guardarla como assets/festejada.jpg (mientras falte se ve un marcador).
-// 2. Número de WhatsApp de Victoria en rsvp.whatsapp. Sin él, las respuestas NO llegan a nadie.
-// 3. Textos definitivos de la carta (letter) y del cierre (closing), incluido el agradecimiento del pie; los actuales son provisionales.
-// 4. Acompañantes o fecha límite para confirmar: no se muestran hasta que la clienta lo indique.
-// 5. Fotografías del álbum en assets/album/ (mientras falten se ven espacios provisionales), con su alt y pie de foto.
-// 6. Fotografías de «Cada versión de mí» en assets/etapas/, de la etapa más antigua a la más reciente, con su alt; etapa y frase solo si la clienta las da. El texto introductorio es provisional.
+// 1. Número de WhatsApp de Victoria en rsvp.whatsapp. Sin él, las respuestas NO llegan a nadie.
+// 2. Textos definitivos de la carta (letter) y del cierre (closing), incluido el agradecimiento del pie; los actuales son provisionales.
+// 3. Acompañantes o fecha límite para confirmar: no se muestran hasta que la clienta lo indique.
+// 4. Texto introductorio de «Cada versión de mí» y contexto opcional de sus etapas; el actual es provisional.
 window.INVITATION_CONFIG = Object.freeze({
   name: "Victoria",
-  photo: "assets/festejada.jpg", // PENDIENTE: fotografía de la clienta.
-  photoPosition: "50% 40%", // Ajusta el encuadre sin modificar el CSS.
+  photo: "assets/festejada.jpg", // Fotografía de Victoria proporcionada por la clienta.
+  photoPosition: "50% 8%", // Mantiene visible el rostro en el recorte horizontal del celular.
   date: "07 de noviembre",
   time: "16:00 h",
   // Inicio exacto para la cuenta regresiva (hora del centro de México, UTC-6).
@@ -30,36 +28,48 @@ window.INVITATION_CONFIG = Object.freeze({
     closing: "Con cariño,",
     signature: "Victoria", // Si se deja vacío, se usa el nombre de la festejada.
   },
-  // Álbum de fotos (entre la carta y el lugar): pila de instantáneas que se desliza a los lados.
-  // Cada foto: src (ruta), alt (describe lo que se ve), caption (pie de foto opcional) y position (encuadre, como "50% 30%").
-  // Agrega o borra fotos de la lista: el contador se ajusta solo. Con una sola foto se ocultan los controles; sin fotos se oculta la sección.
-  // PENDIENTE: fotografías de la clienta. Mientras un archivo falte se ve un espacio provisional.
   // Cada versión de mí: recorrido fotográfico entre la carta y el álbum.
   evolution: {
     title: "Cada versión de mí",
     highlight: "versión", // Palabra del título en cursiva. Vacío para no resaltar.
     intro: "He cambiado, he aprendido y he descubierto nuevas formas de ser yo. Hoy celebro todo lo vivido y la persona en la que me estoy convirtiendo.", // PENDIENTE: texto provisional.
-    // PENDIENTE: fotos de la clienta. Entre tres y cinco, de la etapa más antigua a la más reciente; se muestran en este orden.
-    // stage: fecha o nombre de la etapa (opcional). phrase: frase breve de la clienta (opcional). Si van vacíos, no se muestran.
+    // Las seis fotos proporcionadas por la clienta se muestran en este orden.
+    // stage: nombre de la etapa. phrase: comentario que dio la clienta (opcional).
     // position: encuadre de cada foto ("50% 30%" = centrada y un poco hacia arriba, para no cortar la cabeza).
     photos: [
-      { src: "assets/etapas/etapa-1.jpg", alt: "", stage: "", phrase: "", position: "50% 30%" },
-      { src: "assets/etapas/etapa-2.jpg", alt: "", stage: "", phrase: "", position: "50% 30%" },
-      { src: "assets/etapas/etapa-3.jpg", alt: "", stage: "", phrase: "", position: "50% 30%" },
-      { src: "assets/etapas/etapa-4.jpg", alt: "", stage: "", phrase: "", position: "50% 30%" },
+      { src: "assets/etapas/etapa-1.jpg", alt: "Victoria de niña, con vestido a cuadros frente a un fondo rojo y negro", stage: "Etapa 1", phrase: "", position: "50% 35%" },
+      { src: "assets/etapas/etapa-2.jpg", alt: "Fotografía familiar de infancia: tres niños y un adulto junto a un pastel de cumpleaños", stage: "Etapa 2", phrase: "Pasaron etapas … hasta los 2022.. jaja", position: "50% 48%" },
+      { src: "assets/etapas/etapa-3.jpg", alt: "Victoria con los brazos abiertos junto a una laguna y montañas", stage: "Etapa 3", phrase: "", position: "50% 52%" },
+      { src: "assets/etapas/etapa-4.jpg", alt: "Victoria corre sonriente en una carrera por una avenida", stage: "Etapa 4", phrase: "", position: "50% 40%" },
+      { src: "assets/etapas/etapa-5.jpg", alt: "Victoria sentada en un sofá, con vestido negro, frente a un muro verde", stage: "Etapa 5", phrase: "", position: "50% 37%" },
+      { src: "assets/etapas/etapa-6.jpg", alt: "Victoria de pie al aire libre con un micrófono en la mano", stage: "Etapa 6", phrase: "", position: "50% 43%" },
     ],
   },
   album: {
     title: "Mis recuerdos favoritos tienen compañía",
     highlight: "compañía", // Palabra del título en cursiva. Vacío para no resaltar.
-    hint: "Desliza las fotos para descubrir más recuerdos",
     photos: [
-      { src: "assets/album/recuerdo-1.jpg", alt: "", caption: "", position: "50% 50%" },
-      { src: "assets/album/recuerdo-2.jpg", alt: "", caption: "", position: "50% 50%" },
-      { src: "assets/album/recuerdo-3.jpg", alt: "", caption: "", position: "50% 50%" },
-      { src: "assets/album/recuerdo-4.jpg", alt: "", caption: "", position: "50% 50%" },
-      { src: "assets/album/recuerdo-5.jpg", alt: "", caption: "", position: "50% 50%" },
-      { src: "assets/album/recuerdo-6.jpg", alt: "", caption: "", position: "50% 50%" },
+      { src: "assets/album/recuerdo-1.jpg", alt: "Tres mujeres posan en un jardín junto a una cascada", caption: "Nancy y Sure 🫶🏻", position: "50% 55%" },
+      { src: "assets/album/recuerdo-2.png", alt: "Dos hombres y una mujer sonríen ante una decoración de globos", caption: "Leo y Ramiro 💜", position: "50% 45%" },
+      { src: "assets/album/recuerdo-3.png", alt: "Tres mujeres sonríen durante una reunión", caption: "Ilse e Ixnán 💛", position: "50% 45%" },
+      { src: "assets/album/recuerdo-4.png", alt: "Tres mujeres posan en una tienda de figuras coleccionables", caption: "Yanai y Ana 💚", position: "50% 42%" },
+      { src: "assets/album/recuerdo-5.png", alt: "Tres personas posan frente a una exhibición de figuras", caption: "Elo y Pao 🧡", position: "50% 38%" },
+      { src: "assets/album/recuerdo-6.png", alt: "Tres personas sonríen al aire libre entre árboles", caption: "Vishal y Ana Karen 🫶🏻", position: "50% 45%" },
+      { src: "assets/album/recuerdo-7.png", alt: "Dos mujeres sonríen juntas en una mesa", caption: "Alexandra 🙂", position: "50% 43%" },
+      { src: "assets/album/recuerdo-8.png", alt: "Dos mujeres sonríen durante un paseo al aire libre", caption: "Nay 😊", position: "50% 45%" },
+      { src: "assets/album/recuerdo-9.jpg", alt: "Dos mujeres sonríen juntas en una fotografía nocturna", caption: "Yes ❤️", position: "50% 50%" },
+    ],
+  },
+  // Fotografías grupales, en un apartado independiente y sin desplazamiento horizontal.
+  // Cada frase corresponde a la fotografía de la misma posición en esta lista.
+  groupGallery: {
+    title: "Caminos compartidos",
+    photos: [
+      { src: "assets/grupales/grupo-1.jpg", alt: "Seis amigos reunidos alrededor de una mesa en un restaurante", caption: "Cumplir años también es mirar atrás y sonreír por tantas personas que hacen bonito el camino." },
+      { src: "assets/grupales/grupo-2.jpg", alt: "Cuatro amigas sonríen juntas durante un paseo", caption: "Uno de los regalos más bonitos de la vida es coincidir con personas que dejan huella en el corazón." },
+      { src: "assets/grupales/grupo-3.jpg", alt: "Grupo de amigos posando juntos en una bolera", caption: "Entre tantas razones para celebrar, están las personas que hacen más bonitos mis días." },
+      { src: "assets/grupales/grupo-4.jpg", alt: "Dos amigas posan juntas durante una reunión", caption: "Hoy brindo por la vida, por los caminos compartidos y por la dicha de coincidir." },
+      { src: "assets/grupales/grupo-5.jpg", alt: "Dos amigas posan juntas ante una pared clara", caption: "Celebro la vida, sus sorpresas y esas coincidencias que, sin hacer ruido, se vuelven muy importantes." },
     ],
   },
   // Tercera sección: el lugar. La fecha y la hora se toman de date y time.

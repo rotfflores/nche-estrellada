@@ -18,7 +18,7 @@ http.createServer((req,res) => {
   let file;
   try { file = path.resolve(root, "." + decodeURIComponent(new URL(req.url,"http://localhost").pathname)); }
   catch { res.writeHead(400).end(); return; }
-  if (file === root) file = path.join(root,"index.html");
+  if (file === root || req.url.startsWith("/en/") && file === path.join(root,"en")) file = path.join(file,"index.html");
   if (!file.startsWith(root + path.sep)) { res.writeHead(403).end(); return; }
   fs.stat(file,(error,stat) => {
     if (error || !stat.isFile()) { res.writeHead(404).end("Not found"); return; }

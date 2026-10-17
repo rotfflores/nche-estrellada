@@ -2,6 +2,10 @@
 
 Invitación digital con entrada musical, portada, carta personal, álbum de fotos, lugar de la celebración, karaoke, confirmación de asistencia y cierre. La invitación pública sigue en GitHub Pages; el panel privado y el guardado de respuestas usan un Cloudflare Worker conectado a D1.
 
+## Versión en inglés
+
+La variante para invitados que hablan inglés está en `https://noche-estrellada.rotfstudio.com/en/`. Conserva las mismas fotos, música, fecha, hora y destino de la confirmación `/api/rsvp`, por lo que ambas versiones aparecen en el mismo panel privado. El texto inglés está en `config-en.js`; los datos compartidos siguen en `config.js`. Al modificar `index.html`, ejecuta `node scripts/build-english.mjs` para regenerar `en/index.html` y adapta en ese script cualquier texto estático nuevo. La vista previa para compartir el enlace inglés usa `assets/share-en.png`.
+
 ## Orden y fondos (observaciones de la clienta, 16 de octubre)
 
 1. Entrada: solo la frase «Como buenos productos del 14 de febrero, quienes cumplimos años en noviembre, aquí estamos presentes», que aparece palabra por palabra; después aparece el botón para abrir.

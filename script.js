@@ -2,6 +2,7 @@
   "use strict";
   // Si config.js tiene un error (una coma o comilla de más), la invitación abre igual con los textos de index.html.
   const config = window.INVITATION_CONFIG || {};
+  const english = config.locale === "en";
   if (!window.INVITATION_CONFIG) console.error("config.js no se pudo leer (revisa comas y comillas). Se usan los textos de index.html.");
   const entry = document.getElementById("entry");
   const invitation = document.getElementById("invitation");
@@ -23,7 +24,7 @@
   const eventDate = document.getElementById("birthday-date").textContent;
   const eventTime = document.getElementById("birthday-time").textContent;
   const photo = document.getElementById("birthday-photo");
-  photo.alt = `Fotografía de ${hostName}`;
+  photo.alt = english ? `Photograph of ${hostName}` : `Fotografía de ${hostName}`;
   photo.style.objectPosition = config.photoPosition || "center";
   photo.addEventListener("load", () => {
     photo.hidden = false;
@@ -194,8 +195,8 @@
     const muted = playing && audio.muted;
     musicButton.classList.toggle("is-playing", playing && !muted);
     musicButton.classList.toggle("is-muted", muted);
-    musicButton.setAttribute("aria-label", !playing ? "Reproducir música" : muted ? "Activar el sonido de la música" : "Silenciar la música");
-    musicLabel.textContent = !playing ? "Reproducir" : muted ? "Activar sonido" : "Silenciar";
+    musicButton.setAttribute("aria-label", !playing ? (english ? "Play music" : "Reproducir música") : muted ? (english ? "Turn music sound on" : "Activar el sonido de la música") : (english ? "Mute music" : "Silenciar la música"));
+    musicLabel.textContent = !playing ? (english ? "Play" : "Reproducir") : muted ? (english ? "Turn sound on" : "Activar sonido") : (english ? "Mute" : "Silenciar");
     if (playing) musicStatus.textContent = "";
   }
   function applyStart() {
@@ -215,7 +216,7 @@
     audio.pause();
     // El control sigue visible: al tocarlo se vuelve a intentar cargar la canción.
     updateMusic();
-    musicStatus.textContent = "La música no se pudo cargar. Toca el control de música para intentarlo de nuevo.";
+    musicStatus.textContent = english ? "The music could not be loaded. Tap the music control to try again." : "La música no se pudo cargar. Toca el control de música para intentarlo de nuevo.";
   }
   function loadAudio() {
     if (!config.audio || audio.getAttribute("src")) return;
@@ -237,9 +238,9 @@
           return;
         }
         musicButton.hidden = false;
-        musicLabel.textContent = "Reproducir";
-        musicButton.setAttribute("aria-label", "Reproducir música");
-        musicStatus.textContent = "Toca el control de música para iniciar la reproducción.";
+        musicLabel.textContent = english ? "Play" : "Reproducir";
+        musicButton.setAttribute("aria-label", english ? "Play music" : "Reproducir música");
+        musicStatus.textContent = english ? "Tap the music control to start playback." : "Toca el control de música para iniciar la reproducción.";
       } else {
         failAudio();
       }
@@ -419,7 +420,7 @@
       }
       savingRsvp = true;
       submitButton.disabled = true;
-      submitText.textContent = "Guardando respuesta…";
+      submitText.textContent = english ? "Saving your reply…" : "Guardando respuesta…";
       try {
         let id;
         try {
@@ -435,9 +436,9 @@
           body:JSON.stringify({ id, answer:answer.value, name, message:yes ? messageInput.value.trim() : "" }),
         });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok || !result.saved) throw new Error(result.error || "No se pudo guardar. Intenta de nuevo.");
+        if (!response.ok || !result.saved) throw new Error(english ? "We couldn't save your reply. Please try again." : (result.error || "No se pudo guardar. Intenta de nuevo."));
       } catch (error) {
-        submitError.textContent = error.message || "No se pudo guardar. Intenta de nuevo.";
+        submitError.textContent = english ? "We couldn't save your reply. Please try again." : (error.message || "No se pudo guardar. Intenta de nuevo.");
         submitError.scrollIntoView({ behavior:reducedMotion.matches ? "auto" : "smooth", block:"nearest" });
         return;
       } finally {
@@ -480,7 +481,9 @@
     countdown.hidden = false;
     const units = {};
     countdown.querySelectorAll("[data-unit]").forEach(element => { units[element.dataset.unit] = element; });
-    const labels = { days:["Día","Días"], hours:["Hora","Horas"], minutes:["Minuto","Minutos"], seconds:["Segundo","Segundos"] };
+    const labels = english
+      ? { days:["Day","Days"], hours:["Hour","Hours"], minutes:["Minute","Minutes"], seconds:["Second","Seconds"] }
+      : { days:["Día","Días"], hours:["Hora","Horas"], minutes:["Minuto","Minutos"], seconds:["Segundo","Segundos"] };
     const countdownText = document.getElementById("countdown-text");
     let lastSpoken = "";
     function rollDigit(slot, char, animate) {
@@ -515,7 +518,7 @@
         // Días después ya no dice «hoy»: la línea se retira 12 horas después del inicio.
         if (left < -12 * 3600 * 1000) { countdown.hidden = true; return; }
         countdown.classList.add("is-done");
-        document.getElementById("countdown-title").textContent = config.countdownDone || "¡Hoy celebramos!";
+        document.getElementById("countdown-title").textContent = config.countdownDone || (english ? "Today's the day!" : "¡Hoy celebramos!");
         countdownText.textContent = "";
         return;
       }
@@ -524,7 +527,9 @@
       // Sin animación mientras la invitación está oculta o si se pidió reducir movimiento.
       const animate = !reducedMotion.matches && !invitation.hidden && !document.hidden;
       Object.entries(parts).forEach(([unit, value]) => showNumber(unit, value, animate));
-      const spoken = `Faltan ${parts.days} ${labels.days[parts.days === 1 ? 0 : 1].toLowerCase()}, ${parts.hours} ${labels.hours[parts.hours === 1 ? 0 : 1].toLowerCase()} y ${parts.minutes} ${labels.minutes[parts.minutes === 1 ? 0 : 1].toLowerCase()} para la celebración.`;
+      const spoken = english
+        ? `${parts.days} ${labels.days[parts.days === 1 ? 0 : 1].toLowerCase()}, ${parts.hours} ${labels.hours[parts.hours === 1 ? 0 : 1].toLowerCase()} and ${parts.minutes} ${labels.minutes[parts.minutes === 1 ? 0 : 1].toLowerCase()} until the celebration.`
+        : `Faltan ${parts.days} ${labels.days[parts.days === 1 ? 0 : 1].toLowerCase()}, ${parts.hours} ${labels.hours[parts.hours === 1 ? 0 : 1].toLowerCase()} y ${parts.minutes} ${labels.minutes[parts.minutes === 1 ? 0 : 1].toLowerCase()} para la celebración.`;
       if (spoken !== lastSpoken) countdownText.textContent = lastSpoken = spoken;
       window.setTimeout(tick, 1000 - (Date.now() % 1000) + 15);
     }
@@ -624,12 +629,12 @@
       const placeholder = document.createElement("div");
       placeholder.className = "evolution-ph";
       placeholder.setAttribute("role", "img");
-      placeholder.setAttribute("aria-label", `Espacio reservado para la fotografía ${index + 1}`);
-      placeholder.innerHTML = '<span class="evolution-ph-word"></span><span class="evolution-ph-note">Tu fotografía aquí</span>';
-      placeholder.querySelector(".evolution-ph-word").textContent = photo.stage || `Etapa ${index + 1}`;
+      placeholder.setAttribute("aria-label", english ? `Space reserved for photograph ${index + 1}` : `Espacio reservado para la fotografía ${index + 1}`);
+      placeholder.innerHTML = `<span class="evolution-ph-word"></span><span class="evolution-ph-note">${english ? "Your photo here" : "Tu fotografía aquí"}</span>`;
+      placeholder.querySelector(".evolution-ph-word").textContent = photo.stage || (english ? `Stage ${index + 1}` : `Etapa ${index + 1}`);
       // Sin filtros: la foto se muestra tal cual, solo se elige el encuadre.
       const image = document.createElement("img");
-      image.alt = photo.alt || `${hostName}, fotografía ${index + 1} de ${stages.length} del recorrido`;
+      image.alt = photo.alt || (english ? `${hostName}, photograph ${index + 1} of ${stages.length}` : `${hostName}, fotografía ${index + 1} de ${stages.length} del recorrido`);
       image.decoding = "async";
       image.draggable = false;
       image.style.objectPosition = photo.position || "50% 30%";
@@ -642,7 +647,7 @@
       const stageText = String(photo.stage || "").trim();
       const titleText = String(photo.title || "").trim();
       const phraseText = String(photo.phrase || "").trim();
-      item.dataset.label = [stageText, titleText].filter(Boolean).join(": ") || `Fotografía ${index + 1}`;
+      item.dataset.label = [stageText, titleText].filter(Boolean).join(": ") || (english ? `Photograph ${index + 1}` : `Fotografía ${index + 1}`);
       if (stageText || titleText || phraseText) {
         const caption = document.createElement("figcaption");
         caption.className = "evolution-caption";
@@ -692,7 +697,7 @@
         item.classList.toggle("is-active", depth === 0);
         item.setAttribute("aria-hidden", String(depth !== 0));
       });
-      count.textContent = `${items[activeStage].dataset.label} (${activeStage + 1} de ${items.length})`;
+      count.textContent = english ? `${items[activeStage].dataset.label} (${activeStage + 1} of ${items.length})` : `${items[activeStage].dataset.label} (${activeStage + 1} de ${items.length})`;
     }
     // direction: 1 avanza a la siguiente etapa, -1 regresa. side: hacia dónde sale volando la foto (el lado del gesto).
     function moveStack(direction, side = direction) {
@@ -815,7 +820,7 @@
         lightboxCaption.append(heartIcon(photo.heart));
       }
       lightboxCaption.hidden = !lightboxCaption.textContent;
-      if (lightboxCaption.hidden) lightbox.setAttribute("aria-label", photo.alt || "Fotografía ampliada");
+      if (lightboxCaption.hidden) lightbox.setAttribute("aria-label", photo.alt || (english ? "Enlarged photograph" : "Fotografía ampliada"));
       else lightbox.removeAttribute("aria-label");
       lightboxCount.textContent = `${current + 1} / ${photos.length}`;
     };
@@ -900,7 +905,7 @@
       const edge = document.createElement("span");
       edge.className = "film-edge";
       edge.setAttribute("aria-hidden", "true");
-      edge.textContent = "La alegría de coincidir";
+      edge.textContent = english ? "The joy of crossing paths" : "La alegría de coincidir";
       const frame = document.createElement("figure");
       frame.className = "film-window";
       const image = document.createElement("img");
@@ -1101,12 +1106,12 @@
     requestStep();
   }
   // Con movimiento reducido las cintas no avanzan solas: la instrucción solo invita a deslizar.
-  const filmHintText = () => reducedMotion.matches
-    ? (finePointer.matches ? "Arrastra o haz clic en una foto para ampliarla" : "Desliza o toca una foto para ampliarla")
-    : (finePointer.matches ? "Pasa el mouse para pausar o haz clic en una foto para ampliarla" : "Desliza o toca una foto para ampliarla");
+  const filmHintText = () => english
+    ? (reducedMotion.matches ? (finePointer.matches ? "Drag or click a photo to enlarge it" : "Swipe or tap a photo to enlarge it") : (finePointer.matches ? "Hover to pause or click a photo to enlarge it" : "Swipe or tap a photo to enlarge it"))
+    : (reducedMotion.matches ? (finePointer.matches ? "Arrastra o haz clic en una foto para ampliarla" : "Desliza o toca una foto para ampliarla") : (finePointer.matches ? "Pasa el mouse para pausar o haz clic en una foto para ampliarla" : "Desliza o toca una foto para ampliarla"));
   document.querySelectorAll(".film-hint:not(.collage-hint) span").forEach(hint => { hint.textContent = filmHintText(); });
   const collageHint = document.getElementById("collage-hint-text");
-  if (collageHint && finePointer.matches) collageHint.textContent = "Haz clic en una foto para verla completa";
+  if (collageHint && finePointer.matches) collageHint.textContent = english ? "Click a photo to see it in full" : "Haz clic en una foto para verla completa";
 
   // Álbum: rollo de película con las fotos en el orden de config.js.
   const album = config.album || {};
@@ -1219,7 +1224,7 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "collage-button";
-      button.setAttribute("aria-label", `Ampliar: ${photo.alt || `fotografía grupal ${index + 1}`}`);
+      button.setAttribute("aria-label", `${english ? "Enlarge" : "Ampliar"}: ${photo.alt || (english ? `group photograph ${index + 1}` : `fotografía grupal ${index + 1}`)}`);
       const image = document.createElement("img");
       image.alt = "";
       image.decoding = "async";
@@ -1322,7 +1327,7 @@
       next.scrollIntoView({ behavior:reducedMotion.matches ? "auto" : "smooth", block:"start" });
       next.focus({ preventScroll:true });
     } else {
-      document.getElementById("next-message").textContent = "Pronto, más detalles para compartir este día.";
+      document.getElementById("next-message").textContent = english ? "More details to share this day are coming soon." : "Pronto, más detalles para compartir este día.";
     }
     // Punto de integración para las secciones que agregaremos después.
     document.dispatchEvent(new CustomEvent("invitation:continue"));

@@ -61,7 +61,7 @@ window.INVITATION_CONFIG = Object.freeze({
       { src: "assets/album/recuerdo-7.jpg", alt: "Dos mujeres sonríen juntas en una mesa", caption: "Alexandra", heart: "#2CC7C2", position: "50% 43%" }, // turquesa
       { src: "assets/album/recuerdo-8.jpg", alt: "Dos mujeres sonríen durante un paseo al aire libre", caption: "Nay", heart: "#FFFFFF", position: "50% 45%" }, // blanco
       { src: "assets/album/recuerdo-9.jpg", alt: "Dos mujeres sonríen juntas en una fotografía nocturna", caption: "Yes", heart: "#E5262F", position: "50% 50%" }, // rojo
-      { src: "assets/album/recuerdo-10.jpg", alt: "Victoria con Leo y Ángel durante una caminata por una barranca verde", caption: "Leo y Ángel", heart: "#E8C86A", position: "50% 50%" }, // amarillo mantequilla
+      { src: "assets/album/recuerdo-10.jpg?v=20261016", alt: "Victoria con Leo y Ángel durante una caminata por una barranca verde", caption: "Leo y Ángel", heart: "#E8C86A", position: "50% 50%" }, // amarillo mantequilla
     ],
   },
   // Fotografías grupales: forman un corazón, fijas. Al tocar una se amplía (con su frase, si tiene).

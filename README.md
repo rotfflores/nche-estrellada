@@ -162,4 +162,4 @@ El diseño respeta `prefers-reduced-motion` (sin destello al abrir, sin movimien
 
 ## Al publicar
 
-`index.html` ya trae el título y la descripción para la vista previa al compartir el enlace (WhatsApp, redes) y un ícono de corazón para la pestaña. Falta la imagen de vista previa (`og:image`), que necesita la dirección completa del sitio publicado; hay un comentario `PENDIENTE` en `index.html`.
+`index.html` publica las etiquetas Open Graph con la imagen `assets/compartir.jpg` (1200 × 630 px), título, descripción y URL absoluta para la vista previa en WhatsApp y redes. La imagen muestra a Victoria y se puede regenerar con `scripts/build-share-image.py` cuando cambie su fotografía o la fecha. Si una aplicación conserva una vista previa antigua, puede tardar en renovar su caché aunque la página ya esté actualizada.

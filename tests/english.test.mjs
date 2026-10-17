@@ -47,5 +47,7 @@ test("the English page has its own metadata and reuses the shared RSVP script", 
   assert.match(html, /id="rsvp-form"/);
   assert.match(html, /Open my invitation/);
   assert.match(html, /Please RSVP!/);
+  assert.match(html, />Date<\/dt>/);
+  assert.doesNotMatch(html, />Fecha<\/dt>/);
   assert.ok(existsSync(join(root, "assets", "share-en.png")));
 });

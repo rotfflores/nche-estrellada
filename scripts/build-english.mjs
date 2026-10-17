@@ -44,6 +44,7 @@ replace('la alegría de coincidir', 'the joy of crossing paths');
 replace('celebra su cumpleaños', 'celebrates her birthday');
 replace('Fecha y hora de la celebración', 'Celebration date and time');
 replace('>Fecha</span>', '>Date</span>');
+replace('>Fecha</dt>', '>Date</dt>');
 replace('>Hora</span>', '>Time</span>');
 replace('07 de noviembre', 'November 7');
 replace('4:30 p. m.', '4:30 p.m.');

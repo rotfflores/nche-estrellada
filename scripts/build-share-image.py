@@ -1,7 +1,7 @@
-"""Build the 1200 × 630 social preview from the invitation's local artwork."""
+"""Build the 1200 × 630 painterly social preview from the invitation's sky."""
 
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets" / "compartir.jpg"
@@ -15,44 +15,32 @@ def font(name, size):
 
 
 sky = Image.open(ROOT / "assets" / "fondo-cielo.jpg").convert("RGB")
-# Center on the quiet middle of the artwork so the copy stays legible.
+# Keep the painted golden swirl in view; the invitation already uses this artwork.
 sky = sky.resize((W, round(sky.height * W / sky.width)), Image.Resampling.LANCZOS)
-top = max(0, (sky.height - H) // 2 - 105)
-image = sky.crop((0, top, W, top + H))
-image = Image.blend(image, Image.new("RGB", (W, H), (9, 15, 46)), 0.38)
+image = sky.crop((0, 0, W, H))
+# A gradual night tint behind the copy preserves the brushwork and legibility.
+tint = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+tint_pixels = tint.load()
+for x in range(W):
+    alpha = int(12 + 160 * max(0, min(1, (x - 360) / 680)))
+    for y in range(H):
+        tint_pixels[x, y] = (7, 13, 42, alpha)
+image = Image.alpha_composite(image.convert("RGBA"), tint).convert("RGB")
 draw = ImageDraw.Draw(image)
+draw.rounded_rectangle((30, 30, 1170, 600), radius=19, outline=(163, 134, 65), width=2)
 
-# A restrained matte panel keeps the photo and typography distinct at thumbnail size.
-draw.rounded_rectangle((38, 38, 1162, 592), radius=24, fill=(14, 22, 59))
-draw.rounded_rectangle((38, 38, 1162, 592), radius=24, outline=(76, 83, 113), width=2)
-
-photo = Image.open(ROOT / "assets" / "festejada.jpg").convert("RGB")
-photo = ImageOps.fit(photo, (348, 506), method=Image.Resampling.LANCZOS, centering=(0.5, 0.18))
-photo_mask = Image.new("L", photo.size)
-ImageDraw.Draw(photo_mask).rounded_rectangle((0, 0, 347, 505), radius=13, fill=255)
-image.paste(photo, (774, 62), photo_mask)
-draw = ImageDraw.Draw(image)
-draw.rounded_rectangle((773, 61, 1122, 568), radius=13, outline=CREAM, width=3)
-
-sans = font("arialbd.ttf", 20)
+sans = font("arialbd.ttf", 19)
 title = font("georgia.ttf", 76)
-name = font("georgiai.ttf", 51)
+name = font("georgiai.ttf", 52)
 date = font("arial.ttf", 24)
 
-draw.text((88, 88), "INVITACIÓN DE CUMPLEAÑOS", font=sans, fill=GOLD, stroke_width=0)
-draw.line((88, 133, 704, 133), fill=(91, 100, 150), width=2)
-draw.text((82, 180), "La alegría", font=title, fill=CREAM)
-draw.text((82, 267), "de coincidir", font=title, fill=CREAM)
-
-# Small single-line heart, drawn rather than using an emoji glyph.
-draw.line((91, 384, 190, 384), fill=GOLD, width=2)
-draw.arc((196, 376, 219, 397), 130, 315, fill=GOLD, width=2)
-draw.arc((215, 376, 238, 397), 225, 410, fill=GOLD, width=2)
-draw.line((201, 389, 217, 405), fill=GOLD, width=2)
-draw.line((233, 389, 217, 405), fill=GOLD, width=2)
-
-draw.text((84, 416), "Victoria", font=name, fill=GOLD)
-draw.text((88, 514), "07 DE NOVIEMBRE  ·  16:00 H", font=date, fill=CREAM)
+draw.text((553, 105), "INVITACIÓN DE CUMPLEAÑOS", font=sans, fill=GOLD)
+draw.line((553, 146, 1115, 146), fill=(170, 140, 70), width=2)
+draw.text((548, 195), "La alegría", font=title, fill=CREAM)
+draw.text((548, 283), "de coincidir", font=title, fill=CREAM)
+draw.line((553, 396, 691, 396), fill=GOLD, width=3)
+draw.text((548, 415), "Victoria", font=name, fill=GOLD)
+draw.text((553, 521), "07 DE NOVIEMBRE  ·  16:00 H", font=date, fill=CREAM)
 
 image.save(OUTPUT, format="JPEG", quality=90, optimize=True, progressive=True, subsampling=0)
 print(f"{OUTPUT}: {W} × {H}, {OUTPUT.stat().st_size} bytes")

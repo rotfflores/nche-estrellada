@@ -162,4 +162,4 @@ El diseño respeta `prefers-reduced-motion` (sin destello al abrir, sin movimien
 
 ## Al publicar
 
-`index.html` publica las etiquetas Open Graph con la imagen `assets/compartir.jpg` (1200 × 630 px), título, descripción y URL absoluta para la vista previa en WhatsApp y redes. La imagen muestra a Victoria y se puede regenerar con `scripts/build-share-image.py` cuando cambie su fotografía o la fecha. Si una aplicación conserva una vista previa antigua, puede tardar en renovar su caché aunque la página ya esté actualizada.
+`index.html` publica las etiquetas Open Graph con la imagen `assets/compartir.jpg` (1200 × 630 px), título, descripción y URL absoluta para la vista previa en WhatsApp y redes. La imagen usa el cielo pintado de la invitación, sin fotografía, y se puede regenerar con `scripts/build-share-image.py` cuando cambie el título o la fecha. Si una aplicación conserva una vista previa antigua, puede tardar en renovar su caché aunque la página ya esté actualizada.

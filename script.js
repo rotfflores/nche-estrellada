@@ -367,13 +367,7 @@
     const submitButton = document.getElementById("rsvp-submit");
     const submitText = document.getElementById("rsvp-submit-text");
     let savingRsvp = false;
-    let phone = String(rsvp.whatsapp || "").replace(/\D/g, "");
-    // Un número de México sin lada (10 dígitos) se completa como indica config.js: 52 + 1 + 10 dígitos.
-    if (phone.length === 10) phone = `521${phone}`;
-    const hasWhatsapp = phone.length >= 11;
-    if (rsvp.whatsapp && !hasWhatsapp) console.warn("rsvp.whatsapp no parece un número completo con lada de país.");
-    const submitLabel = rsvp.storageEnabled ? (rsvp.buttonWithoutWhatsapp || "Enviar respuesta")
-      : (hasWhatsapp ? rsvp.button : (rsvp.buttonWithoutWhatsapp || rsvp.button));
+    const submitLabel = rsvp.button || "Enviar respuesta";
     submitText.textContent = submitLabel;
 
     const showError = (field, error, message) => {
@@ -423,51 +417,37 @@
         showError(nameInput, nameError, name ? "" : (rsvp.nameError || "Escribe tu nombre."));
         if (!name) { nameInput.focus(); return; }
       }
-      if (rsvp.storageEnabled) {
-        savingRsvp = true;
-        submitButton.disabled = true;
-        submitText.textContent = "Guardando respuesta…";
+      savingRsvp = true;
+      submitButton.disabled = true;
+      submitText.textContent = "Guardando respuesta…";
+      try {
+        let id;
         try {
-          let id;
-          try {
-            id = window.localStorage.getItem("victoria-rsvp-id");
-            if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "")) {
-              id = window.crypto.randomUUID();
-              window.localStorage.setItem("victoria-rsvp-id", id);
-            }
-          } catch { id = window.crypto.randomUUID(); }
-          const response = await fetch("/api/rsvp", {
-            method:"POST", credentials:"same-origin", cache:"no-store",
-            headers:{ "Content-Type":"application/json" },
-            body:JSON.stringify({ id, answer:answer.value, name, message:yes ? messageInput.value.trim() : "" }),
-          });
-          const result = await response.json().catch(() => ({}));
-          if (!response.ok || !result.saved) throw new Error(result.error || "No se pudo guardar. Intenta de nuevo.");
-        } catch (error) {
-          submitError.textContent = error.message || "No se pudo guardar. Intenta de nuevo.";
-          submitError.scrollIntoView({ behavior:reducedMotion.matches ? "auto" : "smooth", block:"nearest" });
-          return;
-        } finally {
-          savingRsvp = false;
-          submitButton.disabled = false;
-          submitText.textContent = submitLabel;
-        }
-      }
-      if (hasWhatsapp && !rsvp.storageEnabled) {
-        let message = fill(yes ? rsvp.yesMessage : rsvp.noMessage, name);
-        const note = yes ? messageInput.value.trim() : "";
-        if (note) message += `\n\n${note}`;
-        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-        // WhatsApp se abre aparte para que la invitación y la música sigan aquí.
-        const opened = window.open(url, "_blank");
-        if (opened) opened.opener = null;
-        else window.location.href = url;
+          id = window.localStorage.getItem("victoria-rsvp-id");
+          if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "")) {
+            id = window.crypto.randomUUID();
+            window.localStorage.setItem("victoria-rsvp-id", id);
+          }
+        } catch { id = window.crypto.randomUUID(); }
+        const response = await fetch("/api/rsvp", {
+          method:"POST", credentials:"same-origin", cache:"no-store",
+          headers:{ "Content-Type":"application/json" },
+          body:JSON.stringify({ id, answer:answer.value, name, message:yes ? messageInput.value.trim() : "" }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.saved) throw new Error(result.error || "No se pudo guardar. Intenta de nuevo.");
+      } catch (error) {
+        submitError.textContent = error.message || "No se pudo guardar. Intenta de nuevo.";
+        submitError.scrollIntoView({ behavior:reducedMotion.matches ? "auto" : "smooth", block:"nearest" });
+        return;
+      } finally {
+        savingRsvp = false;
+        submitButton.disabled = false;
+        submitText.textContent = submitLabel;
       }
       // Agradecimiento con animación (inmediato si se pidió reducir movimiento).
       wordsInto(thanksTitle, fill(yes ? rsvp.thanksYesTitle : rsvp.thanksNoTitle, name));
       document.getElementById("rsvp-thanks-text").textContent = fill(yes ? rsvp.thanksYesText : rsvp.thanksNoText, name);
-      // Solo se pide enviar desde WhatsApp cuando de verdad se abrió.
-      document.getElementById("rsvp-thanks-reminder").textContent = hasWhatsapp && !rsvp.storageEnabled ? (rsvp.whatsappReminder || "") : "";
       thanks.classList.toggle("is-no", !yes);
       rsvpForm.classList.add("is-leaving");
       window.setTimeout(() => {

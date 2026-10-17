@@ -592,9 +592,8 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
 .rsvp-option input:checked + .rsvp-option-box .rsvp-option-text { color:#fff; }
 .rsvp-option input:focus-visible + .rsvp-option-box { outline:2px solid var(--butter); outline-offset:4px; }
 .rsvp-submit { width:100%; margin-top:6px; justify-content:space-between; gap:14px; text-align:left; text-shadow:none; }
-/* Logotipo de WhatsApp relleno: se reconoce aun en tamaño pequeño */
-.rsvp-submit .rsvp-wa { width:36px; height:36px; }
-.rsvp-submit .rsvp-wa svg { width:19px; height:19px; fill:currentColor; stroke:none; }
+.rsvp-submit .rsvp-send-icon { width:36px; height:36px; }
+.rsvp-submit .rsvp-send-icon svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
 .rsvp-submit .rsvp-submit-text { display:inline; width:auto; height:auto; border-radius:0; background:none; color:inherit; font-size:inherit; font-weight:inherit; letter-spacing:inherit; line-height:1.35; }
 .rsvp-submit:hover span { transform:scale(1.08); }
 .rsvp-submit:hover .rsvp-submit-text { transform:none; }
@@ -630,8 +629,6 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
 .thanks-title .tw { display:inline-block; }
 .thanks-title, .thanks-text { font-variant-numeric:lining-nums; }
 .thanks-text { max-width:26rem; margin:0 auto; font-family:var(--serif); font-weight:500; font-size:21px; line-height:1.55; color:rgba(244,245,253,.88); text-wrap:pretty; }
-.thanks-reminder { max-width:26rem; margin:18px auto 0; font-family:var(--serif); font-style:italic; font-size:19px; line-height:1.45; color:var(--butter-soft); text-wrap:balance; }
-.thanks-reminder:empty { display:none; }
 .thanks-edit { margin:32px auto 0; min-height:44px; padding:10px 20px; border:1px solid rgba(246,231,184,.3); border-radius:999px; background:rgba(13,17,50,.5); color:var(--butter-soft); font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; text-shadow:none; transition:border-color .3s ease,background .3s ease; }
 .thanks-edit:hover { border-color:var(--butter); background:rgba(232,200,106,.12); }
 @keyframes heart-fill { from { opacity:0; transform:scale(.55); } 60% { opacity:var(--fill-o); transform:scale(1.14); } to { opacity:var(--fill-o); transform:scale(1); } }
@@ -648,7 +645,6 @@ h1 { font-family:var(--serif); font-weight:500; font-size:clamp(52px,6vw,88px); 
   .rsvp-thanks.is-in .thanks-sparks i { animation:spark 1.5s calc(.75s + var(--t)) var(--ease) both; }
   .rsvp-thanks.is-in .thanks-title .tw { animation:word .9s calc(.3s + var(--i) * .08s) var(--ease) both; }
   .rsvp-thanks.is-in .thanks-text { animation:rise 1s .7s var(--ease) both; }
-  .rsvp-thanks.is-in .thanks-reminder { animation:rise 1s .85s var(--ease) both; }
   .rsvp-thanks.is-in .thanks-edit { animation:rise 1s 1.05s var(--ease) both; }
 }
 

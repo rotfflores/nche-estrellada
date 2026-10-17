@@ -101,25 +101,23 @@ Después del lugar está `#confirmar`. Primero se elige «Sí, ahí estaré» o 
 
 Todo se edita en `config.js`, dentro de `rsvp`:
 
-- `whatsapp`: número de la festejada con lada de país, por ejemplo `5215512345678`. Si se escribe un número de México de 10 dígitos sin lada, se completa solo con `521`. Se usa únicamente mientras `storageEnabled` está en `false`: al enviar abre WhatsApp con el mensaje preparado y el agradecimiento recuerda enviarlo desde ahí. Con D1 activo, el formulario guarda directamente y no necesita WhatsApp. No usar el número del restaurante.
-- `storageEnabled`: activar (`true`) **solo después** de publicar el Worker `/api/*`, crear la base D1 y conectar el binding `DB`. En ese modo las respuestas se guardan en D1 antes del agradecimiento y se consultan en `panel.html`. Si el guardado falla, se muestra un error y no se finge que se recibió la respuesta. El WhatsApp queda como modo anterior mientras `storageEnabled` está en `false`.
-- `yesMessage` y `noMessage`: mensajes de WhatsApp. `{nombre}`, `{fecha}`, `{hora}` y `{lugar}` se reemplazan solos; `noMessage` no lleva `{nombre}` porque con «No» no se pide (WhatsApp ya muestra quién lo envía).
-- `thanksYesTitle`, `thanksYesText`, `thanksNoTitle`, `thanksNoText`, `whatsappReminder` y `editLabel`: textos del agradecimiento.
-- Etiquetas, botones (`button` con número, `buttonWithoutWhatsapp` sin número) y mensajes de validación.
+- `button`: texto del botón de envío directo. El ícono es una marca de confirmación.
+- `thanksYesTitle`, `thanksYesText`, `thanksNoTitle`, `thanksNoText` y `editLabel`: textos del agradecimiento.
+- Etiquetas y mensajes de validación. Las respuestas se guardan en D1 antes de mostrar el agradecimiento; si el guardado falla, se muestra un error.
 
 ## Panel privado y guardado duradero en Cloudflare
 
 `panel.html` muestra las confirmaciones, nombres y mensajes después de iniciar sesión. Incluye filtros, búsqueda, actualización y descarga CSV. `worker.mjs` atiende `/api/*` desde Cloudflare y guarda en D1; la base está separada de los archivos de GitHub Pages, por lo que un nuevo despliegue de la invitación no borra sus registros. El panel HTML puede abrirse públicamente, pero la API no entrega ninguna respuesta sin una sesión válida. Las sesiones caducan a las 12 horas y el inicio de sesión bloquea un origen durante 15 minutos después de cinco intentos erróneos.
 
-Está activo en `https://noche-estrellada.rotfstudio.com/`: el subdominio usa el proxy de Cloudflare, la base D1 `victoria-rsvp` y el Worker `victoria-rsvp` atiende `/api/*`. `rsvp.storageEnabled` está en `true`. Para reproducir o actualizar la instalación:
+Está activo en `https://noche-estrellada.rotfstudio.com/`: el subdominio usa el proxy de Cloudflare, la base D1 `victoria-rsvp` y el Worker `victoria-rsvp` atiende `/api/*`. Para reproducir o actualizar la instalación:
 
 1. En Cloudflare DNS, comprobar que `noche-estrellada.rotfstudio.com` esté en modo **Proxied** (nube naranja). El Worker usa una ruta delante del sitio existente de GitHub Pages; las demás URL siguen pasando a GitHub Pages.
 2. Crear una base **D1** llamada `victoria-rsvp`. En su consola SQL, ejecutar `migrations/0001_rsvp.sql` una sola vez. El script crea las tablas si aún no existen y no elimina datos.
 3. Copiar `wrangler.example.toml` a `wrangler.toml` y sustituir `REEMPLAZAR_CON_ID_DE_D1` por el UUID real de la base. El binding debe llamarse exactamente `DB`. Iniciar sesión con Wrangler y desplegar `worker.mjs` (`npx wrangler deploy`). La ruta es `noche-estrellada.rotfstudio.com/api/*`; el resto del sitio no cambia.
 4. En la configuración del Worker, agregar dos **secretos**: `ADMIN_PASSWORD` (contraseña larga y única para la clienta) y `SESSION_SECRET` (cadena aleatoria independiente, de al menos 32 caracteres). No escribirlos en `config.js`, Git ni archivos públicos.
-5. Comprobar que `https://noche-estrellada.rotfstudio.com/api/admin/session` responde JSON y que `/panel.html` muestra el acceso. Mantener `rsvp.storageEnabled` en `true` para que el formulario guarde en D1.
+5. Comprobar que `https://noche-estrellada.rotfstudio.com/api/admin/session` responde JSON y que `/panel.html` muestra el acceso. El formulario envía siempre a D1.
 
-Las respuestas recibidas **antes** de activar D1 no aparecen automáticamente en el panel: actualmente el formulario solo preparaba un mensaje de WhatsApp. El botón «Descargar CSV» da un respaldo manual. D1 ofrece recuperación temporal, pero para conservación a largo plazo conviene guardar periódicamente ese CSV fuera de Cloudflare.
+Las respuestas enviadas **antes** de activar D1 no aparecen automáticamente en el panel. El botón «Descargar CSV» da un respaldo manual. D1 ofrece recuperación temporal, pero para conservación a largo plazo conviene guardar periódicamente ese CSV fuera de Cloudflare.
 
 Para probar la lógica local sin servicio remoto: `npm test`. `panel.html`, `panel.css` y `panel.js` se publican como archivos estáticos junto con la invitación; las funciones y las migraciones no contienen contraseñas.
 
